@@ -18,7 +18,7 @@ const Footer1 = () => {
                             <div className="single-widget-items text-center">
                                 <div className="widget-head">
                                     <a href="#">
-                                        <img src="/assets/img/logo/white-log.svg" alt="img" />
+                                        <img src="/assets/img/logo/white-log.svg" alt="img" style={{ width: "170px", filter: "brightness(0) invert(1)" }} />
                                     </a>
                                 </div>
                                 <div className="footer-content">

@@ -99,7 +99,7 @@ const Testimonial3 = () => {
                                                 </div>
                                                 <div className="icon">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="50" height="37" viewBox="0 0 50 37" fill="none">
-                                                        <path d="M0 0V37L18.75 18.5V0H0ZM31.25 0V37L50 18.5V0H31.25Z" fill="#1CA8CB"/>
+                                                        <path d="M0 0V37L18.75 18.5V0H0ZM31.25 0V37L50 18.5V0H31.25Z" fill="#1f4d85"/>
                                                    </svg>
                                                 </div>
                                             </div>

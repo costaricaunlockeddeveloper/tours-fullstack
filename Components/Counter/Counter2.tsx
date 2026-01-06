@@ -11,7 +11,7 @@ const Counter2 = () => {
          }, []);   
 
     return (
-        <section className="cta-offer-section section-padding fix bg-cover" data-background="/assets/img/offer/bg2.png" >
+        <section className="cta-offer-section section-padding fix bg-cover" data-background="/assets/img/offer/bg2.jpg" >
             <div className="container">
                 <div className="cta-offer-wrapper">
                     <div className="row g-4">
@@ -48,7 +48,7 @@ const Counter2 = () => {
                         </div>
                         <div className="col-lg-6">
                             <div className="offer-image">
-                                <Image src="/assets/img/offer/circle.png" alt="img" width={386} height={386}   />
+                                <Image src="/assets/img/offer/circle.jpg" alt="img" width={386} height={260}   />
                                 <div className="circle">
                                     <div className="text-item">
                                         <div className="icon">

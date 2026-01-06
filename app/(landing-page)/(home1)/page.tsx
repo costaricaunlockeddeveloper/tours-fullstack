@@ -18,19 +18,19 @@ const page = () => {
     return (
         <div>
             <HeroBanner3></HeroBanner3>
-            <Form1></Form1>
+            {/* <Form1></Form1> */}
             <Destination3></Destination3>
             <About3></About3>
-            <DealOffers2></DealOffers2>
-            <Brand2></Brand2>
+            {/* <DealOffers2></DealOffers2>
+            <Brand2></Brand2> */}
             <Counter2></Counter2>
-            <FeaturedFlight></FeaturedFlight>
+            {/* <FeaturedFlight></FeaturedFlight> */}
             <Testimonial3></Testimonial3>
             <Cta4></Cta4>
             <Faq1></Faq1>
-            <Counter3></Counter3>
-             <Blog3></Blog3>
-            <Instagram2></Instagram2>           
+            {/* <Counter3></Counter3> */}
+             {/* <Blog3></Blog3>
+            <Instagram2></Instagram2>            */}
         </div>
     );
 };

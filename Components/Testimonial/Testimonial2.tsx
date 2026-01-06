@@ -82,10 +82,10 @@ const Testimonial2 = () => {
                                                 <div className="star-item">
                                                     <div className="icon">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="54" height="48" viewBox="0 0 54 48" fill="none">
-                                                            <path d="M2 24.8696H16.4927C20.3157 24.8696 22.9395 27.7946 22.9395 31.3751V39.4945C22.9395 43.075 20.3157 45.9998 16.4927 45.9998H8.44679C4.89858 45.9998 2 43.075 2 39.4945V24.8696" stroke="#1CA8CB" strokeWidth="3"strokeLinecap="round" strokeLinejoin="round"/>
-                                                            <path d="M2 24.8699C2 9.6148 4.82365 7.09343 13.3194 2" stroke="#1CA8CB" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-                                                            <path d="M31.0605 24.8696H45.5532C49.3763 24.8696 52 27.7946 52 31.3751V39.4945C52 43.075 49.3763 45.9998 45.5532 45.9998H37.5073C33.9591 45.9998 31.0605 43.075 31.0605 39.4945V24.8696" stroke="#1CA8CB" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-                                                            <path d="M31.0605 24.8699C31.0605 9.6148 33.884 7.09343 42.3798 2" stroke="#1CA8CB" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                                                            <path d="M2 24.8696H16.4927C20.3157 24.8696 22.9395 27.7946 22.9395 31.3751V39.4945C22.9395 43.075 20.3157 45.9998 16.4927 45.9998H8.44679C4.89858 45.9998 2 43.075 2 39.4945V24.8696" stroke="#1f4d85" strokeWidth="3"strokeLinecap="round" strokeLinejoin="round"/>
+                                                            <path d="M2 24.8699C2 9.6148 4.82365 7.09343 13.3194 2" stroke="#1f4d85" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                                                            <path d="M31.0605 24.8696H45.5532C49.3763 24.8696 52 27.7946 52 31.3751V39.4945C52 43.075 49.3763 45.9998 45.5532 45.9998H37.5073C33.9591 45.9998 31.0605 43.075 31.0605 39.4945V24.8696" stroke="#1f4d85" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                                                            <path d="M31.0605 24.8699C31.0605 9.6148 33.884 7.09343 42.3798 2" stroke="#1f4d85" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
                                                           </svg>
                                                     </div>
                                                     <div className="star">

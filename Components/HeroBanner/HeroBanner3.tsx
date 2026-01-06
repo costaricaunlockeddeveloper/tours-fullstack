@@ -8,9 +8,9 @@ import Link from 'next/link';
 const HeroBanner3 = () => {
 
     const heroContent = [
-        {img:'/assets/img/hero/03.png', subtitle:'Booking Now', title:' Lifelong Memories Just <br>A Few Days Away', content:'Making your dream to see the world come true is a thrilling and enriching goal. Traveling allows you to experience new cultures, cuisines, landscapes, and ways of life'},              
-        {img:'/assets/img/hero/04.png', subtitle:'Booking Now', title:' Lifelong Memories Just <br>A Few Days Away', content:'Making your dream to see the world come true is a thrilling and enriching goal. Traveling allows you to experience new cultures, cuisines, landscapes, and ways of life'},              
-        {img:'/assets/img/hero/03.png', subtitle:'Booking Now', title:' Lifelong Memories Just <br>A Few Days Away', content:'Making your dream to see the world come true is a thrilling and enriching goal. Traveling allows you to experience new cultures, cuisines, landscapes, and ways of life'},              
+        {img:'/assets/img/hero/03.jpg', subtitle:'Booking Now', title:' Lifelong Memories Just <br>A Few Days Away', content:'Making your dream to see the world come true is a thrilling and enriching goal. Traveling allows you to experience new cultures, cuisines, landscapes, and ways of life'},              
+        {img:'/assets/img/hero/04.jpg', subtitle:'Booking Now', title:' Lifelong Memories Just <br>A Few Days Away', content:'Making your dream to see the world come true is a thrilling and enriching goal. Traveling allows you to experience new cultures, cuisines, landscapes, and ways of life'},              
+        {img:'/assets/img/hero/03.jpg', subtitle:'Booking Now', title:' Lifelong Memories Just <br>A Few Days Away', content:'Making your dream to see the world come true is a thrilling and enriching goal. Traveling allows you to experience new cultures, cuisines, landscapes, and ways of life'},              
       ];     
 
        useEffect(() => {
