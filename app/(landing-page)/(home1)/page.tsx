@@ -11,8 +11,6 @@ import Testimonial3 from '../../../Components/Testimonial/Testimonial3';
 import Cta4 from '../../../Components/Cta/Cta4';
 import Faq1 from '../../../Components/Faq/Faq1';
 import Counter3 from '../../../Components/Counter/Counter3';
-import Blog3 from '../../../Components/Blog/Blog3';
-import Instagram2 from '../../../Components/Instagram/Instagram2';
 
 const page = () => {
     return (

@@ -5,7 +5,7 @@ import DestinationDetails from '../../../../../Components/DestinationDetails/Des
 const page = () => {
   return (
     <div>
-             <BreadCumb
+            <BreadCumb
                 bgimg="/assets/img/breadcrumb/breadcrumb.jpg"
                 Title="Destination Details"
             ></BreadCumb>    

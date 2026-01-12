@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import loadBackgroudImages from "./loadBackgroudImages";
 import Link from "next/link";
 
-const BreadCumb = ({Title,bgimg}) => {
+const BreadCumb = ({Title,bgimg}: {Title: string, bgimg: string}) => {
     
     useEffect(() => {
         loadBackgroudImages();
