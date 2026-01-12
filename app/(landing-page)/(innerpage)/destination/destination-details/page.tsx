@@ -1,14 +1,17 @@
 import React from 'react';
-import BreadCumb from '../../../../../Components/Common/BreadCumb';
+import DestinationHero from '../../../../../Components/DestinationDetails/DestinationHero';
 import DestinationDetails from '../../../../../Components/DestinationDetails/DestinationDetails';
 
 const page = () => {
   return (
     <div>
-            <BreadCumb
+            <DestinationHero
                 bgimg="/assets/img/breadcrumb/breadcrumb.jpg"
-                Title="Destination Details"
-            ></BreadCumb>    
+                title="Manuel Antonio National Park"
+                climate="🏖️ Beach & Wildlife"
+                region="Puntarenas"
+                province="Costa Rica"
+            ></DestinationHero>    
             <DestinationDetails></DestinationDetails>       
     </div>
   );
