@@ -267,7 +267,7 @@ const BookingWidget = () => {
                                         }}
                                     >
                                         <div className="d-flex align-items-start">
-                                            <div className="flex-shrink-0">
+                                            <div className="shrink-0">
                                                 <div 
                                                     className="d-flex align-items-center justify-content-center"
                                                     style={{
@@ -280,7 +280,7 @@ const BookingWidget = () => {
                                                     <i className="bi bi-pin-map-fill fs-5" style={{ color: 'var(--theme)' }}></i>
                                                 </div>
                                             </div>
-                                            <div className="flex-grow-1 ms-3">
+                                            <div className="grow ms-3">
                                                 <h6 className="mb-1 fw-bold" style={{ fontSize: '15px' }}>
                                                     Parque Nacional Manuel Antonio
                                                 </h6>
