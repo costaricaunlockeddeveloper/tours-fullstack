@@ -5,20 +5,20 @@ import React from 'react';
 const Tour = () => {
 
     const destinationContent = [
-        {img:'/assets/img/destination/01.jpg', location:'Indonesia', title:'Brooklyn Beach Resort Tour', rating:'4.7', day:'10 Days', number:'50+', price:'$59.00'},      
-        {img:'/assets/img/destination/02.jpg', location:'Indonesia', title:'Pak Chumphon Town Tour ', rating:'4.7', day:'10 Days', number:'50+', price:'$59.00'},      
-        {img:'/assets/img/destination/03.jpg', location:'Indonesia', title:'Java & Bali One Life Adventure', rating:'4.7', day:'10 Days', number:'50+', price:'$59.00'},      
-        {img:'/assets/img/destination/04.jpg', location:'Indonesia', title:'Places To Travel In November', rating:'4.7', day:'10 Days', number:'50+', price:'$59.00'},      
-        {img:'/assets/img/destination/05.jpg', location:'Indonesia', title:'Brooklyn Beach Resort Tour', rating:'4.7', day:'10 Days', number:'50+', price:'$59.00'},      
-        {img:'/assets/img/destination/06.jpg', location:'Indonesia', title:'Pak Chumphon Town Tour ', rating:'4.7', day:'10 Days', number:'50+', price:'$59.00'},      
-        {img:'/assets/img/destination/07.jpg', location:'Indonesia', title:'Java & Bali One Life Adventure', rating:'4.7', day:'10 Days', number:'50+', price:'$59.00'},      
-        {img:'/assets/img/destination/08.jpg', location:'Indonesia', title:'Places To Travel In November', rating:'4.7', day:'10 Days', number:'50+', price:'$59.00'},       
-        {img:'/assets/img/destination/04.jpg', location:'Indonesia', title:'Places To Travel In November', rating:'4.7', day:'10 Days', number:'50+', price:'$59.00'},          
+        {img:'/assets/img/destination/01.jpg', location:'Indonesia', title:'Brooklyn Beach Resort Tour', rating:'4.7', day:'4 hours', capacity:'50+', price:'$59.00'},      
+        {img:'/assets/img/destination/02.jpg', location:'Indonesia', title:'Pak Chumphon Town Tour ', rating:'4.7', day:'4 hours', capacity:'50+', price:'$59.00'},      
+        {img:'/assets/img/destination/03.jpg', location:'Indonesia', title:'Java & Bali One Life Adventure', rating:'4.7', day:'4 hours', capacity:'50+', price:'$59.00'},      
+        {img:'/assets/img/destination/04.jpg', location:'Indonesia', title:'Places To Travel In November', rating:'4.7', day:'4 hours', capacity:'50+', price:'$59.00'},      
+        {img:'/assets/img/destination/05.jpg', location:'Indonesia', title:'Brooklyn Beach Resort Tour', rating:'4.7', day:'4 hours', capacity:'50+', price:'$59.00'},      
+        {img:'/assets/img/destination/06.jpg', location:'Indonesia', title:'Pak Chumphon Town Tour ', rating:'4.7', day:'4 hours', capacity:'50+', price:'$59.00'},      
+        {img:'/assets/img/destination/07.jpg', location:'Indonesia', title:'Java & Bali One Life Adventure', rating:'4.7', day:'4 hours', capacity:'50+', price:'$59.00'},      
+        {img:'/assets/img/destination/08.jpg', location:'Indonesia', title:'Places To Travel In November', rating:'4.7', day:'4 hours', capacity:'50+', price:'$59.00'},       
+        {img:'/assets/img/destination/04.jpg', location:'Indonesia', title:'Places To Travel In November', rating:'4.7', day:'4 hours', capacity:'50+', price:'$59.00'},          
       ]; 
 
 
     return (
-<section className="tour-section section-padding fix">
+        <section className="tour-section section-padding fix">
             <div className="container custom-container">
                 <div className="tour-destination-wrapper">
                     <div className="row g-4">
@@ -29,21 +29,12 @@ const Tour = () => {
                                     <div className="destination-card-items mt-0">
                                         <div className="destination-image">
                                              <Image src={item.img} alt="img" width={287} height={240}   />
-                                            <div className="heart-icon">
-                                            <i className="bi bi-heart"></i>
-                                            </div>
                                         </div>
                                         <div className="destination-content">
                                             <ul className="meta">
                                                 <li>
                                                 <i className="bi bi-geo-alt"></i>
                                                     {item.location}
-                                                </li>
-                                                <li className="rating">
-                                                    <div className="star">
-                                                    <i className="bi bi-star-fill"></i>
-                                                    </div>
-                                                    <p>{item.rating}</p>
                                                 </li>
                                             </ul>
                                             <h5>
@@ -58,11 +49,11 @@ const Tour = () => {
                                                 </li>
                                                 <li>
                                                 <i className="bi bi-person"></i>
-                                                {item.number}
+                                                {item.capacity}
                                                 </li>
                                             </ul>
                                             <div className="price">
-                                                <h6>{item.price}<span>/Per day</span></h6>
+                                                <h6>{item.price}</h6>
                                                 <Link href="/tour/tour-details" className="theme-btn style-2">Book Now<i className="bi bi-arrow-right"></i></Link>
                                             </div>
                                         </div>
@@ -162,130 +153,7 @@ const Tour = () => {
                                         </label>
                                     </div>
                                 </div>
-
-                                <div className="single-sidebar-widget">
-                                    <div className="wid-title">
-                                        <h3>Activities</h3>
-                                    </div>
-                                    <div className="categories-list">
-                                        <label className="checkbox-single d-flex justify-content-between align-items-center">
-                                            <span className="d-flex gap-xl-3 gap-2 align-items-center">
-                                                <span className="checkbox-area d-center">
-                                                    <input type="checkbox" readOnly />
-                                                    <span className="checkmark d-center"></span>
-                                                </span>
-                                                <span className="text-color">
-                                                    Canada
-                                                </span>
-                                            </span>
-                                            <span className="text-color">04</span>
-                                        </label>
-                                        <label className="checkbox-single d-flex justify-content-between align-items-center">
-                                            <span className="d-flex gap-xl-3 gap-2 align-items-center">
-                                                <span className="checkbox-area d-center">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmark d-center"></span>
-                                                </span>
-                                                <span className="text-color">
-                                                    Europe
-                                                </span>
-                                            </span>
-                                            <span className="text-color">03</span>
-                                        </label>
-                                        <label className="checkbox-single d-flex justify-content-between align-items-center">
-                                            <span className="d-flex gap-xl-3 gap-2 align-items-center">
-                                                <span className="checkbox-area d-center">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmark d-center"></span>
-                                                </span>
-                                                <span className="text-color">
-                                                    France
-                                                </span>
-                                            </span>
-                                            <span className="text-color">05</span>
-                                        </label>
-                                        <label className="checkbox-single d-flex justify-content-between align-items-center">
-                                            <span className="d-flex gap-xl-3 gap-2 align-items-center">
-                                                <span className="checkbox-area d-center">
-                                                    <input type="checkbox"  />
-                                                    <span className="checkmark d-center"></span>
-                                                </span>
-                                                <span className="text-color">
-                                                    Indonesia
-                                                </span>
-                                            </span>
-                                            <span className="text-color">06</span>
-                                        </label>
-                                        <label className="checkbox-single d-flex justify-content-between align-items-center">
-                                            <span className="d-flex gap-xl-3 gap-2 align-items-center">
-                                                <span className="checkbox-area d-center">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmark d-center"></span>
-                                                </span>
-                                                <span className="text-color">
-                                                    Nepal
-                                                </span>
-                                            </span>
-                                            <span className="text-color">05</span>
-                                        </label>
-                                        <label className="checkbox-single d-flex justify-content-between align-items-center">
-                                            <span className="d-flex gap-xl-3 gap-2 align-items-center">
-                                                <span className="checkbox-area d-center">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmark d-center"></span>
-                                                </span>
-                                                <span className="text-color">
-                                                    Maldives
-                                                </span>
-                                            </span>
-                                            <span className="text-color">04</span>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div className="single-sidebar-widget">
-                                    <div className="wid-title style-2">
-                                        <h3>Tour Types</h3>
-                                        <i className="fa-solid fa-chevron-down"></i>
-                                    </div>
-                                    <div className="categories-list">
-                                        <label className="checkbox-single d-flex justify-content-between align-items-center">
-                                            <span className="d-flex gap-xl-3 gap-2 align-items-center">
-                                                <span className="checkbox-area d-center">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmark d-center"></span>
-                                                </span>
-                                                <span className="text-color">
-                                                    Premium
-                                                </span>
-                                            </span>
-                                            <span className="text-color">04</span>
-                                        </label>
-                                        <label className="checkbox-single d-flex justify-content-between align-items-center">
-                                            <span className="d-flex gap-xl-3 gap-2 align-items-center">
-                                                <span className="checkbox-area d-center">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmark d-center"></span>
-                                                </span>
-                                                <span className="text-color">
-                                                    Luxury 
-                                                </span>
-                                            </span>
-                                            <span className="text-color">03</span>
-                                        </label>
-                                        <label className="checkbox-single d-flex justify-content-between align-items-center">
-                                            <span className="d-flex gap-xl-3 gap-2 align-items-center">
-                                                <span className="checkbox-area d-center">
-                                                    <input type="checkbox"  />
-                                                    <span className="checkmark d-center"></span>
-                                                </span>
-                                                <span className="text-color">
-                                                    Standard
-                                                </span>
-                                            </span>
-                                            <span className="text-color">05</span>
-                                        </label>
-                                    </div>
-                                </div>
+                               
                             </div>
                         </div>
                     </div>

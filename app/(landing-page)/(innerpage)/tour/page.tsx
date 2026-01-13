@@ -9,7 +9,7 @@ const page = () => {
                 bgimg="/assets/img/breadcrumb/breadcrumb.jpg"
                 Title="Tour"
             ></BreadCumb>    
-            <Tour></Tour>       
+              <Tour></Tour>       
     </div>
   );
 };
