@@ -117,56 +117,7 @@ const TourDetails = () => {
                                     ))}
                                 </div>
                             </div>
-                            
-                            <div className="map-area mt-5">
-                                <h3>Tu aventura en [Nombre Destination]</h3>
-                                <div className="google-map">
-                                    <iframe
-                                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6678.7619084840835!2d144.9618311901502!3d-37.81450084255415!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad642b4758afc1d%3A0x3119cc820fdfc62e!2sEnvato!5e0!3m2!1sen!2sbd!4v1641984054261!5m2!1sen!2sbd"
-                                         loading="lazy"></iframe>
-                                </div>
-                                <div className="mt-4 text-center">
-                                    <Link href="/destination/destination-details" className="theme-btn">
-                                        <i className="bi bi-geo-alt-fill me-2"></i>
-                                        Descubre más sobre este destino
-                                        <i className="bi bi-arrow-right ms-2"></i>
-                                    </Link>
-                                </div>
-                            </div>
 
-                            <div className="faq-items">
-                                <h3>Tour Plan</h3>
-                                <div className="faq-accordion">
-                                    <div className="accordion" id="accordion">
-
-                                    {faqContent.map((item, index) => (                                        
-                                        <div key={index} className={`accordion-item mb-3 ${index === openItemIndex ? "active" : "" }`} >
-                                            <h5 onClick={() => handleItemClick(index)} className="accordion-header">
-                                                <button className="accordion-button collapsed" type="button"
-                                                    data-bs-toggle="collapse" data-bs-target="#faq1"
-                                                    aria-expanded="true" aria-controls="faq1">
-                                                    {item.title}
-                                                </button>
-                                            </h5>
-                                            <div ref={accordionContentRef} id="faq1" className="accordion-collapse collapse"
-                                                data-bs-parent="#accordion">
-                                                <div className="accordion-body">
-                                                    <p>
-                                                    {item.content}
-                                                    </p>
-                                                    <div className="faq-image">
-                                                        <Image src="/assets/img/destails/faq-img.jpg" alt="img" width={160} height={125}   />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        ))}
-
-
-                                    </div>
-                                </div>
-                            </div>
-                            
                         </div>
                     </div>
                     <div className="col-12 col-lg-4">

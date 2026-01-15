@@ -82,7 +82,7 @@ const TourPackageDetails = () => {
                     days: 3
                 },
                 {
-                    img: '/assets/img/destination/05.jpg',
+                    img: '/assets/img/destination/02.jpg',
                     location: 'Puntarenas',
                     title: 'Monteverde',
                     climate: '🌿 Cloud Forest',
@@ -363,23 +363,6 @@ const TourPackageDetails = () => {
                                                     </li>
                                                 </ul>
                                             </div>
-                                        </div>
-                                    </div>
-                                    
-                                    {/* 5. MAPA DEL DESTINO */}
-                                    <div className="map-area mt-5">
-                                        <h3>Your Costa Rica Route</h3>
-                                        <div className="google-map">
-                                            <iframe
-                                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6678.7619084840835!2d144.9618311901502!3d-37.81450084255415!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad642b4758afc1d%3A0x3119cc820fdfc62e!2sEnvato!5e0!3m2!1sen!2sbd!4v1641984054261!5m2!1sen!2sbd"
-                                                 loading="lazy"></iframe>
-                                        </div>
-                                        <div className="mt-4 text-center">
-                                            <Link href="/destination/destination-details" className="theme-btn">
-                                                <i className="bi bi-geo-alt-fill me-2"></i>
-                                                Discover More About Costa Rica
-                                                <i className="bi bi-arrow-right ms-2"></i>
-                                            </Link>
                                         </div>
                                     </div>
                                 </>
