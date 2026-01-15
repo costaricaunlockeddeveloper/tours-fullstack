@@ -9,11 +9,11 @@ const Tour = () => {
         {img:'/assets/img/destination/02.jpg', location:'Indonesia', title:'Pak Chumphon Town Tour ', rating:'4.7', day:'4 hours', capacity:'50+', price:'$59.00'},      
         {img:'/assets/img/destination/03.jpg', location:'Indonesia', title:'Java & Bali One Life Adventure', rating:'4.7', day:'4 hours', capacity:'50+', price:'$59.00'},      
         {img:'/assets/img/destination/04.jpg', location:'Indonesia', title:'Places To Travel In November', rating:'4.7', day:'4 hours', capacity:'50+', price:'$59.00'},      
-        {img:'/assets/img/destination/05.jpg', location:'Indonesia', title:'Brooklyn Beach Resort Tour', rating:'4.7', day:'4 hours', capacity:'50+', price:'$59.00'},      
-        {img:'/assets/img/destination/06.jpg', location:'Indonesia', title:'Pak Chumphon Town Tour ', rating:'4.7', day:'4 hours', capacity:'50+', price:'$59.00'},      
-        {img:'/assets/img/destination/07.jpg', location:'Indonesia', title:'Java & Bali One Life Adventure', rating:'4.7', day:'4 hours', capacity:'50+', price:'$59.00'},      
-        {img:'/assets/img/destination/08.jpg', location:'Indonesia', title:'Places To Travel In November', rating:'4.7', day:'4 hours', capacity:'50+', price:'$59.00'},       
-        {img:'/assets/img/destination/04.jpg', location:'Indonesia', title:'Places To Travel In November', rating:'4.7', day:'4 hours', capacity:'50+', price:'$59.00'},          
+        {img:'/assets/img/destination/01.jpg', location:'Indonesia', title:'Brooklyn Beach Resort Tour', rating:'4.7', day:'4 hours', capacity:'50+', price:'$59.00'},      
+        {img:'/assets/img/destination/02.jpg', location:'Indonesia', title:'Pak Chumphon Town Tour ', rating:'4.7', day:'4 hours', capacity:'50+', price:'$59.00'},      
+        {img:'/assets/img/destination/03.jpg', location:'Indonesia', title:'Java & Bali One Life Adventure', rating:'4.7', day:'4 hours', capacity:'50+', price:'$59.00'},      
+        {img:'/assets/img/destination/04.jpg', location:'Indonesia', title:'Places To Travel In November', rating:'4.7', day:'4 hours', capacity:'50+', price:'$59.00'},       
+        {img:'/assets/img/destination/01.jpg', location:'Indonesia', title:'Places To Travel In November', rating:'4.7', day:'4 hours', capacity:'50+', price:'$59.00'},          
       ]; 
 
 

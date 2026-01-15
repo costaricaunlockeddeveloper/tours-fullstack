@@ -58,7 +58,7 @@ const TourDetails = () => {
                             </ul>
                         </div>
                         <div className="activities-details-content">
-                            <h2 className="mb-3">Description</h2>
+                            <h2 className="mb-3">Tour Overview</h2>
                             <p>
                                 Consectetur adipisicing elit sed do eiusmod tempor is incididunt ut labore et dolore of
                                 magna aliqua. ut enim ad minim veniam made of owl the quis nostrud exercitation ullamco
