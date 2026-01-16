@@ -72,21 +72,24 @@ const TourPackageDetails = () => {
                     location: 'Alajuela',
                     title: 'Arenal Volcano',
                     climate: '🌋 Volcano & Hot Springs',
-                    days: 3
+                    tours: 20,
+                    packages: 12
                 },
                 {
                     img: '/assets/img/destination/01.jpg',
                     location: 'Puntarenas',
                     title: 'Manuel Antonio',
                     climate: '🏖️ Beach & Wildlife',
-                    days: 3
+                    tours: 12,
+                    packages: 8
                 },
                 {
                     img: '/assets/img/destination/02.jpg',
                     location: 'Puntarenas',
                     title: 'Monteverde',
                     climate: '🌿 Cloud Forest',
-                    days: 1
+                    tours: 18,
+                    packages: 14
                 }
             ];              
 
@@ -380,11 +383,8 @@ const TourPackageDetails = () => {
                                                     location={destination.location}
                                                     title={destination.title}
                                                     climate={destination.climate}
-                                                    stat1={{
-                                                        icon: 'bi-calendar-check',
-                                                        number: destination.days,
-                                                        label: 'Days'
-                                                    }}
+                                                    tours={destination.tours}
+                                                    packages={destination.packages}
                                                 />
                                             </div>
                                         ))}

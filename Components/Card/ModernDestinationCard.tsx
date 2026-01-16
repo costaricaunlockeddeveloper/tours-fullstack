@@ -7,16 +7,8 @@ interface ModernDestinationCardProps {
     location: string;
     title: string;
     climate: string;
-    stat1?: {
-        icon: string;
-        number: number;
-        label: string;
-    };
-    stat2?: {
-        icon: string;
-        number: number;
-        label: string;
-    };
+    tours: number;
+    packages: number;
     href?: string;
 }
 
@@ -25,8 +17,8 @@ const ModernDestinationCard = ({
     location, 
     title, 
     climate, 
-    stat1,
-    stat2,
+    tours,
+    packages,
     href = "/destination/destination-details"
 }: ModernDestinationCardProps) => {
     return (
@@ -254,23 +246,19 @@ const ModernDestinationCard = ({
                         {/* Title */}
                         <h5>{title}</h5>
 
-                        {/* Stats */}
+                        {/* Stats: Tours & Packages */}
                         <div className="stats-container">
                             <div className="destination-stats">
-                                {stat1 && (
-                                    <div className="stat-item">
-                                        <i className={`bi ${stat1.icon}`}></i>
-                                        <span className="stat-number">{stat1.number}</span>
-                                        {stat1.label}
-                                    </div>
-                                )}
-                                {stat2 && (
-                                    <div className="stat-item">
-                                        <i className={`bi ${stat2.icon}`}></i>
-                                        <span className="stat-number">{stat2.number}</span>
-                                        {stat2.label}
-                                    </div>
-                                )}
+                                <div className="stat-item">
+                                    <i className="bi bi-map"></i>
+                                    <span className="stat-number">{tours}</span>
+                                    Tours
+                                </div>
+                                <div className="stat-item">
+                                    <i className="bi bi-box-seam"></i>
+                                    <span className="stat-number">{packages}</span>
+                                    Packages
+                                </div>
                             </div>
                             {/* Arrow indicator on hover */}
                             <div className="card-arrow">
