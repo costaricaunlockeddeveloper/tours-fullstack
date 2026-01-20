@@ -7,7 +7,7 @@ export default function Header1({ variant } : any ) {
   const [mobileToggle, setMobileToggle] = useState(false);
   const [isSticky, setIsSticky] = useState<string>("");
   const [prevScrollPos, setPrevScrollPos] = useState<number>(0);
-  const [searchToggle, setSearchToggle] = useState(false);
+  const [language, setLanguage] = useState<'EN' | 'ES'>('EN');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -43,7 +43,7 @@ export default function Header1({ variant } : any ) {
           <div className="cs_main_header_in">
             <div className="cs_main_header_left">
             <Link className="cs_site_branding" href="/">
-                <Image src="/assets/img/logo/white-logo.svg" alt="img" width={213} height={55}   />
+                <Image src="/assets/img/logo/white-logo.svg" alt="img" width={100} height={70}   />
               </Link>
               </div>
               <div className="cs_main_header_center">
@@ -63,33 +63,29 @@ export default function Header1({ variant } : any ) {
             </div>
             <div className="cs_main_header_right">
               <div className="header-btn d-flex align-items-center">
-                <div className="main-button header-btn-1">
-                <a onClick={() => setSearchToggle(!searchToggle)} className="search-trigger search-icon"><i className="bi bi-search"></i></a>
-                <Link href="/contact" className='theme-btn'>
-                <span> Request A Quote <i className="bi bi-arrow-right"></i></span></Link>
+                <div className="main-button header-btn-1 d-flex align-items-center gap-3">
+                  <div className="language-switcher-wrap me-2">
+                    <button 
+                      onClick={() => setLanguage(language === 'EN' ? 'ES' : 'EN')}
+                      className="language-toggle-btn"
+                    >
+                      <i className="bi bi-globe2 me-1"></i>
+                      <span>{language}</span>
+                    </button>
                   </div>
-
+                  <Link href="/login" className="login-btn-header">
+                    Login
+                  </Link>
+                  <Link href="/contact" className='theme-btn py-2 px-4 min-w-0'>
+                    <span>Sign Up</span>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </header>
-
-    <div className={`search-wrap ${searchToggle ? 'active' : ''}`}>
-            <div className="search-inner">
-            <i onClick={() => setSearchToggle(!searchToggle)} id="search-close" className="bi bi-x-lg search-close"></i>
-                <div className="search-cell">
-                    <form method="get">
-                        <div className="search-field-holder">
-                            <input type="search" className="main-search-input" placeholder="Search..." />
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
     </div>
-
   );
 }

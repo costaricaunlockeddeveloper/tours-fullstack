@@ -6141,10 +6141,6 @@ span {
   width: 50px;
 }
 
-.price-range-wrapper {
-  /* Custom thumb styling */
-  /* Remove the default appearance for sliders in Firefox */
-}
 .price-range-wrapper .slider-container {
   position: relative;
   width: 100%;
@@ -9229,7 +9225,7 @@ input.main-search-input::placeholder {
 .cs_site_header.cs_style_1.cs_color_1 .cs_nav_list > li > a:hover {
   color: #e9a132;
 }
-@media screen and (min-width: 1200px) {
+@media screen and (min-width: 1460px) {
   .cs_main_header {
     position: relative;
  }
@@ -9450,14 +9446,12 @@ input.main-search-input::placeholder {
     margin-right: 35px;
  }
 }
-@media screen and (max-width: 1199px) {
+@media screen and (max-width: 1460px) {
  /*Mobile Menu Button*/
   .cs_nav .cs_nav_list > li {
     margin-right: 0;
  }
-  .cs_site_header.cs_style_1 .cs_main_header_right {
-    padding-right: 55px;
- }
+  
   .cs_site_header_full_width .container {
     padding: 0 15px;
  }
@@ -9589,8 +9583,9 @@ input.main-search-input::placeholder {
     background-color: #fff;
  }
 .cs_main_header_right .header-btn{
-  display: none;
+  display: flex;
 }
+
 .cs-gescout_sticky{
   background-color: #000;
 }
@@ -9627,9 +9622,10 @@ input.main-search-input::placeholder {
   .cs_site_header.cs_style_1 .cs_top_header_left {
     display: none;
  }
- .cs_site_header.cs_style_1 .cs_main_header_right{
-  display: none
- }
+  .cs_site_header.cs_style_1 .cs_main_header_right{
+    display: flex;
+    align-items: center;
+  }
 
 }
 @media screen and (max-width: 575px) {
@@ -9789,7 +9785,7 @@ input.main-search-input::placeholder {
   color: #fff;
 }
 .cs_main_header_right .header-btn{
-  display: none  !important;
+  display: flex !important;
 }
 }
 .cs_main_header_right .search-trigger{
@@ -9945,9 +9941,11 @@ input.main-search-input::placeholder {
 .header_style_2_2{
   background-color: var(--green-dark);
 }
-.header_style_2_0.cs-gescout_show .cs_site_branding img{
+.header_style_2_0 .cs_site_branding img,
+.header_style_2_1 .cs_site_branding img {
   filter: brightness(0) invert(1);
 }
+
 @media only screen and (max-width: 1400px) and (min-width: 1000px) {
     .cs_hero.cs_style_3 {
         padding: 340px 0 190px;
@@ -10042,7 +10040,122 @@ input.main-search-input::placeholder {
   z-index: 2;
   margin-top: 50px;
 }
+/* Header UI Enhancements */
+.language-toggle-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+}
+
+.language-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #fff;
+  transform: translateY(-1px);
+}
+
+.login-btn-header {
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.login-btn-header:hover {
+  color: var(--brand-yellow);
+  opacity: 0.9;
+}
+
+/* Sticky Header Adjustments */
+.cs-gescout_sticky .login-btn-header {
+  color: #fff;
+}
+
+.cs-gescout_sticky .language-toggle-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.min-w-0 {
+  min-width: 0 !important;
+}
+
+/* Mobile Header Improvements */
+@media screen and (max-width: 550px) {
+  .cs_main_header_right {
+    position: absolute;
+    right: 70px; /* Aligned better with hamburger */
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+  }
+
+  /* Hide auth buttons in the main header, keep them in the nav menu */
+  .cs_main_header_right .login-btn-header,
+  .cs_main_header_right .theme-btn {
+    display: none !important;
+  }
+
+  .header-btn-1.gap-3 {
+    gap: 0 !important;
+  }
+
+  .language-toggle-btn {
+    padding: 6px 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px; /* Slightly squared for better text fit */
+    min-width: unset;
+    backdrop-filter: blur(10px);
+  }
+
+  .language-toggle-btn i {
+    font-size: 14px;
+    margin-right: 4px;
+  }
+
+  .language-toggle-btn span {
+    display: inline-block !important; /* Show EN/ES text */
+    font-size: 12px;
+    font-weight: 700;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .cs_main_header_right {
+    right: 70px;
+  }
+}
+
+.cs_mobile_only {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 15px;
+  padding-top: 20px !important;
+}
+
+.cs_mobile_only .login-btn-header {
+  padding: 10px 0;
+  display: block;
+  text-align: center;
+}
+
+.cs_mobile_only .theme-btn {
+  border-radius: 10px;
+}
 
 
-
-
+@media screen and (min-width: 480px) and (max-width: 1460px) {
+  .cs_main_header_right .header-btn {
+    display: flex;
+    padding-right: 50px;
+  }
+}
