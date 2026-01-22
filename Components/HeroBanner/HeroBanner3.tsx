@@ -8,9 +8,24 @@ import Link from 'next/link';
 const HeroBanner3 = () => {
 
     const heroContent = [
-        {img:'/assets/img/hero/03.jpg', subtitle:'Booking Now', title:' Lifelong Memories Just <br>A Few Days Away', content:'Making your dream to see the world come true is a thrilling and enriching goal. Traveling allows you to experience new cultures, cuisines, landscapes, and ways of life'},              
-        {img:'/assets/img/hero/04.jpg', subtitle:'Booking Now', title:' Lifelong Memories Just <br>A Few Days Away', content:'Making your dream to see the world come true is a thrilling and enriching goal. Traveling allows you to experience new cultures, cuisines, landscapes, and ways of life'},              
-        {img:'/assets/img/hero/03.jpg', subtitle:'Booking Now', title:' Lifelong Memories Just <br>A Few Days Away', content:'Making your dream to see the world come true is a thrilling and enriching goal. Traveling allows you to experience new cultures, cuisines, landscapes, and ways of life'},              
+        {
+            img: '/assets/img/hero/03.jpg', 
+            subtitle: 'Start Your Journey', 
+            title: 'Unlock Your Ultimate <br> Costa Rica Adventure', 
+            content: 'From mist-covered cloud forests to sun-drenched beaches, discover the heart of Pura Vida with our expertly curated tours and packages.'
+        },              
+        {
+            img: '/assets/img/hero/04.jpg', 
+            subtitle: 'Hand-Picked Experiences', 
+            title: 'Authentic Local Tours <br> Tailored Only For You', 
+            content: 'Don\'t just visit Costa Rica—experience it. We connect you with hidden gems and professional guides to ensure your trip is truly unforgettable.'
+        },              
+        {
+            img: '/assets/img/hero/03.jpg', 
+            subtitle: 'The Pura Vida Life', 
+            title: 'Seamless Packages For <br> Stress-Free Travel', 
+            content: 'We handle every detail from transfers to excursions, so you can focus on making memories in the world\'s most beautiful natural paradise.'
+        },              
       ];     
 
        useEffect(() => {
@@ -49,7 +64,7 @@ const HeroBanner3 = () => {
        };       
 
     return (
-<section className="hero-section hero-3">
+        <section className="hero-section hero-3">
             <div className="swiper hero-slider-3">
                 <div className="swiper-wrapper">
                 <Slider {...settings}>
@@ -70,8 +85,8 @@ const HeroBanner3 = () => {
                                             {item.content}
                                             </p>
                                             <div className="about-button" data-animation="fadeInUp" data-delay="1.8s">
-                                                <Link href="/tour/tour-details" className="theme-btn">Explore Flight<i className="bi bi-arrow-right"></i></Link>
-                                                <Link href="/tour/tour-details" className="theme-btn style-2">Book A Stay<i className="bi bi-arrow-right"></i></Link>
+                                                <Link href="/tour" className="theme-btn">Explore Tours<i className="bi bi-arrow-right"></i></Link>
+                                                <Link href="/tour-packages" className="theme-btn style-2">View Packages<i className="bi bi-arrow-right"></i></Link>
                                             </div>
                                         </div>
                                     </div>

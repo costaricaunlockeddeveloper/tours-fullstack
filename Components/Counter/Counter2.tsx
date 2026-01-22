@@ -18,32 +18,31 @@ const Counter2 = () => {
                         <div className="col-lg-6">
                             <div className="offer-content">
                                 <div className="section-title">
-                                    <span className="sub-title text-white wow fadeInUp">What we’re Offering</span>
-                                    <h2 className="text-white wow fadeInUp wow" data-wow-delay=".2s">
-                                        Get 30% Discount Every <br/>
-                                         Tour
+                                    <span className="sub-title text-white wow fadeInUp">LIMITED TIME DEALS</span>
+                                    <h2 className="text-white wow fadeInUp" data-wow-delay=".2s">
+                                        Save Up to 20% on <br/>
+                                        Season Packages
                                     </h2>
                                 </div>
                                 <div className="coming-soon-timer">
                                     <div className="timer-content wow fadeInUp" data-wow-delay=".2s">
-                                        <h3 id="day">04</h3>
+                                        <h3 id="day">05</h3>
                                         <p>Days</p>
                                     </div>
                                     <div className="timer-content wow fadeInUp" data-wow-delay=".4s">
-                                        <h3 id="hour">15</h3>
+                                        <h3 id="hour">12</h3>
                                         <p>HRS</p>
                                     </div>
                                     <div className="timer-content wow fadeInUp" data-wow-delay=".6s">
-                                        <h3 id="min">41
-                                        </h3>
+                                        <h3 id="min">30</h3>
                                         <p>MINS</p>
                                     </div>
                                     <div className="timer-content wow fadeInUp" data-wow-delay=".8s">
-                                        <h3 id="sec">55</h3>
+                                        <h3 id="sec">00</h3>
                                         <p>SECS</p>
                                     </div>
                                 </div>
-                                <Link href="/tour/tour-details" className="theme-btn wow fadeInUp wow" data-wow-delay=".9s">Explore Flight<i className="bi bi-arrow-right"></i></Link>
+                                <Link href="/tour-packages" className="theme-btn wow fadeInUp" data-wow-delay=".9s">Claim Your Offer<i className="bi bi-arrow-right"></i></Link>
                             </div>
                         </div>
                         <div className="col-lg-6">
@@ -52,7 +51,7 @@ const Counter2 = () => {
                                 <div className="circle">
                                     <div className="text-item">
                                         <div className="icon">
-                                            <Link href="/tour/tour-details">
+                                            <Link href="/tour-packages">
                                                 <Image src="/assets/img/icon/16.svg" alt="img" width={70} height={51}   />
                                             </Link>
                                         </div>

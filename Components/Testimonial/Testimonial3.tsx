@@ -52,10 +52,25 @@ const Testimonial3 = () => {
       }; 
 
     const testimonialContent = [
-        {img:'/assets/img/testimonial/client-4.png', subtitle:'Web Designer', title:'Kristin Watson', content:'There are many variations of passages of the Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which do not look even slightly believable.'},        
-        {img:'/assets/img/testimonial/client-4.png', subtitle:'President of Sales', title:'Wade Warren', content:'There are many variations of passages of the Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which do not look even slightly believable.'},        
-        {img:'/assets/img/testimonial/client-4.png', subtitle:'Brooklyn Simmons', title:'Brooklyn Simmons', content:'There are many variations of passages of the Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which do not look even slightly believable.'},        
-      ]; 
+    {
+        img: '/assets/img/testimonial/client-1.jpg',
+        subtitle: 'Solo Traveler & Designer', // Profile: Independent, values aesthetics and ease
+        title: 'Kristin Watson',
+        content: 'As a designer, I appreciate attention to detail. The itinerary they crafted was flawless and visually stunning. It was the perfect mix of guided experiences and free time to explore on my own. I felt safe and inspired the entire trip!'
+    },
+    {
+        img: '/assets/img/testimonial/client-2.jpg',
+        subtitle: 'Family on Vacation', // Profile: Busy parents, needs stress-free logistics for a group
+        title: 'Alexa Cotrina',
+        content: 'Planning a trip for a family of four is usually a nightmare. This agency handled absolutely everything—from kid-friendly activities to seamless transfers. We actually got to relax and enjoy our vacation together. Worth every penny.'
+    },
+    {
+        img: '/assets/img/testimonial/client-3.jpg',
+        subtitle: 'Adventure Enthusiast', // Profile: Seeks unique, active, off-the-beaten-path experiences
+        title: 'Julio Vera',
+        content: 'I didn’t want a generic tourist package. They listened and curated an incredible adventure full of hidden gems and local experiences I never would have found myself. From hiking volcanoes to finding secret beaches, it was unforgettable.'
+    },
+];
 
     return (
         <section className="testimonial-section section-padding fix bg-cover" data-background="/assets/img/testimonial/testimonial-bg.jpg" >
@@ -64,7 +79,7 @@ const Testimonial3 = () => {
                 <div className="row g-4 align-items-center">
                     <div className="col-lg-6 wow fadeInUp wow" data-wow-delay=".3s">
                         <div className="testimonial-image">
-                            <Image src="/assets/img/testimonial/02.png" alt="img" width={636} height={657}   />
+                            <Image src="/assets/img/testimonial/04.jpg" alt="img" width={636} height={657}   />
                         </div>
                     </div>
                     <div className="col-lg-6">

@@ -10153,9 +10153,23 @@ input.main-search-input::placeholder {
 }
 
 
-@media screen and (min-width: 480px) and (max-width: 1460px) {
+
+@media screen and (min-width: 480px) and (max-width: 1200px) {
   .cs_main_header_right .header-btn {
     display: flex;
     padding-right: 50px;
   }
+}
+
+/* Icon centering utility class */
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon img,
+.icon svg {
+  display: block;
+  margin: 0 auto;
 }

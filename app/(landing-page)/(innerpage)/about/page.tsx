@@ -17,7 +17,6 @@ const page = () => {
             <About2></About2>   
             <Choose1></Choose1> 
             <Counter4></Counter4>
-
             <Testimonial3></Testimonial3>
 
     </div>

@@ -2,6 +2,7 @@ import { Manrope, Work_Sans, Kalam } from "next/font/google";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import "slick-carousel/slick/slick.css";
+import "./globals.css";
 import "../assets/main.css"
 const manrope = Manrope({
   subsets: ['latin'],
