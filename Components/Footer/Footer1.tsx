@@ -13,7 +13,7 @@ const Footer1 = () => {
         <footer className="footer-section fix bg-gradient-to-b from-[#0A1F24] via-[#0D282E] to-[#1f4d85]">
             <div className="container">
                 <div className="footer-widget-wrapper-new py-16">
-                    <div className="row">
+                    <div className="row" style={{display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap'}}>
                         {/* Logo & Newsletter Column */}
                         <div className="col-xl-4 col-lg-5 col-md-8 col-sm-6 wow fadeInUp" data-wow-delay=".2s">
                             <div className="text-center">
@@ -108,23 +108,8 @@ const Footer1 = () => {
                                     <li><Link href="/about" className="text-white/70 hover:text-[#1ca8cb] transition-colors">About Us</Link></li>
                                     <li><Link href="/destination" className="text-white/70 hover:text-[#1ca8cb] transition-colors">Destinations</Link></li>
                                     <li><Link href="/tour" className="text-white/70 hover:text-[#1ca8cb] transition-colors">Tours</Link></li>
+                                    <li><Link href="/tour-packages" className="text-white/70 hover:text-[#1ca8cb] transition-colors">Tour Packages</Link></li>
                                     <li><Link href="/contact" className="text-white/70 hover:text-[#1ca8cb] transition-colors">Contact</Link></li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        {/* Experiences Column */}
-                        <div className="col-xl-3 col-lg-4 col-md-6 col-sm-6 ps-lg-5 wow fadeInUp" data-wow-delay=".6s">
-                            <div className="single-widget-items">
-                                <div className="widget-head mb-6">
-                                   <h4 className="text-white text-lg font-semibold">Experiences</h4>
-                                </div>
-                                <ul className="list-items space-y-3">
-                                    <li><Link href="/tour-packages" className="text-white/70 hover:text-[#1ca8cb] transition-colors">Pura Vida Packages</Link></li>
-                                    <li><Link href="/tour" className="text-white/70 hover:text-[#1ca8cb] transition-colors">Adventure Tours</Link></li>
-                                    <li><Link href="/destination" className="text-white/70 hover:text-[#1ca8cb] transition-colors">Hidden Gems</Link></li>
-                                    <li><Link href="/tour" className="text-white/70 hover:text-[#1ca8cb] transition-colors">Eco-Exploration</Link></li>
-                                    <li><Link href="/tour-packages" className="text-white/70 hover:text-[#1ca8cb] transition-colors">Family Escapes</Link></li>
                                 </ul>
                             </div>
                         </div>
@@ -176,8 +161,8 @@ const Footer1 = () => {
                             Copyright © {new Date().getFullYear()} <span className="text-white">Costa Rica Unlocked.</span> All Rights Reserved.
                         </p>
                         <ul className="bottom-list wow fadeInUp flex gap-6" data-wow-delay=".5s">
-                            <li><a href="#" className="text-white/50 hover:text-[#1ca8cb] transition-colors text-sm">Terms of use</a></li>
-                            <li><a href="#" className="text-white/50 hover:text-[#1ca8cb] transition-colors text-sm">Privacy Policy</a></li>
+                            <li><a href="#" className="hover:text-[#1ca8cb] transition-colors text-sm" style={{color: "white"}}>Terms of use</a></li>
+                            <li><a href="#" className="hover:text-[#1ca8cb] transition-colors text-sm" style={{color: "white"}}>Privacy Policy</a></li>
                         </ul>
                     </div>
                 </div>
