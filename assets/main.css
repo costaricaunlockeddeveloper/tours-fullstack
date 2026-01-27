@@ -596,7 +596,7 @@ span {
 .about-wrapper-2 .about-content .about-items {
   display: flex;
   align-items: center;
-  gap: 150px;
+  gap: 50px;
   margin-top: 30px;
 }
 @media (max-width: 1199px) {
@@ -3516,7 +3516,7 @@ span {
 .feature-wrapper .feature-content .feature-area .feature-items {
   display: flex;
   align-items: center;
-  gap: 100px;
+  gap: 30px;
   margin-top: 30px;
 }
 @media (max-width: 1399px) {
@@ -3542,6 +3542,11 @@ span {
   display: flex;
   align-items: center;
   gap: 24px;
+  /* min-width content removed */
+}
+.feature-wrapper .feature-content .feature-area .feature-items .circle-icon li span {
+  max-width: 300px;
+  display: block;
 }
 .feature-wrapper .feature-content .feature-area .feature-items .feature-icon-item .icon {
   width: 67px;

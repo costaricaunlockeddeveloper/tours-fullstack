@@ -11,8 +11,8 @@ const Counter4 = () => {
                         <Image src="/assets/img/icon/35.svg" alt="img" width={40} height={40}   />
                     </div>
                     <div className="counter-content">
-                        <h2><span className="count">100,000</span>+</h2>
-                        <p>Our Explorers</p>
+                        <h2><span className="count">150</span>+</h2>
+                        <p>Happy Explorers</p>
                     </div>
                 </div>
                 <div className="counter-items wow fadeInUp wow" data-wow-delay=".4s">
@@ -20,7 +20,7 @@ const Counter4 = () => {
                         <Image src="/assets/img/icon/36.svg" alt="img" width={40} height={40}   />
                     </div>
                     <div className="counter-content">
-                        <h2><span className="count">5,000</span>+</h2>
+                        <h2><span className="count">25</span>+</h2>
                         <p>Destinations</p>
                     </div>
                 </div>
@@ -29,8 +29,8 @@ const Counter4 = () => {
                         <Image src="/assets/img/icon/37.svg" alt="img" width={40} height={40}   />
                     </div>
                     <div className="counter-content">
-                        <h2><span className="count">10,000</span>+</h2>
-                        <p>More Trips</p>
+                        <h2><span className="count">50</span>+</h2>
+                        <p>Successful Tours</p>
                     </div>
                 </div>
                 <div className="counter-items style-2 wow fadeInUp wow" data-wow-delay=".8s">
@@ -38,8 +38,8 @@ const Counter4 = () => {
                         <Image src="/assets/img/icon/38.svg" alt="img" width={40} height={40}   />
                     </div>
                     <div className="counter-content">
-                        <h2><span className="count">2,000</span>+</h2>
-                        <p>Luxary Hotel</p>
+                        <h2><span className="count">15</span>+</h2>
+                        <p>Premium Hotels</p>
                     </div>
                 </div>
             </div>

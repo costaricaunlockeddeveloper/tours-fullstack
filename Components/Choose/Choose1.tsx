@@ -25,19 +25,16 @@ const Choose1 = () => {
                             <div className="feature-content">
                                 <div className="section-title">
                                     <span className="sub-title wow fadeInUp">
-                                        Are you ready to travel?
+                                        Ready to Go Beyond the Conventional?
                                     </span>
                                     <h2 className="wow fadeInUp wow" data-wow-delay=".2s">
-                                        World Leading Online Tour Booking Platform
+                                        Your Master Key to Discovering the Most Authentic Costa Rica
                                     </h2>
                                 </div>
                                 <p className="wow fadeInUp wow" data-wow-delay=".3s">
-                                    There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which do not look even slightly believable.
+                                    At Costa Rica Unlocked, we believe that true paradise is not found on traditional tourist maps. Our mission is to open the doors to exclusive experiences, connecting you with the purest and most pristine essence of our land, far from the crowds and mass tourism.
                                 </p>
                                <div className="feature-area">
-                                    <div className="line-shape">
-                                        <Image src="/assets/img/line-shape.png" alt="img" width={1} height={174}   />
-                                    </div>
                                 <div className="feature-items wow fadeInUp wow" data-wow-delay=".5s">
                                     <div className="feature-icon-item">
                                         <div className="icon">
@@ -45,22 +42,13 @@ const Choose1 = () => {
                                         </div>
                                         <div className="content">
                                             <h5>
-                                                Most Adventure <br/> 
-                                                Tour Ever
+                                                Adventures Without Borders
                                             </h5>
+                                            <p className="mt-2 mb-0">
+                                                Custom routes to hidden waterfalls and jungles remaining off the map.
+                                            </p>
                                         </div>
                                     </div>
-                                    <ul className="circle-icon">
-                                        <li>
-                                            <i className="fa-solid fa-badge-check"></i>
-                                        </li>
-                                        <li>
-                                            <span>
-                                                There are many variations of <br/>
-                                                 passages of available,
-                                            </span>
-                                        </li>
-                                    </ul>
                                 </div>
                                 <div className="feature-items wow fadeInUp wow" data-wow-delay=".7s">
                                     <div className="feature-icon-item">
@@ -69,30 +57,21 @@ const Choose1 = () => {
                                         </div>
                                         <div className="content">
                                             <h5>
-                                                Real Tour Starts <br/>
-                                                 from Here
+                                                Local Experts By Your Side
                                             </h5>
+                                            <p className="mt-2 mb-0">
+                                                Passionate local hosts ensuring a safe, deep, and authentic experience.
+                                            </p>
                                         </div>
                                     </div>
-                                    <ul className="circle-icon">
-                                        <li>
-                                            <i className="fa-solid fa-badge-check"></i>
-                                        </li>
-                                       <li>
-                                            <span>
-                                                There are many variations of <br/>
-                                                passages of available,
-                                            </span>
-                                       </li>
-                                    </ul>
                                 </div>
                                </div>
                                <Link href="/contact" className="theme-btn wow fadeInUp wow" data-wow-delay=".9s">Contact US<i className="bi bi-arrow-right"></i></Link>
                             </div>
                         </div>
-                        <div className="col-lg-6">
-                            <div className="feature-image wow img-custom-anim-left">
-                                <Image src="/assets/img/man-image.png" alt="img" width={636} height={577}   />
+                        <div className="col-lg-6 ">
+                            <div className="feature-image wow img-custom-anim-left ">
+                                <Image src="/assets/img/about/family.jpg" className="rounded-3xl" alt="img" width={636} height={577}   />
                             </div>
                         </div>
                     </div>

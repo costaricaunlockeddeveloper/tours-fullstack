@@ -41,14 +41,14 @@ const Testimonial3 = () => {
         ]
       };  
 
-      const sliderRef = useRef(null);
+      const sliderRef = useRef<Slider>(null);
 
       const next = () => {
-        sliderRef.current.slickNext();
+        sliderRef.current?.slickNext();
       };
     
       const previous = () => {
-        sliderRef.current.slickPrev();
+        sliderRef.current?.slickPrev();
       }; 
 
     const testimonialContent = [
@@ -79,7 +79,7 @@ const Testimonial3 = () => {
                 <div className="row g-4 align-items-center">
                     <div className="col-lg-6 wow fadeInUp wow" data-wow-delay=".3s">
                         <div className="testimonial-image">
-                            <Image src="/assets/img/testimonial/04.jpg" alt="img" width={636} height={657}   />
+                            <Image src="/assets/img/testimonial/04.jpg" className="rounded-3xl" alt="img" width={636} height={657}   />
                         </div>
                     </div>
                     <div className="col-lg-6">
