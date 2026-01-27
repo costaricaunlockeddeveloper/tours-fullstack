@@ -7,10 +7,10 @@ import FeaturedTour1 from '../../../../Components/FeaturedTour/FeaturedTour1';
 const page = () => {
   return (
     <div>
-             <BreadCumb
+           <BreadCumb
                 bgimg="/assets/img/breadcrumb/destination.jpg"
                 Title="Destination"
-            ></BreadCumb>    
+            ></BreadCumb>      
             <Destination1></Destination1> 
              {/* <Story1></Story1>  
              <FeaturedTour1></FeaturedTour1>                 */}
