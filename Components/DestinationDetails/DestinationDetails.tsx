@@ -8,7 +8,7 @@ const DestinationDetails = () => {
     const [activeTab, setActiveTab] = useState<'general' | 'tours' | 'packages'>('general');
 
     return (
-        <section className="destination-details-section fix section-padding">
+        <section className="destination-details-section fix mb-20">
             <div className="container">
                 <div className="destination-details-wrapper">
                     {/* Tab Navigation */}
@@ -104,10 +104,6 @@ const DestinationDetails = () => {
                         {activeTab === 'general' && (
                             <div className="destination-details-items">
                                 <div className="details-content">
-                                    <h2>Description</h2>
-                                    <p className="mt-3">
-                                        Consectetur adipisicing elit sed do eiusmod tempor is incididunt ut labore et dolore of magna aliqua. ut enim ad minim veniam made of owl the quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea dolor commodo consequat duis aute irure and dolor in reprehenderit.Nullam semper quam mauris nec mollis felis aliquam eu ut non gravida mi quam mauris nec mollis felis aliquam eu ut phasellus.
-                                    </p>
                                     {/* Image Gallery - Mosaic Grid */}
                                     <ImageGallery images={[
                                         '/assets/img/destails/desti-details.jpg',

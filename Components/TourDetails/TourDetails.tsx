@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import BookingWidget from './BookingWidget';
 import ChecklistItem from '../Common/ChecklistItem';
-import ModernDestinationCard from '../Card/ModernDestinationCard';
+import DestinationCard from '../Destination/DestinationCard';
 
 interface TourDetailsProps {
     duration?: number;
@@ -51,7 +51,7 @@ const TourDetails = ({ duration = 8 }: TourDetailsProps) => {
                img: '/assets/img/destination/03.jpg',
                location: 'Alajuela',
                title: 'Arenal Volcano',
-               climate: '🌋 Volcano & Hot Springs',
+               climate: 'Volcano & Hot Springs',
                tours: 20,
                packages: 12
            },
@@ -59,7 +59,7 @@ const TourDetails = ({ duration = 8 }: TourDetailsProps) => {
                img: '/assets/img/destination/01.jpg',
                location: 'Puntarenas',
                title: 'Manuel Antonio',
-               climate: '🏖️ Beach & Wildlife',
+               climate: 'Beach & Wildlife',
                tours: 12,
                packages: 8
            },
@@ -67,7 +67,7 @@ const TourDetails = ({ duration = 8 }: TourDetailsProps) => {
                img: '/assets/img/destination/02.jpg',
                location: 'Puntarenas',
                title: 'Monteverde',
-               climate: '🌿 Cloud Forest',
+               climate: 'Cloud Forest',
                tours: 18,
                packages: 14
            }
@@ -354,7 +354,7 @@ const TourDetails = ({ duration = 8 }: TourDetailsProps) => {
                                     <div className="row g-4">
                                         {tourDestinations.map((destination, index) => (
                                             <div key={index} className="col-lg-4 col-md-6">
-                                                <ModernDestinationCard
+                                                <DestinationCard
                                                     img={destination.img}
                                                     location={destination.location}
                                                     title={destination.title}
