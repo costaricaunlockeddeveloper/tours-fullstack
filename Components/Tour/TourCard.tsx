@@ -8,11 +8,12 @@ interface TourCardProps {
     title: string;
     destinations: number;
     duration: number;
-    capacity: string;
+    rating: string;
+    reviews: string;
     price: string;
 }
 
-const TourCard: React.FC<TourCardProps> = ({ img, title, destinations, duration, capacity, price }) => {
+const TourCard: React.FC<TourCardProps> = ({ img, title, destinations, duration, rating, reviews, price }) => {
     return (
         <>
             <style jsx>{`
@@ -70,7 +71,9 @@ const TourCard: React.FC<TourCardProps> = ({ img, title, destinations, duration,
                     line-height: 1.3;
                     color: #1a1a1a;
                     transition: color 0.3s ease;
-                    white-space: nowrap;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    -webkit-box-orient: vertical;
                     overflow: hidden;
                     text-overflow: ellipsis;
                 }
@@ -85,7 +88,8 @@ const TourCard: React.FC<TourCardProps> = ({ img, title, destinations, duration,
                     margin: 0;
                     display: flex;
                     align-items: center;
-                    gap: 15px;
+                    flex-wrap: wrap;
+                    gap: 10px;
                     margin-top: 5px;
                     margin-bottom: 10px !important;
                 }
@@ -93,10 +97,11 @@ const TourCard: React.FC<TourCardProps> = ({ img, title, destinations, duration,
                 .info li {
                     display: flex;
                     align-items: center;
-                    gap: 5px;
+                    gap: 4px;
                     color: #888;
-                    font-size: 13px;
+                    font-size: 12px;
                     font-weight: 500;
+                    white-space: nowrap;
                 }
 
                 .info i {
@@ -151,14 +156,18 @@ const TourCard: React.FC<TourCardProps> = ({ img, title, destinations, duration,
                             {duration} Hours
                         </li>
                         <li>
-                            <i className="bi bi-person"></i>
-                            {capacity}
+                            <i className="bi bi-star-fill text-warning"></i>
+                            {rating} ({reviews})
                         </li>
                     </ul>
                     <div className="price">
-                        <h6>{price}</h6>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
+                        <span style={{ fontSize: '11px', color: '#666', fontWeight: '400', lineHeight:'1' }}>From</span>
+                        <h6 style={{ margin: 0, lineHeight: '1.2' }}>US${price}</h6>
+                        <span style={{ fontSize: '10px', color: '#999', fontWeight: '400', lineHeight:'1' }}>per person</span>
+                    </div>
                         <Link href="/tour/tour-details" className="theme-btn style-2">
-                            Book Now <i className="bi bi-arrow-right"></i>
+                            View tour <i className="bi bi-arrow-right"></i>
                         </Link>
                     </div>
                 </div>

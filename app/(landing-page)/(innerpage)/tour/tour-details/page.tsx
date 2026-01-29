@@ -6,11 +6,11 @@ const page = () => {
   return (
     <div>
             <TourHero
-                bgimg="/assets/img/breadcrumb/breadcrumb.jpg"
                 title="Ghorepani Poon Hill Trek"
-                difficulty="🟢 Easy"
-                duration="7 hours"
-                location="Puntarenas, Costa Rica"
+                description='Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.'
+                rating={4.5}
+                reviews={120}
+                images={['/assets/img/destination/01.jpg', '/assets/img/destination/01.jpg', '/assets/img/destination/01.jpg', '/assets/img/destination/01.jpg', '/assets/img/destination/01.jpg', '/assets/img/destination/01.jpg']}
             ></TourHero>    
             <TourDetails></TourDetails>        
     </div>

@@ -12,72 +12,81 @@ const Tour = () => {
             title: 'Arenal Volcano Adventure',
             destinations: 2,
             duration: 5,
-            capacity: '10+',
-            price: '$850.00'
+            rating: '4.9',
+            reviews: '120',
+            price: '850.00'
         },
         {
             img: '/assets/img/destination/02.jpg',
             title: 'Manuel Antonio Beach & Wildlife',
             destinations: 1,
             duration: 3,
-            capacity: '12+',
-            price: '$450.00'
+            rating: '4.8',
+            reviews: '95',
+            price: '450.00'
         },
         {
             img: '/assets/img/destination/03.jpg',
             title: 'Monteverde Cloud Forest Expedition',
             destinations: 1,
             duration: 4,
-            capacity: '8+',
-            price: '$520.00'
+            rating: '4.7',
+            reviews: '82',
+            price: '520.00'
         },
         {
             img: '/assets/img/destination/04.jpg',
             title: 'Tortuguero Channels & Turtle Watch',
             destinations: 1,
             duration: 3,
-            capacity: '15+',
-            price: '$380.00'
+            rating: '4.9',
+            reviews: '110',
+            price: '380.00'
         },
         {
             img: '/assets/img/destination/01.jpg',
             title: 'Guanacaste Gold Coast Relaxation',
             destinations: 3,
             duration: 7,
-            capacity: '20+',
-            price: '$1,200.00'
+            rating: '4.8',
+            reviews: '150',
+            price: '1,200.00'
         },
         {
             img: '/assets/img/destination/02.jpg',
             title: 'Corcovado Wilderness Experience',
             destinations: 1,
             duration: 6,
-            capacity: '6+',
-            price: '$950.00'
+            rating: '5.0',
+            reviews: '45',
+            price: '950.00'
         },
         {
             img: '/assets/img/destination/03.jpg',
             title: 'Costa Rica Highlights Tour',
             destinations: 5,
             duration: 12,
-            capacity: '10+',
-            price: '$2,100.00'
+            rating: '4.9',
+            reviews: '200',
+            price: '2,100.00'
         },
         {
             img: '/assets/img/destination/04.jpg',
             title: 'Pacuare River Rafting & Jungle',
             destinations: 1,
             duration: 2,
-            capacity: '12+',
-            price: '$290.00'
+            rating: '4.8',
+            reviews: '75',
+            price: '290.00'
         },
         {
             img: '/assets/img/destination/01.jpg',
             title: 'Secret Beaches of Nicoya',
             destinations: 4,
             duration: 8,
-            capacity: '10+',
-            price: '$1,400.00'
+            rating: '4.7',
+            reviews: '60',
+            price: '1,400.00'
         }
     ];
 
@@ -127,7 +136,8 @@ const Tour = () => {
                                 title={item.title}
                                 destinations={item.destinations}
                                 duration={item.duration}
-                                capacity={item.capacity}
+                                rating={item.rating}
+                                reviews={item.reviews}
                                 price={item.price}
                             />
                         </div>
