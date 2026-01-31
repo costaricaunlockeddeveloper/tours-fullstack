@@ -1,10 +1,8 @@
 "use client"
 import React, { useEffect, useState } from 'react';
 import loadBackgroudImages from '../Common/loadBackgroudImages';
-import Link from 'next/link';
-import Image from 'next/image';
 import PackageBookingWidget from './PackageBookingWidget';
-import ModernDestinationCard from '../Card/ModernDestinationCard';
+import DestinationCard from '../Destination/DestinationCard';
 
 const TourPackageDetails = () => {
 
@@ -71,7 +69,7 @@ const TourPackageDetails = () => {
                     img: '/assets/img/destination/03.jpg',
                     location: 'Alajuela',
                     title: 'Arenal Volcano',
-                    climate: '🌋 Volcano & Hot Springs',
+                    climate: 'Volcano & Hot Springs',
                     tours: 20,
                     packages: 12
                 },
@@ -79,7 +77,7 @@ const TourPackageDetails = () => {
                     img: '/assets/img/destination/01.jpg',
                     location: 'Puntarenas',
                     title: 'Manuel Antonio',
-                    climate: '🏖️ Beach & Wildlife',
+                    climate: 'Beach & Wildlife',
                     tours: 12,
                     packages: 8
                 },
@@ -87,7 +85,7 @@ const TourPackageDetails = () => {
                     img: '/assets/img/destination/02.jpg',
                     location: 'Puntarenas',
                     title: 'Monteverde',
-                    climate: '🌿 Cloud Forest',
+                    climate: 'Cloud Forest',
                     tours: 18,
                     packages: 14
                 }
@@ -99,33 +97,31 @@ const TourPackageDetails = () => {
             <div className="activities-details-wrapper">
                 <div className="row g-4 justify-content-center">
                     <div className="col-12 col-lg-8">
-                        <div className="details-thumb">
-                            <Image src="/assets/img/destails/tour-details.jpg" alt="img" width={856} height={510}   />
-                            <ul className="image-list">
-                                <li>
-                                    <Image src="/assets/img/destails/tour-details-2.jpg" alt="img" width={173} height={110}   />
-                                </li>
-                                <li>
-                                    <Image src="/assets/img/destails/tour-details-3.jpg" alt="img" width={173} height={110}   />
-                                </li>
-                                <li>
-                                    <Image src="/assets/img/destails/tour-details-4.jpg" alt="img" width={173} height={110}   />
-                                </li>
-                            </ul>
-                        </div>
                         <div className="activities-details-content">
-                            {/* 1. DESCRIPCIÓN GENERAL */}
-                            <h2 className="mb-3">Package Overview</h2>
-                            <p>
-                                Experience the best of Costa Rica with this carefully curated 7-day adventure package. 
-                                From the majestic Arenal Volcano to the pristine beaches of Manuel Antonio, this journey 
-                                combines natural wonders, thrilling activities, and ultimate relaxation. Perfect for couples, 
-                                families, and adventure seekers looking to explore Costa Rica&apos;s diverse landscapes and 
-                                rich biodiversity in comfort and style.
-                            </p>
-                            
                             {/* TABS NAVIGATION */}
-                            <div className="mt-5 mb-4">
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 w-full">
+                                <div className="flex items-center gap-4 bg-blue-50/50 p-4 rounded-xl border border-blue-100 transition-all hover:bg-blue-50">
+                                    <div className="shrink-0 w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600">
+                                        <i className="bi bi-headset fs-4"></i>
+                                    </div>
+                                    <div>
+                                        <h4 className="text-base font-bold text-slate-900 mb-0">24/7 Expert Support</h4>
+                                        <p className="text-xs text-slate-500 mb-0">Always here for you during your trip</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-4 bg-orange-50/50 p-4 rounded-xl border border-orange-100 transition-all hover:bg-orange-50">
+                                    <div className="shrink-0 w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center text-orange-600">
+                                        <i className="bi bi-car-front-fill fs-4"></i>
+                                    </div>
+                                    <div>
+                                        <h4 className="text-base font-bold text-slate-900 mb-0">Hotel Pickup Included</h4>
+                                        <p className="text-xs text-slate-500 mb-0">Hassle-free transportation from your stay</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className=" mb-4">
                                 <ul className="nav nav-tabs" style={{ 
                                     borderBottom: '2px solid #e9ecef',
                                     gap: '1rem'
@@ -185,11 +181,11 @@ const TourPackageDetails = () => {
                             {/* TAB CONTENT: PACKAGE INFO */}
                             {activeTab === 'info' && (
                                 <>
-                                    {/* 2. ITINERARIO DÍA POR DÍA - TIMELINE VERTICAL */}
+                                    {/* Activities - Timeline Vertical */}
                                     <div className="mt-5">
-                                        <h3 className="mb-4">Your Travel Itinerary</h3>
+                                        <h3 className="mb-4">Activities Included</h3>
                                         <div className="timeline-wrapper" style={{ position: 'relative', paddingLeft: '40px' }}>
-                                            {/* Línea vertical */}
+                                            {/* Vertical Line */}
                                             <div style={{
                                                 position: 'absolute',
                                                 left: '15px',
@@ -199,7 +195,7 @@ const TourPackageDetails = () => {
                                                 backgroundColor: '#e9ecef'
                                             }}></div>
 
-                                            {itineraryDays.slice(0, daysToShow).map((dayItem, index) => {
+                                            {itineraryDays.slice(0, daysToShow).map((activity, index) => {
                                                 const isLastShown = index === daysToShow - 1;
                                                 
                                                 return (
@@ -208,7 +204,7 @@ const TourPackageDetails = () => {
                                                         className={`timeline-item ${!isLastShown ? 'mb-4' : ''}`} 
                                                         style={{ position: 'relative' }}
                                                     >
-                                                        {/* Punto del timeline */}
+                                                        {/* Timeline Dot */}
                                                         <div style={{
                                                             position: 'absolute',
                                                             left: '-33px',
@@ -221,7 +217,7 @@ const TourPackageDetails = () => {
                                                             boxShadow: '0 0 0 2px var(--theme)'
                                                         }}></div>
                                                         
-                                                        {/* Contenido del día */}
+                                                        {/* Activity Content */}
                                                         <div 
                                                             className="p-3" 
                                                             style={{ 
@@ -230,33 +226,22 @@ const TourPackageDetails = () => {
                                                                 border: '1px solid #e9ecef'
                                                             }}
                                                         >
-                                                            {/* Título del día */}
+                                                            {/* Activity Title */}
                                                             <h5 className="mb-2" style={{ color: 'var(--theme)', fontSize: '16px', fontWeight: '700' }}>
-                                                                Day {dayItem.day}: {dayItem.title}
+                                                                {activity.title}
                                                             </h5>
                                                             
-                                                            {/* Descripción */}
-                                                            <p className="mb-2" style={{ fontSize: '14px', color: '#555' }}>
-                                                                {dayItem.description}
+                                                            {/* Description */}
+                                                            <p className="mb-0" style={{ fontSize: '14px', color: '#555', lineHeight: '1.6' }}>
+                                                                {activity.description}
                                                             </p>
-                                                            
-                                                            {/* Alojamiento (si existe) */}
-                                                            {dayItem.accommodation && (
-                                                                <div 
-                                                                    className="d-flex align-items-center gap-2" 
-                                                                    style={{ fontSize: '13px', color: '#666' }}
-                                                                >
-                                                                    <i className="bi bi-house-door-fill" style={{ color: 'var(--theme)' }}></i>
-                                                                    <span><strong>Accommodation:</strong> {dayItem.accommodation}</span>
-                                                                </div>
-                                                            )}
                                                         </div>
                                                     </div>
                                                 );
                                             })}
                                         </div>
                                         
-                                        {/* Botón para mostrar todos los días */}
+                                        {/* Show All Activities Button */}
                                         {!showAllDays && itineraryDays.length > 3 && (
                                             <div className="text-center mt-4">
                                                 <button 
@@ -268,13 +253,13 @@ const TourPackageDetails = () => {
                                                         gap: '8px'
                                                     }}
                                                 >
-                                                    Show All {itineraryDays.length} Days
+                                                    Show All {itineraryDays.length} Activities
                                                     <i className="bi bi-chevron-down"></i>
                                                 </button>
                                             </div>
                                         )}
                                         
-                                        {/* Botón para colapsar */}
+                                        {/* Collapse Button */}
                                         {showAllDays && (
                                             <div className="text-center mt-4">
                                                 <button 
@@ -293,77 +278,53 @@ const TourPackageDetails = () => {
                                         )}
                                     </div>
 
-                                    {/* 3. WHAT'S INCLUDED - EXPANDIDA */}
+                                    {/* WHAT'S INCLUDED / NOT INCLUDED - Two Columns */}
                                     <div className="mt-5">
-                                        <h3 className="mb-4">What&apos;s Included</h3>
-                                        <div className="row g-3">
-                                            {[
-                                                { icon: 'bi-house-door-fill', label: '6 Nights Hotel', description: '4-star accommodations' },
-                                                { icon: 'bi-bus-front-fill', label: 'Private Transfers', description: 'Airport & between destinations' },
-                                                { icon: 'bi-cup-hot-fill', label: 'Daily Breakfast', description: 'All mornings included' },
-                                                { icon: 'bi-ticket-perforated-fill', label: 'Tours & Activities', description: 'Entrance fees & guides' },
-                                                { icon: 'bi-person-badge-fill', label: 'Bilingual Guides', description: 'Expert local knowledge' },
-                                                { icon: 'bi-shield-check', label: 'Travel Insurance', description: 'Basic coverage included' },
-                                                { icon: 'bi-headset', label: '24/7 Support', description: 'Emergency assistance' },
-                                                { icon: 'bi-receipt', label: 'Hotel Taxes', description: 'All taxes included' }
-                                            ].map((item, index) => (
-                                                <div key={index} className="col-6 col-md-3">
-                                                    <div className="text-center p-3" style={{
-                                                        backgroundColor: '#f8f9fa',
-                                                        borderRadius: '12px',
-                                                        border: '1px solid #e9ecef',
-                                                        transition: 'all 0.3s ease',
-                                                        height: '100%'
-                                                    }}>
-                                                        <div className="mb-2">
-                                                            <i className={`bi ${item.icon}`} style={{ fontSize: '32px', color: 'var(--theme)' }}></i>
-                                                        </div>
-                                                        <h6 className="mb-1 fw-bold" style={{ fontSize: '14px', color: '#2f2f2f' }}>
-                                                            {item.label}
-                                                        </h6>
-                                                        <p className="mb-0" style={{ fontSize: '12px', color: '#666' }}>
-                                                            {item.description}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-
-                                    {/* 4. WHAT'S NOT INCLUDED */}
-                                    <div className="mt-5">
-                                        <h3 className="mb-4">What&apos;s Not Included</h3>
-                                        <div className="row g-3">
+                                        <div className="row g-4">
+                                            {/* Included Column */}
                                             <div className="col-md-6">
-                                                <ul className="list-unstyled">
-                                                    <li className="mb-2 d-flex align-items-start">
-                                                        <i className="bi bi-x-circle me-2" style={{ color: '#999', fontSize: '18px', marginTop: '2px' }}></i>
-                                                        <span style={{ fontSize: '14px', color: '#555' }}>International flights to/from Costa Rica</span>
-                                                    </li>
-                                                    <li className="mb-2 d-flex align-items-start">
-                                                        <i className="bi bi-x-circle me-2" style={{ color: '#999', fontSize: '18px', marginTop: '2px' }}></i>
-                                                        <span style={{ fontSize: '14px', color: '#555' }}>Meals not mentioned in the itinerary</span>
-                                                    </li>
-                                                    <li className="mb-2 d-flex align-items-start">
-                                                        <i className="bi bi-x-circle me-2" style={{ color: '#999', fontSize: '18px', marginTop: '2px' }}></i>
-                                                        <span style={{ fontSize: '14px', color: '#555' }}>Alcoholic beverages</span>
-                                                    </li>
+                                                <h3 className="mb-4">What&apos;s Included</h3>
+                                                <ul className="list-unstyled d-flex flex-column gap-3">
+                                                    {[
+                                                        "6 nights hotel accommodation (4-star)",
+                                                        "Private airport transfers",
+                                                        "Transportation between destinations",
+                                                        "Daily breakfast at hotels",
+                                                        "Arenal Volcano National Park tour",
+                                                        "Manuel Antonio National Park tour",
+                                                        "Hot springs entrance & dinner",
+                                                        "Zip-line & hanging bridges activity",
+                                                        "Bilingual certified guides",
+                                                        "All entrance fees included",
+                                                        "24/7 emergency support",
+                                                        "Hotel taxes & service charges"
+                                                    ].map((item, index) => (
+                                                        <li key={index} className="d-flex align-items-start gap-3">
+                                                            <i className="bi bi-check-lg fs-5 text-success mt-1"></i>
+                                                            <span className="text-secondary" style={{ fontSize: '16px', lineHeight: '1.6' }}>{item}</span>
+                                                        </li>
+                                                    ))}
                                                 </ul>
                                             </div>
+
+                                            {/* Not Included Column */}
                                             <div className="col-md-6">
-                                                <ul className="list-unstyled">
-                                                    <li className="mb-2 d-flex align-items-start">
-                                                        <i className="bi bi-x-circle me-2" style={{ color: '#999', fontSize: '18px', marginTop: '2px' }}></i>
-                                                        <span style={{ fontSize: '14px', color: '#555' }}>Tips for guides and drivers</span>
-                                                    </li>
-                                                    <li className="mb-2 d-flex align-items-start">
-                                                        <i className="bi bi-x-circle me-2" style={{ color: '#999', fontSize: '18px', marginTop: '2px' }}></i>
-                                                        <span style={{ fontSize: '14px', color: '#555' }}>Personal expenses and souvenirs</span>
-                                                    </li>
-                                                    <li className="mb-2 d-flex align-items-start">
-                                                        <i className="bi bi-x-circle me-2" style={{ color: '#999', fontSize: '18px', marginTop: '2px' }}></i>
-                                                        <span style={{ fontSize: '14px', color: '#555' }}>Optional activities not listed</span>
-                                                    </li>
+                                                <h3 className="mb-4">What&apos;s Not Included</h3>
+                                                <ul className="list-unstyled d-flex flex-column gap-3">
+                                                    {[
+                                                        "International flights to/from Costa Rica",
+                                                        "Meals not mentioned in itinerary",
+                                                        "Alcoholic beverages",
+                                                        "Tips for guides and drivers",
+                                                        "Personal expenses and souvenirs",
+                                                        "Optional activities not listed",
+                                                        "Travel insurance upgrade"
+                                                    ].map((item, index) => (
+                                                        <li key={index} className="d-flex align-items-start gap-3">
+                                                            <i className="bi bi-x-lg fs-5 text-danger mt-1"></i>
+                                                            <span className="text-secondary" style={{ fontSize: '16px', lineHeight: '1.6' }}>{item}</span>
+                                                        </li>
+                                                    ))}
                                                 </ul>
                                             </div>
                                         </div>
@@ -378,7 +339,7 @@ const TourPackageDetails = () => {
                                     <div className="row g-4">
                                         {packageDestinations.map((destination, index) => (
                                             <div key={index} className="col-lg-4 col-md-6">
-                                                <ModernDestinationCard
+                                                <DestinationCard
                                                     img={destination.img}
                                                     location={destination.location}
                                                     title={destination.title}
@@ -397,7 +358,6 @@ const TourPackageDetails = () => {
                     </div>
                     <div className="col-12 col-lg-4">
                         <PackageBookingWidget 
-                            packageDuration={7}
                             adultPrice={1200}
                             childPrice={800}
                         />

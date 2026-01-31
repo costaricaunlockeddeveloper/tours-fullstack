@@ -71,9 +71,9 @@ const BookingWidget = () => {
                                             style={{ 
                                                 cursor: 'pointer',
                                                 minHeight: '48px',
-                                                position: 'relative'
+                                                position: 'relative',
+                                                zIndex: 1
                                             }}
-                                            onClick={() => (document.getElementById('tour-date') as HTMLInputElement)?.showPicker?.()}
                                         >
                                             <i className="bi bi-calendar3 me-2" style={{ fontSize: '18px', color: 'var(--theme)' }}></i>
                                             <span className={selectedDate ? 'fw-bold' : 'text-muted'}>
@@ -99,10 +99,13 @@ const BookingWidget = () => {
                                                 width: '100%',
                                                 height: '100%',
                                                 opacity: 0,
-                                                cursor: 'pointer'
+                                                cursor: 'pointer',
+                                                zIndex: 10
                                             }}
                                             value={selectedDate}
                                             onChange={(e) => setSelectedDate(e.target.value)}
+                                            onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
+                                            min={new Date(Date.now() + 86400000).toISOString().split('T')[0]}
                                             required
                                         />
                                     </div>

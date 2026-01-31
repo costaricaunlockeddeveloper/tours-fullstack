@@ -63,7 +63,7 @@ const DestinationHero = ({ title, climate, region, province, description }: Dest
                 {/* Header */}
                 <div className="header-section">
                     <div className="d-flex justify-content-between align-items-start gap-4">
-                        <div className="flex-grow-1">
+                        <div className="grow">
                             <h1 className="tour-title">{title}</h1>
                             
                             {/* Metadata Row: Location | Climate */}
@@ -86,7 +86,7 @@ const DestinationHero = ({ title, climate, region, province, description }: Dest
                             </div>
                         </div>
                         
-                        <div className="share-btn text-primary pointer flex-shrink-0" style={{ cursor: 'pointer' }}>
+                        <div className="share-btn text-primary pointer shrink-0" style={{ cursor: 'pointer' }}>
                             <i className="bi bi-share fs-4"></i>
                         </div>
                     </div>

@@ -2,46 +2,35 @@
 import React, { useState } from 'react';
 
 interface PackageBookingWidgetProps {
-    packageDuration?: number; // Duration in days (default 7)
     adultPrice?: number; // Price per adult (default 1200)
     childPrice?: number; // Price per child (default 800)
 }
 
 const PackageBookingWidget = ({ 
-    packageDuration = 7,
     adultPrice = 1200,
     childPrice = 800
 }: PackageBookingWidgetProps) => {
     const [adults, setAdults] = useState(2);
     const [children, setChildren] = useState(0);
-    const [selectedDate, setSelectedDate] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
 
-    // Calculate end date based on start date and duration
-    const getEndDate = (startDate: string): Date | null => {
-        if (!startDate) return null;
-        const start = new Date(startDate + 'T00:00:00');
-        const end = new Date(start);
-        end.setDate(end.getDate() + packageDuration - 1); // -1 because we count the start day
-        return end;
+    const formatDate = (dateStr: string) => {
+        if (!dateStr) return '';
+        return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { 
+            month: 'short', 
+            day: 'numeric', 
+            year: 'numeric' 
+        });
     };
 
-    const formatDateRange = (startDate: string) => {
-        if (!startDate) return '';
-        const start = new Date(startDate + 'T00:00:00');
-        const end = getEndDate(startDate);
-        
-        if (!end) return '';
-        
-        const startFormatted = start.toLocaleDateString('en-US', { 
-            day: 'numeric', 
-            month: 'short' 
-        });
-        const endFormatted = end.toLocaleDateString('en-US', { 
-            day: 'numeric', 
-            month: 'short' 
-        });
-        
-        return `${startFormatted} - ${endFormatted} (${packageDuration} Days)`;
+    // Calculate nights for price summary if needed
+    const getNights = () => {
+        if (!startDate || !endDate) return 0;
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        const diffTime = Math.abs(end.getTime() - start.getTime());
+        return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     };
 
     // Pricing
@@ -65,16 +54,19 @@ const PackageBookingWidget = ({
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // TODO: Create PACKAGE_BOOKING record and redirect to Lemon Squeezy
         console.log({
-            startDate: selectedDate,
-            endDate: getEndDate(selectedDate),
+            startDate,
+            endDate,
             adults,
             children,
             totalPrice,
-            duration: packageDuration
+            nights: getNights()
         });
     };
+
+    const minCheckoutDate = startDate 
+        ? new Date(new Date(startDate + 'T00:00:00').getTime() + 86400000).toISOString().split('T')[0]
+        : new Date(Date.now() + 172800000).toISOString().split('T')[0]; // At least 2 days from now if no start date
 
     return (
         <div className="main-bar" style={{ position: 'sticky', zIndex: 10 }}>
@@ -85,62 +77,104 @@ const PackageBookingWidget = ({
                     </div>
                     <div className="desti-booking-form">
                         <form onSubmit={handleSubmit} id="package-booking-form">
-                            <div className="row g-4">
+                            <div className="row g-3">
                                 
-                                {/* Step 1: Start Date Selection */}
+                                {/* Step 1: Check-in Date */}
                                 <div className="col-lg-12">
+                                    <label className="form-label fw-bold mb-1" style={{ fontSize: '13px', color: '#666' }}>
+                                        Check-in
+                                    </label>
                                     <div className="position-relative">
-                                        <i 
-                                            className="bi bi-calendar3" 
+                                        <div 
+                                            className="form-control d-flex align-items-center"
                                             style={{ 
-                                                position: 'absolute',
-                                                left: '12px',
-                                                top: '50%',
-                                                transform: 'translateY(-50%)',
-                                                fontSize: '18px',
-                                                color: 'var(--theme)',
-                                                pointerEvents: 'none',
+                                                cursor: 'pointer',
+                                                minHeight: '48px',
+                                                position: 'relative',
                                                 zIndex: 1
                                             }}
-                                        ></i>
+                                        >
+                                            <i className="bi bi-calendar3 me-2" style={{ fontSize: '18px', color: 'var(--theme)' }}></i>
+                                            <span className={startDate ? 'fw-bold' : 'text-muted'}>
+                                                {startDate ? formatDate(startDate) : 'Select date'}
+                                            </span>
+                                        </div>
                                         <input 
                                             type="date" 
                                             name="package-start-date" 
                                             id="package-start-date" 
                                             className="form-control"
                                             style={{ 
-                                                paddingLeft: '40px',
-                                                minHeight: '48px',
-                                                cursor: 'pointer'
+                                                position: 'absolute',
+                                                top: 0,
+                                                left: 0,
+                                                width: '100%',
+                                                height: '100%',
+                                                opacity: 0,
+                                                cursor: 'pointer',
+                                                zIndex: 10
                                             }}
-                                            value={selectedDate}
-                                            onChange={(e) => setSelectedDate(e.target.value)}
-                                            min={new Date().toISOString().split('T')[0]}
-                                            placeholder="Select start date"
+                                            value={startDate}
+                                            onChange={(e) => {
+                                                setStartDate(e.target.value);
+                                                // If end date is before or same as new start date, reset it
+                                                if (endDate && new Date(e.target.value) >= new Date(endDate)) {
+                                                    setEndDate('');
+                                                }
+                                            }}
+                                            onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
+                                            min={new Date(Date.now() + 86400000).toISOString().split('T')[0]}
                                             required
                                         />
                                     </div>
-                                    
-                                    {/* Trip Duration Display */}
-                                    {selectedDate && (
+                                </div>
+
+                                {/* Step 2: Check-out Date */}
+                                <div className="col-lg-12">
+                                    <label className="form-label fw-bold mb-1" style={{ fontSize: '13px', color: '#666' }}>
+                                        Check-out
+                                    </label>
+                                    <div className="position-relative">
                                         <div 
-                                            className="mt-3 p-3 text-center" 
+                                            className="form-control d-flex align-items-center"
                                             style={{ 
-                                                backgroundColor: '#EBF5FF', 
-                                                borderRadius: '8px',
-                                                border: '1px solid #B8DAFF'
+                                                cursor: 'pointer',
+                                                minHeight: '48px',
+                                                position: 'relative',
+                                                zIndex: 1,
+                                                backgroundColor: !startDate ? '#f8f9fa' : 'white'
                                             }}
                                         >
-                                            <div className="text-muted mb-1" style={{ fontSize: '13px' }}>
-                                                <i className="bi bi-calendar-check me-1"></i>
-                                                Your trip
-                                            </div>
-                                            <div className="fw-bold" style={{ color: 'var(--theme)', fontSize: '15px' }}>
-                                                {formatDateRange(selectedDate)}
-                                            </div>
+                                            <i className="bi bi-calendar-check me-2" style={{ fontSize: '18px', color: startDate ? 'var(--theme)' : '#ccc' }}></i>
+                                            <span className={endDate ? 'fw-bold' : 'text-muted'}>
+                                                {endDate ? formatDate(endDate) : 'Select date'}
+                                            </span>
                                         </div>
-                                    )}
+                                        <input 
+                                            type="date" 
+                                            name="package-end-date" 
+                                            id="package-end-date" 
+                                            className="form-control"
+                                            style={{ 
+                                                position: 'absolute',
+                                                top: 0,
+                                                left: 0,
+                                                width: '100%',
+                                                height: '100%',
+                                                opacity: 0,
+                                                cursor: 'pointer',
+                                                zIndex: 10
+                                            }}
+                                            value={endDate}
+                                            disabled={!startDate}
+                                            onChange={(e) => setEndDate(e.target.value)}
+                                            onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
+                                            min={minCheckoutDate}
+                                            required
+                                        />
+                                    </div>
                                 </div>
+
 
                                 {/* Step 2: Passenger Selection */}
                                 <div className="col-lg-12">

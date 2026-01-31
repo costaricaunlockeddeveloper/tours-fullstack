@@ -38,7 +38,7 @@ const Counter4 = () => {
                         <Image src="/assets/img/icon/38.svg" alt="img" width={40} height={40}   />
                     </div>
                     <div className="counter-content">
-                        <h2><span className="count">15</span>+</h2>
+                        <h2><span className="count">10</span>+</h2>
                         <p>Premium Hotels</p>
                     </div>
                 </div>

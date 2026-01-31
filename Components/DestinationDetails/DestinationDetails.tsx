@@ -2,7 +2,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react';
-import ImageGallery from './ImageGallery';
+import GalleryImages from '../Common/GalleryImages';
 
 const DestinationDetails = () => {
     const [activeTab, setActiveTab] = useState<'general' | 'tours' | 'packages'>('general');
@@ -105,7 +105,8 @@ const DestinationDetails = () => {
                             <div className="destination-details-items">
                                 <div className="details-content">
                                     {/* Image Gallery - Mosaic Grid */}
-                                    <ImageGallery images={[
+                                    {/* Image Gallery - Mosaic Grid */}
+                                    <GalleryImages images={[
                                         '/assets/img/destails/desti-details.jpg',
                                         '/assets/img/destails/desti-details-2.jpg',
                                         '/assets/img/destails/desti-details-3.jpg',
