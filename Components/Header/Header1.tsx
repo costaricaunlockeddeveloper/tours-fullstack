@@ -8,6 +8,7 @@ export default function Header1({ variant } : any ) {
   const [isSticky, setIsSticky] = useState<string>("");
   const [prevScrollPos, setPrevScrollPos] = useState<number>(0);
   const [language, setLanguage] = useState<'EN' | 'ES'>('EN');
+  const [profileOpen, setProfileOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -73,9 +74,27 @@ export default function Header1({ variant } : any ) {
                       <span>{language}</span>
                     </button>
                   </div>
-                  <Link href="/login" className='theme-btn py-2 px-4 min-w-0 header-login-btn'>
+                  <div className="relative">
+                    <button 
+                      onClick={() => setProfileOpen(!profileOpen)} 
+                      className='theme-btn py-2 px-4 min-w-0 header-login-btn d-flex align-items-center gap-2'
+                    >
+                      <span>Profile</span>
+                      <i className={`bi ${profileOpen ? 'bi-chevron-up' : 'bi-chevron-down'}`}></i>
+                    </button>
+                    {profileOpen && (
+                      <div className="position-absolute top-100 end-0 mt-2 bg-white rounded shadow-sm py-2" style={{ minWidth: '200px', zIndex: 1000 }}>
+                        <Link href="/historical-purchases" className="d-block px-3 py-2 text-dark hover-bg-light text-decoration-none">
+                          Historical Purchases
+                        </Link>
+                      </div>
+                    )}
+                     {
+                      /*
+                      <Link href="/login" className='theme-btn py-2 px-4 min-w-0 header-login-btn'>
                     <span>Login</span>
-                  </Link>
+                    </Link>*/}
+                  </div>
                 </div>
               </div>
             </div>
