@@ -95,7 +95,13 @@ const TourPackageDetails = () => {
 <section className="activities-details-section fix section-padding">
         <div className="container">
             <div className="activities-details-wrapper">
-                <div className="row g-4 justify-content-center">
+                <div className="row g-4 justify-content-center flex-row-reverse">
+                    <div className="col-12 col-lg-4">
+                        <PackageBookingWidget 
+                            adultPrice={1200}
+                            childPrice={800}
+                        />
+                    </div>
                     <div className="col-12 col-lg-8">
                         <div className="activities-details-content">
                             {/* TABS NAVIGATION */}
@@ -355,12 +361,6 @@ const TourPackageDetails = () => {
 
 
                         </div>
-                    </div>
-                    <div className="col-12 col-lg-4">
-                        <PackageBookingWidget 
-                            adultPrice={1200}
-                            childPrice={800}
-                        />
                     </div>
                 </div>
             </div>

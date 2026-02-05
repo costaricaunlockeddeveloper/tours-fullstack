@@ -10234,3 +10234,17 @@ input.main-search-input::placeholder {
   display: block;
   margin: 0 auto;
 }
+
+/* Top Blue Rectangle for Detail Pages */
+.top-blue-rect {
+    height: 80px;
+    width: 100%;
+    background-color: var(--brand-blue);
+    margin-bottom: 20px;
+}
+
+@media (min-width: 1151px) {
+    .top-blue-rect {
+        height: 130px !important;
+    }
+}
