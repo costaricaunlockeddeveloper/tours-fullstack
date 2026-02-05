@@ -11,83 +11,74 @@ const TourPackages = () => {
     const packageContent = [
         {
             images: ['/assets/img/destination/01.jpg'],
-            tags: ['Best Seller'],
-            duration_days: 7,
-            duration_nights: 6,
-            title: 'Costa Rica Adventure Package',
-            included: ['Hotel', 'Transfer', 'Meals', 'Tours'],
+            title: 'Arenal Adventure Experience',
+            location: 'La Fortuna, Alajuela',
+            rating: '4.8',
+            reviews: '120',
             price_adult: 1200
         },
         {
             images: ['/assets/img/destination/02.jpg'],
-            tags: ['Honeymoon'],
-            duration_days: 5,
-            duration_nights: 4,
-            title: 'Romantic Beach Getaway',
-            included: ['Hotel', 'Transfer', 'Meals', 'Spa'],
+            title: 'Manuel Antonio Experience',
+            location: 'Quepos, Puntarenas',
+            rating: '4.9',
+            reviews: '85',
             price_adult: 950
         },
         {
             images: ['/assets/img/destination/03.jpg'],
-            tags: ['Family'],
-            duration_days: 10,
-            duration_nights: 9,
-            title: 'Family Fun Costa Rica',
-            included: ['Hotel', 'Transfer', 'Meals', 'Activities'],
+            title: 'Monteverde Discovery',
+            location: 'Santa Elena, Puntarenas',
+            rating: '4.7',
+            reviews: '150',
             price_adult: 1500
         },
         {
             images: ['/assets/img/destination/04.jpg'],
-            tags: ['Best Seller'],
-            duration_days: 8,
-            duration_nights: 7,
-            title: 'Eco-Tourism Experience',
-            included: ['Hotel', 'Transfer', 'Meals', 'Guides'],
+            title: 'Tortuguero Wildlife Expedition',
+            location: 'Pococí, Limón',
+            rating: '4.8',
+            reviews: '95',
             price_adult: 1350
         },
         {
             images: ['/assets/img/destination/01.jpg'],
-            tags: ['Adventure'],
-            duration_days: 6,
-            duration_nights: 5,
-            title: 'Volcano & Rainforest Package',
-            included: ['Hotel', 'Transfer', 'Meals', 'Tours'],
+            title: 'Guanacaste Sun & Surf Journey',
+            location: 'Tamarindo, Guanacaste',
+            rating: '4.6',
+            reviews: '110',
             price_adult: 1100
         },
         {
             images: ['/assets/img/destination/02.jpg'],
-            tags: ['Best Seller'],
-            duration_days: 12,
-            duration_nights: 11,
-            title: 'Complete Costa Rica Tour',
-            included: ['Hotel', 'Transfer', 'Meals', 'Tours'],
+            title: 'Corcovado Deep Jungle Adventure',
+            location: 'Puerto Jiménez, Puntarenas',
+            rating: '5.0',
+            reviews: '200',
             price_adult: 2200
         },
         {
             images: ['/assets/img/destination/03.jpg'],
-            tags: ['Honeymoon'],
-            duration_days: 7,
-            duration_nights: 6,
-            title: 'Caribbean Paradise Package',
-            included: ['Hotel', 'Transfer', 'Meals', 'Activities'],
+            title: 'Puerto Viejo Vibes',
+            location: 'Puerto Viejo, Limón',
+            rating: '4.7',
+            reviews: '75',
             price_adult: 1400
         },
         {
             images: ['/assets/img/destination/04.jpg'],
-            tags: ['Family'],
-            duration_days: 9,
-            duration_nights: 8,
-            title: 'Wildlife & Beach Adventure',
-            included: ['Hotel', 'Transfer', 'Meals', 'Tours'],
+            title: 'Rincón de la Vieja Volcanic Trek',
+            location: 'Liberia, Guanacaste',
+            rating: '4.8',
+            reviews: '130',
             price_adult: 1650
         },
         {
             images: ['/assets/img/destination/01.jpg'],
-            tags: ['Best Seller'],
-            duration_days: 5,
-            duration_nights: 4,
-            title: 'Quick Escape Package',
-            included: ['Hotel', 'Transfer', 'Meals', 'Tours'],
+            title: 'San José Cultural Highlights',
+            location: 'San José, San José',
+            rating: '4.5',
+            reviews: '60',
             price_adult: 850
         },
     ];
@@ -135,10 +126,9 @@ const TourPackages = () => {
                             <TourPackageCard 
                                 images={item.images}
                                 title={item.title}
-                                duration_days={item.duration_days}
-                                duration_nights={item.duration_nights}
-                                tags={item.tags}
-                                included={item.included}
+                                location={item.location}
+                                rating={item.rating}
+                                reviews={item.reviews}
                                 price_adult={item.price_adult}
                             />
                         </div>

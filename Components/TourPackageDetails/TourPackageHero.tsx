@@ -5,6 +5,7 @@ import GalleryImages from "../Common/GalleryImages";
 interface TourPackageHeroProps {
     title: string;
     description: string;
+    location?: string;
     rating?: number;
     reviews?: number;
     images: string[];
@@ -13,10 +14,30 @@ interface TourPackageHeroProps {
 const TourPackageHero = ({ 
     title, 
     description, 
+    location = "Costa Rica",
     rating = 4.8, 
     reviews = 124, 
     images 
 }: TourPackageHeroProps) => {
+
+    const handleShare = async () => {
+        const shareData = {
+            title: title,
+            text: description,
+            url: typeof window !== 'undefined' ? window.location.href : '',
+        };
+
+        try {
+            if (navigator.share) {
+                await navigator.share(shareData);
+            } else {
+                await navigator.clipboard.writeText(shareData.url);
+                alert("Link copied to clipboard!");
+            }
+        } catch (err) {
+            console.error("Error sharing:", err);
+        }
+    };
 
     return (
         <section className="tour-hero-section pb-4 bg-white">
@@ -83,6 +104,27 @@ const TourPackageHero = ({
                 .rating-text:hover {
                     color: #000;
                 }
+                .share-btn {
+                    width: 44px !important;
+                    height: 44px !important;
+                    min-width: 44px !important;
+                    display: flex !important;
+                    align-items: center !important;
+                    justify-content: center !important;
+                    border-radius: 50% !important;
+                    border: 1px solid var(--brand-blue) !important;
+                    color: var(--brand-blue) !important;
+                    background: #fff !important;
+                    transition: all 0.3s ease !important;
+                    cursor: pointer !important;
+                    padding: 0 !important;
+                    line-height: 0 !important;
+                }
+                .share-btn:hover {
+                    background: var(--brand-blue) !important;
+                    color: white !important;
+                    transform: scale(1.05);
+                }
             `}</style>
             
             <div className="container">
@@ -98,18 +140,23 @@ const TourPackageHero = ({
                             
                             {/* Rating Section */}
                             <div className="rating-presentation">
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                    <i className="bi bi-geo-alt-fill text-primary" style={{ fontSize: '14px' }}></i>
+                                    <span style={{ fontSize: '15px', color: '#4a4a4a', fontWeight: '500' }}>{location}</span>
+                                </div>
+                                <span className="text-secondary opacity-50">•</span>
                                 <div className="rating-score">
                                     <i className="bi bi-star-fill text-warning"></i>
                                     {rating}
                                 </div>
-                                <span className="text-secondary">•</span>
+                                <span className="text-secondary opacity-50">•</span>
                                 <a href="#reviews" className="rating-text">{reviews} reviews</a>
                             </div>
                         </div>
                         
-                        <div className="share-btn text-primary shrink-0" style={{ cursor: 'pointer' }}>
-                            <i className="bi bi-share fs-4"></i>
-                        </div>
+                        <button className="share-btn" onClick={handleShare}>
+                            <i className="bi bi-share" style={{ fontSize: '1.2rem' }}></i>
+                        </button>
                     </div>
                 </div>
 

@@ -6,37 +6,22 @@ import React from 'react';
 interface TourPackageCardProps {
     images: string[];
     title: string;
-    duration_days: number;
-    duration_nights: number;
-    tags: string[];
-    included: string[];
+    location: string;
+    rating: string;
+    reviews: string;
     price_adult: number;
 }
 
 const TourPackageCard: React.FC<TourPackageCardProps> = ({ 
     images, 
     title, 
-    duration_days, 
-    duration_nights, 
-    tags, 
-    included, 
+    location,
+    rating,
+    reviews,
     price_adult 
 }) => {
 
-    const getInclusionIcon = (item: string) => {
-        const iconMap: { [key: string]: string } = {
-            'Hotel': 'bi-house-door',
-            'Transfer': 'bi-airplane',
-            'Meals': 'bi-egg-fried',
-            'All Meals': 'bi-egg-fried',
-            'Breakfast': 'bi-cup-hot',
-            'Tours': 'bi-ticket-perforated',
-            'Activities': 'bi-activity',
-            'Guides': 'bi-person-badge',
-            'Spa': 'bi-flower1'
-        };
-        return iconMap[item] || 'bi-check-circle';
-    };
+
 
     return (
         // Removing the 'col' wrapper to let parent handle grid layout, as per learned pattern
@@ -134,9 +119,7 @@ const TourPackageCard: React.FC<TourPackageCardProps> = ({
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
-                    margin-top: auto;
-                    padding-top: 10px;
-                    border-top: 1px solid #f0f0f0;
+                    margin-top: auto; /* Push to bottom if flex column */
                 }
 
                 .price h6 {
@@ -163,72 +146,92 @@ const TourPackageCard: React.FC<TourPackageCardProps> = ({
                     height={300} 
                 />
                 
-                {/* Etiqueta (Badge) */}
-                {tags[0] && (
-                    <span 
-                        style={{
-                            position: 'absolute',
-                            top: '12px',
-                            left: '12px',
-                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                            color: '#333',
-                            padding: '4px 12px',
-                            borderRadius: '20px',
-                            fontSize: '12px',
-                            fontWeight: '600',
-                            boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-                        }}
-                    >
-                        {tags[0]}
-                    </span>
-                )}
-                
-                {/* Duración */}
-                <span 
-                    style={{
-                        position: 'absolute',
-                        bottom: '12px',
-                        right: '12px',
-                        backgroundColor: 'rgba(0, 0, 0, 0.75)',
-                        color: '#fff',
-                        padding: '6px 12px',
-                        borderRadius: '6px',
-                        fontSize: '13px',
-                        fontWeight: '600',
-                        backdropFilter: 'blur(4px)'
-                    }}
-                >
-                    {duration_days} Days / {duration_nights} Nights
-                </span>
+                {/* Overlay Top-Left: Flexible Duration Badge */}
+                <div style={{
+                    position: 'absolute',
+                    top: '12px',
+                    left: '12px',
+                    backgroundColor: '#fff',
+                    color: '#000',
+                    padding: '2px 8px',
+                    borderRadius: '20px',
+                    fontSize: '8px',
+                    fontWeight: '700',
+                    textTransform: 'uppercase',
+                    boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
+                }}>
+                    Flexible Duration
+                </div>
+
+                {/* Overlay Top-Right: Simplified Rating */}
+                <div style={{
+                    position: 'absolute',
+                    top: '12px',
+                    right: '12px',
+                    backgroundColor: 'rgba(0,0,0,0.5)',
+                    color: '#fff',
+                    padding: '2px 10px',
+                    borderRadius: '20px',
+                    fontSize: '12px',
+                    fontWeight: '600',
+                    backdropFilter: 'blur(2px)'
+                }}>
+                    <i className="bi bi-star-fill text-warning me-1"></i> {rating} ({reviews})
+                </div>
             </div>
             
             <div className="destination-content">
-                {/* B. Zona de Contenido */}
+                {/* B. Cuerpo Superior (El Gancho) */}
                 <h5>
                     <Link href="/tour-packages/tour-packages-details">
                         {title}
                     </Link>
                 </h5>
+                {/* Ubicación: Icono de pin de mapa */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '2px' }}>
+                    <i className="bi bi-geo-alt-fill text-(--brand-blue)" style={{ fontSize: '12px' }}></i>
+                    <span style={{ fontSize: '12px', color: '#777', fontWeight: '500' }}>{location}</span>
+                </div>
                 
-                {/* C. Zona de Valor (Iconos) */}
-                <ul className="info">
-                    {included.slice(0, 4).map((inclusion, idx) => (
-                        <li key={idx}>
-                            <i className={getInclusionIcon(inclusion)}></i>
-                            {inclusion}
-                        </li>
-                    ))}
-                </ul>
-                
-                {/* D. Zona de Precio y Acción */}
-                <div className="price">
+                {/* 3. Cuerpo Central ("The Power Bar") */}
+                <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'space-between', /* Better distribution */
+                    gap: '4px',
+                    marginBottom: '8px',
+                    fontSize: '12px',
+                    color: 'var(--brand-blue)',
+                    fontWeight: '600',
+                    backgroundColor: '#f8f9fa',
+                    padding: '5px 8px',
+                    borderRadius: '6px'
+                }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <i className="bi bi-house-door" style={{ color: '#1f4d85' }}></i>
+                        <span>Hotel</span>
+                    </div>
+                    <span style={{ color: '#eee', fontWeight: '300' }}>|</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <i className="bi bi-airplane-engines" style={{ color: '#1f4d85' }}></i>
+                        <span>Transfer</span>
+                    </div>
+                    <span style={{ color: '#eee', fontWeight: '300' }}>|</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <i className="bi bi-egg-fried" style={{ color: '#1f4d85' }}></i>
+                        <span>Meals</span>
+                    </div>
+                </div>
+
+                {/* 4. Pie de Página (Pricing UI with improved dashed border) */}
+                <div className="price" style={{ borderTop: '1px dashed #ddd', paddingTop: '12px', marginTop: 'auto' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
                         <span style={{ fontSize: '11px', color: '#666', fontWeight: '400', lineHeight:'1' }}>From</span>
-                        <h6 style={{ margin: 0, lineHeight: '1.2' }}>${price_adult.toLocaleString()}</h6>
+                        <h6 style={{ margin: 0, lineHeight: '1.2' }}>US${price_adult.toLocaleString()}</h6>
                         <span style={{ fontSize: '10px', color: '#999', fontWeight: '400', lineHeight:'1' }}>per person</span>
                     </div>
                     <Link href="/tour-packages/tour-packages-details" className="theme-btn style-2">
-                        View Itinerary <i className="bi bi-arrow-right"></i>
+                        View More <i className="bi bi-arrow-right"></i>
                     </Link>
                 </div>
             </div>

@@ -11,6 +11,25 @@ interface DestinationHeroProps {
 
 const DestinationHero = ({ title, climate, region, province, description }: DestinationHeroProps) => {
 
+    const handleShare = async () => {
+        const shareData = {
+            title: title,
+            text: description,
+            url: typeof window !== 'undefined' ? window.location.href : '',
+        };
+
+        try {
+            if (navigator.share) {
+                await navigator.share(shareData);
+            } else {
+                await navigator.clipboard.writeText(shareData.url);
+                alert("Link copied to clipboard!");
+            }
+        } catch (err) {
+            console.error("Error sharing:", err);
+        }
+    };
+
     return (
         <section className="tour-hero-section pb-4 bg-white">
             <section className="h-32 bg-(--brand-blue) mb-7"></section>
@@ -57,6 +76,27 @@ const DestinationHero = ({ title, climate, region, province, description }: Dest
                     border: 1px solid #e9ecef;
                     font-size: 13px;
                 }
+                .share-btn {
+                    width: 44px !important;
+                    height: 44px !important;
+                    min-width: 44px !important;
+                    display: flex !important;
+                    align-items: center !important;
+                    justify-content: center !important;
+                    border-radius: 50% !important;
+                    border: 1px solid var(--brand-blue) !important;
+                    color: var(--brand-blue) !important;
+                    background: #fff !important;
+                    transition: all 0.3s ease !important;
+                    cursor: pointer !important;
+                    padding: 0 !important;
+                    line-height: 0 !important;
+                }
+                .share-btn:hover {
+                    background: var(--brand-blue) !important;
+                    color: white !important;
+                    transform: scale(1.05);
+                }
             `}</style>
             
             <div className="container">
@@ -86,9 +126,9 @@ const DestinationHero = ({ title, climate, region, province, description }: Dest
                             </div>
                         </div>
                         
-                        <div className="share-btn text-primary pointer shrink-0" style={{ cursor: 'pointer' }}>
-                            <i className="bi bi-share fs-4"></i>
-                        </div>
+                        <button className="share-btn" onClick={handleShare}>
+                            <i className="bi bi-share" style={{ fontSize: '1.2rem' }}></i>
+                        </button>
                     </div>
                 </div>
             </div>

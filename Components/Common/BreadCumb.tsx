@@ -11,7 +11,7 @@ const BreadCumb = ({Title,bgimg}: {Title: string, bgimg: string}) => {
 
     return (
 
-      <section className="breadcrumb-wrapper fix bg-cover" data-background={bgimg}>
+      <section className="breadcrumb-wrapper fix bg-cover" style={{ backgroundColor: 'var(--brand-blue)', backgroundPosition: 'top' }} data-background={bgimg}>
       <div className="container">
           <div className="row">
               <div className="page-heading">
