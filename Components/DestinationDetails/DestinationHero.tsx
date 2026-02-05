@@ -32,7 +32,7 @@ const DestinationHero = ({ title, climate, region, province, description }: Dest
 
     return (
         <section className="tour-hero-section pb-4 bg-white">
-            <section className="h-32 bg-(--brand-blue) mb-7"></section>
+            <section className="top-blue-rect bg-(--brand-blue) mb-7"></section>
             <style jsx>{`
                 .header-section {
                     margin-bottom: 25px;

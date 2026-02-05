@@ -73,6 +73,56 @@ const Counter2 = () => {
                                         <p>Secs</p>
                                     </div>
                                 </div>
+                                <style jsx>{`
+                                    .coming-soon-timer {
+                                        display: flex;
+                                        gap: 15px;
+                                        margin: 30px 0;
+                                        flex-wrap: wrap;
+                                    }
+                                    .timer-content {
+                                        background: rgba(255, 255, 255, 0.15);
+                                        backdrop-filter: blur(5px);
+                                        border: 1px solid rgba(255, 255, 255, 0.3);
+                                        border-radius: 12px;
+                                        padding: 15px;
+                                        min-width: 90px;
+                                        text-align: center;
+                                        flex: 1;
+                                        max-width: 110px;
+                                    }
+                                    .timer-content h3 {
+                                        font-size: 32px;
+                                        font-weight: 800;
+                                        color: white !important;
+                                        margin: 0;
+                                        line-height: 1;
+                                    }
+                                    .timer-content p {
+                                        font-size: 13px;
+                                        color: rgba(255, 255, 255, 0.8) !important;
+                                        margin-top: 5px;
+                                        text-transform: uppercase;
+                                        letter-spacing: 1px;
+                                        font-weight: 600;
+                                    }
+                                    @media (max-width: 575px) {
+                                        .coming-soon-timer {
+                                            justify-content: center;
+                                            gap: 10px;
+                                        }
+                                        .timer-content {
+                                            min-width: 75px;
+                                            padding: 10px;
+                                        }
+                                        .timer-content h3 {
+                                            font-size: 24px;
+                                        }
+                                        .timer-content p {
+                                            font-size: 11px;
+                                        }
+                                    }
+                                `}</style>
                                 <Link href="/tour-packages" className="theme-btn wow fadeInUp" data-wow-delay=".9s">View Details<i className="bi bi-arrow-right"></i></Link>
                             </div>
                         </div>

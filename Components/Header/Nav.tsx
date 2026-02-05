@@ -56,7 +56,7 @@ export default function Nav({ setMobileToggle }: { setMobileToggle: any }) {
       
       <li className="menu-item-has-children">
         <Link href="/tour-packages" onClick={() => setMobileToggle(false)}>
-        Tour Packages
+        Packages
         </Link>
         <DropDown>
           <ul>
@@ -81,11 +81,8 @@ export default function Nav({ setMobileToggle }: { setMobileToggle: any }) {
       </li>
       <li className="cs_mobile_only p-3 pt-0 d-xl-none">
         <div className="d-flex flex-column gap-2">
-          <Link href="/login" className="login-btn-header text-white" onClick={() => setMobileToggle(false)}>
-            Login
-          </Link>
-          <Link href="/contact" className='theme-btn py-2 px-4 w-100 text-center' onClick={() => setMobileToggle(false)}>
-            <span>Sign Up</span>
+          <Link href="/login" className='theme-btn py-2 px-4 w-100 text-center' onClick={() => setMobileToggle(false)}>
+            <span>Login</span>
           </Link>
         </div>
       </li>

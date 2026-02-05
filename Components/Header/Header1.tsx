@@ -51,7 +51,7 @@ export default function Header1({ variant } : any ) {
                   <span
                     className={
                       mobileToggle
-                        ? 'cs-munu_toggle cs_teggle_active'
+                        ? 'cs-munu_toggle cs-toggle_active'
                         : 'cs-munu_toggle'
                     }
                     onClick={() => setMobileToggle(!mobileToggle)}
@@ -73,11 +73,8 @@ export default function Header1({ variant } : any ) {
                       <span>{language}</span>
                     </button>
                   </div>
-                  <Link href="/login" className="login-btn-header">
-                    Login
-                  </Link>
-                  <Link href="/contact" className='theme-btn py-2 px-4 min-w-0'>
-                    <span>Sign Up</span>
+                  <Link href="/login" className='theme-btn py-2 px-4 min-w-0 header-login-btn'>
+                    <span>Login</span>
                   </Link>
                 </div>
               </div>

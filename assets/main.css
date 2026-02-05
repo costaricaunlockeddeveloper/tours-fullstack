@@ -9172,7 +9172,7 @@ input.main-search-input::placeholder {
   opacity: 1;
   visibility: visible;
 }
-@media screen and (max-width: 1199px) {
+@media screen and (max-width: 1150px) {
   .cs_main_header .container {
     max-width: 100%;
  }
@@ -9248,7 +9248,7 @@ input.main-search-input::placeholder {
 .cs_site_header.cs_style_1.cs_color_1 .cs_nav_list > li > a:hover {
   color: #e9a132;
 }
-@media screen and (min-width: 1460px) {
+@media screen and (min-width: 1151px) {
   .cs_main_header {
     position: relative;
  }
@@ -9469,7 +9469,7 @@ input.main-search-input::placeholder {
     margin-right: 35px;
  }
 }
-@media screen and (max-width: 1460px) {
+@media screen and (max-width: 1150px) {
  /*Mobile Menu Button*/
   .cs_nav .cs_nav_list > li {
     margin-right: 0;
@@ -9666,7 +9666,7 @@ input.main-search-input::placeholder {
     display: none;
  }
 }
-.cs_nav .cs_nav_list span.cs-munu_dropdown_toggle.active + ul, .cs_nav .cs-munu_toggle.cs_teggle_active + .cs_nav_list {
+.cs_nav .cs_nav_list span.cs-munu_dropdown_toggle.active + ul, .cs_nav .cs-munu_toggle.cs-toggle_active + .cs_nav_list {
   display: block;
 }
 .cs_site_header.cs_color_1 .cs_header_search_btn {
@@ -10014,9 +10014,52 @@ input.main-search-input::placeholder {
     border-radius: 50%;   
     margin-right: 20px;
 }
+
+
+
 .header_style_2_1{
   z-index: 9999;
 }
+
+/* Hide Login button on mobile, keep language switcher visible */
+@media screen and (max-width: 1150px) {
+  .header-login-btn {
+    display: none !important;
+  }
+  .cs_site_branding img {
+    width: 50px !important;
+    height: 50px !important;
+  }
+}
+/* Add spacing between language switcher and hamburger on tablets */
+@media screen and (min-width: 551px) and (max-width: 1150px) {
+  .cs_main_header_right {
+    position: absolute !important;
+    right: 70px !important;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+/* Hide mobile-only nav items on desktop */
+@media screen and (min-width: 1151px) {
+  .cs_mobile_only {
+    display: none !important;
+  }
+}
+
+/* Mobile menu toggle active styles */
+@media screen and (max-width: 1150px) {
+  .cs_mobile_toggle_active .cs_nav .cs_nav_list {
+    display: block !important;
+  }
+  .cs_site_header.cs_mobile_toggle_active .cs_nav .cs_nav_list {
+    display: block !important;
+  }
+  header.cs_mobile_toggle_active .cs_nav .cs_nav_list {
+    display: block !important;
+  }
+}
+
 .tour-field-area select{
   padding: 0;
   border: none;
@@ -10177,12 +10220,7 @@ input.main-search-input::placeholder {
 
 
 
-@media screen and (min-width: 480px) and (max-width: 1200px) {
-  .cs_main_header_right .header-btn {
-    display: flex;
-    padding-right: 50px;
-  }
-}
+
 
 /* Icon centering utility class */
 .icon {
