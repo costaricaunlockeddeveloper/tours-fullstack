@@ -4932,18 +4932,7 @@ span {
   position: relative;
   z-index: 9;
 }
-.footer-widget-wrapper-new::before {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  content: "";
-  border-radius: 0px 0px 16px 16px;
-  background: #242625;
-  width: 32%;
-  z-index: -1;
-  height: 80%;
-}
+
 @media (max-width: 1199px) {
   .footer-widget-wrapper-new::before {
     display: none;

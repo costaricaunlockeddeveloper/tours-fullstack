@@ -10,7 +10,7 @@ const Footer1 = () => {
     }, []);
 
     return (
-        <footer className="footer-section fix bg-gradient-to-b from-[#0A1F24] via-[#0D282E] to-[#1f4d85]">
+        <footer className="footer-section fix bg-linear-to-b from-[#0A1F24] via-[#0D282E] to-[#1f4d85]">
             <div className="container">
                 <div className="footer-widget-wrapper-new py-16">
                     <div className="row" style={{display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap'}}>
@@ -23,28 +23,34 @@ const Footer1 = () => {
                                     </Link>
                                 </div>
                                 <div>
+                                    <style jsx>{`
+                                        .insta-btn {
+                                            background-color: transparent !important;
+                                        }
+                                        .insta-btn:hover {
+                                            background-color: transparent !important;
+                                        }
+                                    `}</style>
                                     <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
                                         <a 
                                             href="https://www.instagram.com/costaricaunlocked?igsh=MWs4c3pqNmd4M3R0aw==" 
                                             target="_blank"
                                             rel="noopener noreferrer"
+                                            className="insta-btn"
                                             style={{ 
                                                 display: 'flex', 
                                                 alignItems: 'center', 
                                                 gap: '10px',
                                                 padding: '10px 24px',
                                                 borderRadius: '50px', 
-                                                backgroundColor: 'rgba(255, 255, 255, 0.1)', 
                                                 border: '1px solid rgba(255, 255, 255, 0.2)',
                                                 transition: 'all 0.3s ease',
                                                 textDecoration: 'none'
                                             }}
                                             onMouseEnter={(e) => {
-                                                e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
                                                 e.currentTarget.style.transform = 'translateY(-2px)';
                                             }}
                                             onMouseLeave={(e) => {
-                                                e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
                                                 e.currentTarget.style.transform = 'translateY(0)';
                                             }}
                                         >
