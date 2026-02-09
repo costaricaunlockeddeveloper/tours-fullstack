@@ -336,7 +336,7 @@ const TourDetails = ({ duration = 8 }: TourDetailsProps) => {
                                                 <i className="bi bi-geo-alt fs-4 text-dark"></i>
                                             </div>
                                             <div>
-                                                <h5 className="mb-2 fw-bold">Pickup Point</h5>
+                                                <h5 className="mb-2 fw-bold">Meeting Point</h5>
                                                 <p className="text-secondary mb-3" style={{ lineHeight: '1.6' }}>
                                                     We offer round-trip transportation from most hotels in the Manuel Antonio and Quepos area. 
                                                     Please indicate your hotel or accommodation when booking. The exact pickup time will be confirmed 
