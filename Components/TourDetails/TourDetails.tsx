@@ -1,10 +1,10 @@
 "use client"
 import React, { useEffect, useRef, useState } from 'react';
-import loadBackgroudImages from '../Common/loadBackgroudImages';
+import loadBackgroudImages from '../../client/sections/shared/common/loadBackgroudImages';
 import Link from 'next/link';
 import Image from 'next/image';
 import BookingWidget from './BookingWidget';
-import ChecklistItem from '../Common/ChecklistItem';
+import ChecklistItem from '../../client/sections/shared/common/ChecklistItem';
 import DestinationCard from '../Destination/DestinationCard';
 
 interface TourDetailsProps {

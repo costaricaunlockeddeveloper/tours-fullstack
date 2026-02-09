@@ -1,5 +1,5 @@
 import React from 'react';
-import BreadCumb from '../../../../Components/Common/BreadCumb';
+import BreadCumb from '../../../../client/sections/shared/common/BreadCumb';
 import TourPackages from '../../../../Components/TourPackages/TourPackages';
 
 const page = () => {

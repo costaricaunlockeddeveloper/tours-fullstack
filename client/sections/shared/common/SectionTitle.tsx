@@ -1,6 +1,9 @@
 import parse from 'html-react-parser';
 
-const SectionTitle = ({Title,SubTitle}) => {
+const SectionTitle = ({Title,SubTitle}:{
+    Title:string,
+    SubTitle:string
+}) => {
     return (
         <div>
           <div className="subtitle wow fadeInUp" data-wow-delay=".2s">

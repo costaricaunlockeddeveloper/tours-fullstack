@@ -1,5 +1,4 @@
-import React from 'react';
-import DestinationCard from '../Card/DestinationCard';
+import DestinationCard from './DestinationCard';
 import Image from 'next/image';
 
 const Destination3 = () => {

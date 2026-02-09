@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useRef } from 'react';
 import Slider from 'react-slick';
-import loadBackgroudImages from '../Common/loadBackgroudImages';
+import loadBackgroudImages from '../../client/sections/shared/common/loadBackgroudImages';
 import Link from 'next/link';
 import Image from 'next/image';
 

@@ -4,7 +4,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import "slick-carousel/slick/slick.css";
 import "./globals.css";
 import "../assets/main.css"
-import FloatingWhatsAppButton from "@/Components/Common/FloatingWhatsAppButton";
+import FloatingWhatsAppButton from "@/client/sections/shared/common/FloatingWhatsAppButton";
 
 const manrope = Manrope({
   subsets: ['latin'],

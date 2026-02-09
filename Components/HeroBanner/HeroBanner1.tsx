@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect } from 'react';
-import loadBackgroudImages from '../Common/loadBackgroudImages';
+import loadBackgroudImages from '../../client/sections/shared/common/loadBackgroudImages';
 import parse from 'html-react-parser';
 import Slider from 'react-slick';
 import Image from 'next/image';

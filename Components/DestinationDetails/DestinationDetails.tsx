@@ -2,7 +2,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react';
-import GalleryImages from '../Common/GalleryImages';
+import GalleryImages from '../../client/sections/shared/common/GalleryImages';
 
 const DestinationDetails = () => {
     const [activeTab, setActiveTab] = useState<'general' | 'tours' | 'packages'>('general');

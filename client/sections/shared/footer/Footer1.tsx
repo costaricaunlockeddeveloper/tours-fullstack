@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect } from 'react';
-import loadBackgroudImages from '../Common/loadBackgroudImages';
+import loadBackgroudImages from '../common/loadBackgroudImages';
 import Link from 'next/link';
 
 const Footer1 = () => {

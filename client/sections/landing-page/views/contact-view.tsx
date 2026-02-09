@@ -1,8 +1,8 @@
 import React from 'react';
-import BreadCumb from '../../../../client/sections/shared/common/BreadCumb';
-import Contact from '../../../../client/sections/landing-page/components/contact/Contact';
+import BreadCumb from '../../shared/common/BreadCumb';
+import Contact from '../components/contact/Contact';
 
-const page = () => {
+const ContactView = () => {
   return (
     <div>
             <BreadCumb
@@ -14,4 +14,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default ContactView;

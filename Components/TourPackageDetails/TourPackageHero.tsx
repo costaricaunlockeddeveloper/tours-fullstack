@@ -1,7 +1,7 @@
 "use client"
 import React from "react";
-import GalleryImages from "../Common/GalleryImages";
-import ExpandableTitleDescription from "../Common/ExpandableTitleDescription";
+import GalleryImages from "../../client/sections/shared/common/GalleryImages";
+import ExpandableTitleDescription from "../../client/sections/shared/common/ExpandableTitleDescription";
 
 interface TourPackageHeroProps {
     title: string;

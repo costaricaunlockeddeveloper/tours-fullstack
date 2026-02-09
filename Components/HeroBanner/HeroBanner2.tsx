@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useState } from 'react';
-import loadBackgroudImages from '../Common/loadBackgroudImages';
+import loadBackgroudImages from '../../client/sections/shared/common/loadBackgroudImages';
 
 const HeroBanner2 = () => {
 
