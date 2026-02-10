@@ -1,16 +1,8 @@
-import React from 'react';
-import BreadCumb from '../../../../client/sections/shared/common/BreadCumb';
-import Contact from '../../../../client/sections/landing-page/components/contact/Contact';
+import ContactView from "@/client/sections/landing-page/views/contact-view";
 
 const page = () => {
   return (
-    <div>
-            <BreadCumb
-                bgimg="/assets/img/breadcrumb/contact-us.jpg"
-                Title="Contact Us"
-            ></BreadCumb>
-            <Contact></Contact>        
-    </div>
+    <ContactView/>
   );
 };
 

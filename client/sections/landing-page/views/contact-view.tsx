@@ -9,7 +9,7 @@ const ContactView = () => {
                 bgimg="/assets/img/breadcrumb/contact-us.jpg"
                 Title="Contact Us"
             ></BreadCumb>
-            <Contact></Contact>        
+            <Contact></Contact>  
     </div>
   );
 };
