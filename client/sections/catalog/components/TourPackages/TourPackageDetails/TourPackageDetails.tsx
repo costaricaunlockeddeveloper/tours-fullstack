@@ -1,8 +1,8 @@
 "use client"
 import React, { useEffect, useState } from 'react';
-import loadBackgroudImages from '../../client/sections/shared/common/loadBackgroudImages';
+import loadBackgroudImages from '../../../../shared/common/loadBackgroudImages';
 import PackageBookingWidget from './PackageBookingWidget';
-import DestinationCard from '../Destination/DestinationCard';
+import DestinationCard from '../../Destination/DestinationCard';
 
 const TourPackageDetails = () => {
 

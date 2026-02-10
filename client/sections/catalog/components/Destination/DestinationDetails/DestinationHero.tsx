@@ -1,6 +1,6 @@
 "use client"
 import React from "react";
-import ExpandableTitleDescription from "../../client/sections/shared/common/ExpandableTitleDescription";
+import ExpandableTitleDescription from "../../../../shared/common/ExpandableTitleDescription";
 
 interface DestinationHeroProps {
     title: string;

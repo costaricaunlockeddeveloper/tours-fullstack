@@ -1,16 +1,9 @@
 import React from 'react';
-import BreadCumb from '../../../../client/sections/shared/common/BreadCumb';
-import Tour from '../../../../Components/Tour/Tour';
+import TourView from '../../../../client/sections/catalog/views/tour-view';
 
 const page = () => {
   return (
-    <div>
-             <BreadCumb
-                bgimg="/assets/img/breadcrumb/tour.jpg"
-                Title="Tour"
-            ></BreadCumb>    
-              <Tour></Tour>       
-    </div>
+    <TourView />
   );
 };
 

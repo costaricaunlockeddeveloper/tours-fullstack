@@ -1,11 +1,11 @@
 "use client"
 import React, { useEffect, useRef, useState } from 'react';
-import loadBackgroudImages from '../../client/sections/shared/common/loadBackgroudImages';
+import loadBackgroudImages from '@/client/sections/shared/common/loadBackgroudImages';
 import Link from 'next/link';
 import Image from 'next/image';
 import BookingWidget from './BookingWidget';
-import ChecklistItem from '../../client/sections/shared/common/ChecklistItem';
-import DestinationCard from '../Destination/DestinationCard';
+import ChecklistItem from '@/client/sections/shared/common/ChecklistItem';
+import DestinationCard from '@/client/sections/catalog/components/Destination/DestinationCard';
 
 interface TourDetailsProps {
     duration?: number;

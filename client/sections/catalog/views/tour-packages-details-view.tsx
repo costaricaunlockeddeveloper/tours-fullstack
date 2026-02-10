@@ -1,10 +1,14 @@
 import React from 'react';
-import TourPackageHero from '../../../../../Components/TourPackageDetails/TourPackageHero';
-import TourPackageDetails from '../../../../../Components/TourPackageDetails/TourPackageDetails';
+import TourPackageHero from '../components/TourPackages/TourPackageDetails/TourPackageHero';
+import TourPackageDetails from '../components/TourPackages/TourPackageDetails/TourPackageDetails';
 
-const page = () => {
-  return (
-    <div>
+interface TourPackagesDetailsViewProps {
+    slug: string;
+}
+
+const TourPackagesDetailsView = ({ slug }: TourPackagesDetailsViewProps) => {
+    return (
+        <div>
             <TourPackageHero
                 title="Costa Rica Esencial: Volcán Arenal & Playa Manuel Antonio"
                 location="La Fortuna & Manuel Antonio, Costa Rica"
@@ -18,8 +22,8 @@ const page = () => {
                 ]}
             />
             <TourPackageDetails />       
-    </div>
-  );
+        </div>
+    );
 };
 
-export default page;
+export default TourPackagesDetailsView;

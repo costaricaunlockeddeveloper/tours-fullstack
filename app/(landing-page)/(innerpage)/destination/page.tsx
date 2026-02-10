@@ -1,20 +1,9 @@
 import React from 'react';
-import BreadCumb from '../../../../client/sections/shared/common/BreadCumb';
-import Destination1 from '../../../../Components/Destination/Destination1';
-import Story1 from '../../../../Components/Story/Story1';
-import FeaturedTour1 from '../../../../Components/FeaturedTour/FeaturedTour1';
+import DestinationView from '../../../../client/sections/catalog/views/destination-view';
 
 const page = () => {
   return (
-    <div>
-           <BreadCumb
-                bgimg="/assets/img/breadcrumb/destination.jpg"
-                Title="Destination"
-            ></BreadCumb>      
-            <Destination1></Destination1> 
-             {/* <Story1></Story1>  
-             <FeaturedTour1></FeaturedTour1>                 */}
-    </div>
+    <DestinationView />
   );
 };
 
