@@ -4,7 +4,6 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import "slick-carousel/slick/slick.css";
 import "./globals.css";
 import "../assets/main.css"
-import FloatingWhatsAppButton from "@/client/sections/shared/common/FloatingWhatsAppButton";
 
 const manrope = Manrope({
   subsets: ['latin'],
@@ -46,7 +45,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={`${manrope.variable} ${work_sans.variable} ${kalam.variable}`}>
         {children}
-        <FloatingWhatsAppButton phoneNumber="50612345678" />
       </body>
     </html>
   );
