@@ -1,9 +1,16 @@
 import { Manrope, Work_Sans, Kalam } from "next/font/google";
+import "@/css/style.css";
+
+import "flatpickr/dist/flatpickr.min.css";
+import "jsvectormap/dist/jsvectormap.css";
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import "slick-carousel/slick/slick.css";
 import "./globals.css";
-import "../assets/main.css"
+import { AuthProvider } from "@/contexts/AuthContext";
+import { Providers } from "./providers";
+import NextTopLoader from "nextjs-toploader";
 
 const manrope = Manrope({
   subsets: ['latin'],
@@ -38,13 +45,18 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <meta name="author" content="Themeservices" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
       <body className={`${manrope.variable} ${work_sans.variable} ${kalam.variable}`}>
-        {children}
+        <Providers>
+          <AuthProvider>
+            <NextTopLoader color="#5750F1" showSpinner={false} />
+            {children}
+          </AuthProvider>
+        </Providers>
       </body>
     </html>
   );
