@@ -15,7 +15,7 @@ export default function Signin() {
         <span className="block h-px w-full bg-white/10"></span>
       </div>
 
-      <div>
+      {/* <div>
         <SigninWithPassword />
       </div>
 
@@ -26,7 +26,7 @@ export default function Signin() {
             Sign Up
           </Link>
         </p>
-      </div>
+      </div> */}
     </>
   );
 }

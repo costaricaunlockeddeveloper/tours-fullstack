@@ -1,8 +1,4 @@
 import { Manrope, Work_Sans, Kalam } from "next/font/google";
-import "@/css/style.css";
-
-import "flatpickr/dist/flatpickr.min.css";
-import "jsvectormap/dist/jsvectormap.css";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';

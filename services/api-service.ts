@@ -323,10 +323,14 @@ export const ApiService = {
         if (!res.ok) throw new Error("Failed to fetch users");
         return res.json();
     },
-    syncUser: async (user: { uid: string; email: string; displayName?: string }) => {
-        // Keeping this for compatibility, but mainly handled by AuthContext/Login
-        // If needed for profile updates:
-        console.log("Sync user called - handled by AuthContext/Login");
+    syncUser: async (user: { uid: string; email: string; displayName?: string; photoURL?: string | null }) => {
+        const res = await fetch("/api/auth/sync", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(user),
+        });
+        if (!res.ok) throw new Error("Failed to sync user");
+        return res.json();
     },
     updateUserRole: async (uid: string, role: "admin" | "client") => {
         const res = await fetch(`${USERS_API}/${uid}`, {

@@ -15,14 +15,19 @@ export default function GoogleSigninButton({ text }: { text: string }) {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      // Sync user to DB
-      await ApiService.syncUser({
+      // Sync user to DB and get role
+      const dbUser = await ApiService.syncUser({
         uid: user.uid,
         email: user.email || "",
-        displayName: user.displayName || ""
+        displayName: user.displayName || "",
+        photoURL: user.photoURL
       });
 
-      router.push("/");
+      if (dbUser.role === 'admin') {
+        router.push("/admin/destinos");
+      } else {
+        router.push("/");
+      }
     } catch (error) {
       console.error("Google Sign-in Error:", error);
       alert("Error al iniciar sesión con Google");

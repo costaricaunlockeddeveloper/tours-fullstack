@@ -1,17 +1,14 @@
-
 "use client";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import { auth } from "@/lib/firebase";
+import { onAuthStateChanged, signOut, User as FirebaseUser } from "firebase/auth";
 import { useRouter } from "next/navigation";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { ApiService, User as AppUser } from "@/services/api-service";
 
-interface User {
-    uid: string;
-    email: string;
-    role: "admin" | "client";
-    displayName?: string;
-}
+type CombinedUser = AppUser & { photoURL?: string | null };
 
 interface AuthContextType {
-    user: User | null;
+    user: CombinedUser | null;
     loading: boolean;
     login: (email: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
@@ -27,54 +24,74 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<CombinedUser | null>(null);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
 
-    const checkSession = async () => {
-        try {
-            const res = await fetch("/api/auth/me");
-            if (res.ok) {
-                const data = await res.json();
-                setUser(data.user || null);
-            } else {
-                setUser(null);
-            }
-        } catch (error) {
-            console.error("Session check failed", error);
-            setUser(null);
-        } finally {
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
-        checkSession();
+        // Subscribe to Firebase Auth changes
+        const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+            try {
+                if (firebaseUser) {
+                    // 1. User is signed in to Firebase.
+                    // 2. Fetch additional role/data from our MongoDB via ApiService.
+                    try {
+                        const dbUser = await ApiService.syncUser({
+                            uid: firebaseUser.uid,
+                            email: firebaseUser.email || "",
+                            displayName: firebaseUser.displayName || "",
+                            photoURL: firebaseUser.photoURL
+                        });
+                        
+                        // Merge Firebase User info (like photoURL) with DB info (role)
+                        setUser({
+                            ...dbUser,
+                            photoURL: firebaseUser.photoURL,
+                            uid: firebaseUser.uid // Ensure UID matches
+                        });
+
+                    } catch (err) {
+                        console.error("Error fetching user data from DB:", err);
+                        // Fallback if DB fails: set a basic user so they aren't locked out
+                        setUser({
+                            uid: firebaseUser.uid,
+                            email: firebaseUser.email || "",
+                            displayName: firebaseUser.displayName || "",
+                            role: "client", // Fallback role
+                            photoURL: firebaseUser.photoURL
+                        });
+                    }
+                } else {
+                    // User is signed out.
+                    setUser(null);
+                }
+            } catch (error) {
+                console.error("Auth state change error:", error);
+                setUser(null);
+            } finally {
+                setLoading(false);
+            }
+        });
+
+        return () => unsubscribe();
     }, []);
 
     const login = async (email: string, password: string) => {
-        const res = await fetch("/api/auth/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password }),
-        });
-
-        if (!res.ok) {
-            const error = await res.json();
-            throw new Error(error.error || "Login failed");
-        }
-
-        const data = await res.json();
-        setUser(data.user); // data.user has payload
-        router.push("/dashboard");
-        router.refresh();
+        console.warn("Email/Password login not yet implemented with Firebase in this context.");
     };
 
     const logout = async () => {
+        // 1. Clear the server-side session cookie
         await fetch("/api/auth/logout", { method: "POST" });
+        // 2. Sign out of Firebase (clears client-side tokens)
+        await signOut(auth);
         setUser(null);
-        router.push("/auth/sign-in");
+        router.push("/sign-in");
         router.refresh();
+    };
+
+    const checkSession = async () => {
+         // No-op manually, handled by effect
     };
 
     return (

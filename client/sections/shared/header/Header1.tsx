@@ -3,7 +3,10 @@ import { useEffect, useState } from 'react';
 import Nav from './Nav';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useAuth } from '@/contexts/AuthContext';
+
 export default function Header1({ variant } : any ) {
+  const { user, logout } = useAuth();
   const [mobileToggle, setMobileToggle] = useState(false);
   const [isSticky, setIsSticky] = useState<string>("");
   const [prevScrollPos, setPrevScrollPos] = useState<number>(0);
@@ -75,25 +78,57 @@ export default function Header1({ variant } : any ) {
                     </button>
                   </div>
                   <div className="relative">
-                    <button 
-                      onClick={() => setProfileOpen(!profileOpen)} 
-                      className='theme-btn py-2 px-4 min-w-0 header-login-btn d-flex align-items-center gap-2'
-                    >
-                      <span>Profile</span>
-                      <i className={`bi ${profileOpen ? 'bi-chevron-up' : 'bi-chevron-down'}`}></i>
-                    </button>
-                    {profileOpen && (
-                      <div className="position-absolute top-100 end-0 mt-2 bg-white rounded shadow-sm py-2" style={{ minWidth: '200px', zIndex: 1000 }}>
-                        <Link href="/historical-purchases" className="d-block px-3 py-2 text-dark hover-bg-light text-decoration-none">
-                          Historical Purchases
-                        </Link>
-                      </div>
+                    {!user ? (
+                      <Link href="/sign-in" className='theme-btn py-2 px-4 min-w-0 header-login-btn'>
+                        <span>Login</span>
+                      </Link>
+                    ) : (
+                      <>
+                        <button 
+                          onClick={() => setProfileOpen(!profileOpen)} 
+                          className='theme-btn py-2 px-4 min-w-0 header-login-btn d-flex align-items-center gap-2'
+                        >
+                          <div className="d-flex align-items-center gap-2">
+                             {user.photoURL ? (
+                               <Image 
+                                 src={user.photoURL} 
+                                 alt="Profile" 
+                                 width={24} 
+                                 height={24} 
+                                 className="rounded-circle"
+                               />
+                             ) : (
+                               <i className="bi bi-person-circle"></i>
+                             )}
+                             <span>{user.displayName?.split(' ')[0] || 'Profile'}</span>
+                          </div>
+                          <i className={`bi ${profileOpen ? 'bi-chevron-up' : 'bi-chevron-down'}`}></i>
+                        </button>
+                        {profileOpen && (
+                          <div className="position-absolute top-100 end-0 mt-2 bg-white rounded shadow-sm py-2" style={{ minWidth: '200px', zIndex: 1000 }}>
+                            <Link href="/historical-purchases" className="d-block px-3 py-2 text-dark hover-bg-light text-decoration-none">
+                              Historical Purchases
+                            </Link>
+                            {/* Admin Link if role is admin */}
+                            {user.role === 'admin' && (
+                               <Link href="/admin/destinos" className="d-block px-3 py-2 text-dark hover-bg-light text-decoration-none">
+                                 Admin Dashboard
+                               </Link>
+                            )}
+                            <button 
+                              onClick={() => {
+                                // Add logout logic here or import from context
+                                // Since we are in a component, we need to use the context logout
+                                logout();
+                              }}
+                              className="d-block w-100 text-start px-3 py-2 text-dark hover-bg-light text-decoration-none border-0 bg-transparent"
+                            >
+                              Logout
+                            </button>
+                          </div>
+                        )}
+                      </>
                     )}
-                     {
-                      /*
-                      <Link href="/login" className='theme-btn py-2 px-4 min-w-0 header-login-btn'>
-                    <span>Login</span>
-                    </Link>*/}
                   </div>
                 </div>
               </div>

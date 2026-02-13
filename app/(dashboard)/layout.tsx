@@ -1,5 +1,8 @@
 "use client";
 
+import "@/css/style.css";
+import "flatpickr/dist/flatpickr.min.css";
+import "jsvectormap/dist/jsvectormap.css";
 import React, { useState, useEffect } from "react";
 import { Sidebar } from "@/components/Layouts/sidebar";
 import { Header } from "@/components/Layouts/header";
@@ -19,7 +22,7 @@ export default function DashboardLayout({
 
     useEffect(() => {
         if (!loading && !user) {
-            router.push("/auth/sign-in");
+            router.push("/sign-in");
         }
     }, [user, loading, router]);
 
