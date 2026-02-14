@@ -1,13 +1,36 @@
+"use client";
+
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import Signin from "@/components/Auth/Signin";
-import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
-export const metadata: Metadata = {
-  title: "Sign in | Admin Dashboard",
-};
-
 export default function SignIn() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "authenticated" && session?.user) {
+      const role = (session.user as any).role;
+      if (role === "admin") {
+        router.replace("/admin/destinos");
+      } else {
+        router.replace("/");
+      }
+    }
+  }, [session, status, router]);
+
+  // Show loading while checking session or redirecting
+  if (status === "loading" || (status === "authenticated" && session?.user)) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#030014]">
+        <div className="h-16 w-16 animate-spin rounded-full border-4 border-solid border-primary border-t-transparent"></div>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="absolute inset-0 -z-10 h-full w-full bg-[#030014]">

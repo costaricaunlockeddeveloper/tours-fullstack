@@ -3,22 +3,19 @@
 import { SessionProvider, signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { ApiService, User as AppUser } from "@/services/api-service";
 
 interface AuthContextType {
-    user: any | null; // Using any to match the flexible session structure for now
+    user: any | null;
     loading: boolean;
-    login: (email: string, password: string) => Promise<void>;
+    loginWithGoogle: () => Promise<void>;
     logout: () => Promise<void>;
-    checkSession: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
     user: null,
     loading: true,
-    login: async () => { },
+    loginWithGoogle: async () => { },
     logout: async () => { },
-    checkSession: async () => { },
 });
 
 // Inner component to use the session hook
@@ -35,19 +32,8 @@ const AuthContextContent = ({ children }: { children: React.ReactNode }) => {
         }
     }, [status]);
 
-    const login = async (email: string, password: string) => {
-        const result = await signIn("credentials", {
-            redirect: false,
-            email,
-            password,
-        });
-
-        if (result?.error) {
-            throw new Error(result.error);
-        }
-
-        // Router refresh or push handled by component or here
-        router.refresh();
+    const loginWithGoogle = async () => {
+        await signIn("google", { callbackUrl: "/sign-in" });
     };
 
     const logout = async () => {
@@ -56,12 +42,8 @@ const AuthContextContent = ({ children }: { children: React.ReactNode }) => {
         router.refresh();
     };
 
-    const checkSession = async () => {
-        // Handled by NextAuth useSession automatically
-    };
-
     return (
-        <AuthContext.Provider value={{ user: session?.user || null, loading, login, logout, checkSession }}>
+        <AuthContext.Provider value={{ user: session?.user || null, loading, loginWithGoogle, logout }}>
             {children}
         </AuthContext.Provider>
     );
