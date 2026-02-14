@@ -8,6 +8,9 @@ import Image from "next/image";
 import EditableSection from "@/components/Admin/ui/EditableSection";
 import CalendarScheduler from "@/components/Admin/tours/CalendarScheduler";
 import GalleryUploader from "@/components/Admin/GalleryUploader";
+import ListManager from "@/components/Admin/Commons/ListManager";
+import TourItineraryManager from "@/components/Admin/tours/TourItineraryManager";
+import LocationPickerModal from "@/components/Admin/LocationPickerModal";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
 
@@ -25,6 +28,7 @@ export default function TourDetailsPage() {
 
     // Edit State
     const [editMode, setEditMode] = useState<{ [key: string]: boolean }>({});
+    const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
     const [formData, setFormData] = useState<Partial<Tour>>({});
     const [isSaving, setIsSaving] = useState(false);
 
@@ -82,6 +86,41 @@ export default function TourDetailsPage() {
         }
     };
 
+
+
+    const handleOffersChange = async (items: string[]) => {
+        const newFormData = { ...formData, whatItOffers: items };
+        setFormData(newFormData);
+        try {
+            await ApiService.updateTour(id, { whatItOffers: items });
+            setTour(prev => ({ ...prev, whatItOffers: items } as Tour));
+        } catch (error) {
+            console.error("Error auto-saving offers:", error);
+        }
+    };
+
+    const handleExcludesChange = async (items: string[]) => {
+        const newFormData = { ...formData, excludes: items };
+        setFormData(newFormData);
+        try {
+            await ApiService.updateTour(id, { excludes: items });
+            setTour(prev => ({ ...prev, excludes: items } as Tour));
+        } catch (error) {
+            console.error("Error auto-saving excludes:", error);
+        }
+    };
+
+    const handleItineraryChange = async (items: any[]) => {
+        const newFormData = { ...formData, itinerary: items };
+        setFormData(newFormData);
+        try {
+            await ApiService.updateTour(id, { itinerary: items });
+            setTour(prev => ({ ...prev, itinerary: items } as Tour));
+        } catch (error) {
+            console.error("Error auto-saving itinerary:", error);
+        }
+    };
+
     if (loading) return <div className="p-10 text-center">Cargando detalles...</div>;
     if (!tour) return null;
 
@@ -92,7 +131,7 @@ export default function TourDetailsPage() {
 
     return (
         <div className="mx-auto max-w-7xl">
-            {/* Header */}
+            {/* ... Header ... */}
             <div className="mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
                     <Link
@@ -128,12 +167,21 @@ export default function TourDetailsPage() {
                 isSaving={isSaving}
                 className="mb-8"
             >
+                {isLocationModalOpen && (
+                    <LocationPickerModal
+                        isOpen={isLocationModalOpen}
+                        onClose={() => setIsLocationModalOpen(false)}
+                        onConfirm={(lat, lng) => setFormData(prev => ({ ...prev, meetingPointCoordinates: { lat, lng } }))}
+                        initialCoordinates={formData.meetingPointCoordinates ? { lat: formData.meetingPointCoordinates.lat, lng: formData.meetingPointCoordinates.lng } : undefined}
+                    />
+                )}
+                {/* ... Gallery Content ... */}
                 {editMode['gallery'] ? (
                     <GalleryUploader
                         images={formData.gallery || []}
                         onImagesChange={(newImages) => setFormData(prev => ({ ...prev, gallery: newImages }))}
                         folderName="tours"
-                        slug={tour.id} // Use ID as slug or consistency
+                        slug={tour.id}
                         title="Gestionar Imágenes"
                     />
                 ) : (
@@ -161,6 +209,8 @@ export default function TourDetailsPage() {
                     )
                 )}
             </EditableSection>
+
+
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2 space-y-8">
@@ -195,6 +245,7 @@ export default function TourDetailsPage() {
                         onCancel={() => toggleEdit('schedules')}
                         isSaving={isSaving}
                     >
+                        {/* ... Calendar Content ... */}
                         {editMode['schedules'] ? (
                             <div className="pt-2">
                                 <CalendarScheduler
@@ -224,7 +275,7 @@ export default function TourDetailsPage() {
                                             <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                                                 {tour.availableDates
                                                     .sort((a, b) => a.date.localeCompare(b.date))
-                                                    .filter(d => dayjs(d.date).isAfter(dayjs().subtract(1, 'day'))) // Show future dates only
+                                                    .filter(d => dayjs(d.date).isAfter(dayjs().subtract(1, 'day')))
                                                     .slice(0, 9)
                                                     .map(d => (
                                                         <div key={d.date} className="p-2 border border-stroke dark:border-dark-3 rounded bg-gray-50 dark:bg-white/5 text-xs">
@@ -247,32 +298,52 @@ export default function TourDetailsPage() {
                         )}
                     </EditableSection>
 
-                    {/* What it offers */}
-                    <EditableSection
-                        title="Lo que ofrece"
-                        isEditing={!!editMode['offers']}
-                        onEdit={() => toggleEdit('offers')}
-                        onSave={() => handleSave('offers')}
-                        onCancel={() => toggleEdit('offers')}
-                        isSaving={isSaving}
-                    >
-                        {editMode['offers'] ? (
-                            <div>
-                                <p className="text-xs text-gray-500 mb-2">Ingrese items separados por línea nueva</p>
-                                <textarea
-                                    value={formData.whatItOffers?.join("\n") || ""}
-                                    onChange={(e) => setFormData({ ...formData, whatItOffers: e.target.value.split("\n") })}
-                                    className="w-full rounded-lg border border-stroke bg-transparent px-4 py-3 text-dark outline-none dark:border-dark-3 dark:text-white focus:border-primary min-h-[150px]"
+                    {/* Includes & Excludes */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Includes (formerly What it offers) */}
+                        <div className="rounded-xl bg-white p-6 shadow-1 dark:bg-gray-dark dark:shadow-card h-full">
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="text-xl font-bold text-dark dark:text-white">Lo que incluye</h3>
+                            </div>
+                            <div className="pt-2">
+                                <ListManager
+                                    items={formData.whatItOffers || []}
+                                    onItemsChange={handleOffersChange}
+                                    placeholder="Ej: Transporte ida y vuelta"
+                                    layout="list"
                                 />
                             </div>
-                        ) : (
-                            <ul className="list-disc pl-5 space-y-1 text-body-color dark:text-dark-6">
-                                {tour.whatItOffers && tour.whatItOffers.map((offer, idx) => (
-                                    <li key={idx}>{offer}</li>
-                                ))}
-                            </ul>
-                        )}
-                    </EditableSection>
+                        </div>
+
+                        {/* Excludes */}
+                        <div className="rounded-xl bg-white p-6 shadow-1 dark:bg-gray-dark dark:shadow-card h-full">
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="text-xl font-bold text-dark dark:text-white">Lo que NO incluye</h3>
+                            </div>
+                            <div className="pt-2">
+                                <ListManager
+                                    items={formData.excludes || []}
+                                    onItemsChange={handleExcludesChange}
+                                    placeholder="Ej: Gastos personales"
+                                    layout="list"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Itinerary */}
+                    <div className="rounded-xl bg-white p-6 shadow-1 dark:bg-gray-dark dark:shadow-card">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-xl font-bold text-dark dark:text-white">Itinerario</h3>
+                        </div>
+                        <div className="pt-2">
+                            <TourItineraryManager
+                                items={formData.itinerary || []}
+                                onItemsChange={handleItineraryChange}
+                            />
+                        </div>
+                    </div>
+
                 </div>
 
                 <div className="space-y-6">
@@ -353,6 +424,84 @@ export default function TourDetailsPage() {
                                     <span className="text-gray-500">Cupo Máximo</span>
                                     <span className="font-medium text-dark dark:text-white">{tour.maxQuota || "-"} personas</span>
                                 </div>
+                            </div>
+                        )}
+                    </EditableSection>
+
+                    {/* Meeting Point Section (New Compact Design) */}
+                    <EditableSection
+                        title="Punto de Encuentro"
+                        isEditing={!!editMode['meetingPoint']}
+                        onEdit={() => toggleEdit('meetingPoint')}
+                        onSave={() => handleSave('meetingPoint')}
+                        onCancel={() => toggleEdit('meetingPoint')}
+                        isSaving={isSaving}
+                    >
+                        {editMode['meetingPoint'] ? (
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-xs font-semibold uppercase text-gray-500 mb-1">Nombre del Lugar</label>
+                                    <input
+                                        type="text"
+                                        value={formData.meetingPoint || ""}
+                                        onChange={(e) => setFormData({ ...formData, meetingPoint: e.target.value })}
+                                        placeholder="Ej: Lobby del Hotel"
+                                        className="w-full rounded border border-stroke px-3 py-2"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-semibold uppercase text-gray-500 mb-1">Ubicación</label>
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsLocationModalOpen(true)}
+                                        className="w-full flex items-center justify-center gap-2 rounded-full border border-primary border-dashed px-3 py-2 text-primary hover:bg-primary/5 transition"
+                                    >
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                        Actualizar en Mapa
+                                    </button>
+                                    {formData.meetingPointCoordinates && (
+                                        <p className="text-xs text-green-600 mt-1 text-center">
+                                            ✓ Ubicación seleccionada ({formData.meetingPointCoordinates.lat.toFixed(4)}, {formData.meetingPointCoordinates.lng.toFixed(4)})
+                                        </p>
+                                    )}
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-semibold uppercase text-gray-500 mb-1">Instrucciones</label>
+                                    <textarea
+                                        value={formData.meetingPointDescription || ""}
+                                        onChange={(e) => setFormData({ ...formData, meetingPointDescription: e.target.value })}
+                                        placeholder="Instrucciones breves..."
+                                        rows={3}
+                                        className="w-full rounded border border-stroke px-3 py-2 text-sm"
+                                    />
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="space-y-3">
+                                <div>
+                                    <h4 className="font-medium text-dark dark:text-white">{tour.meetingPoint || "No definido"}</h4>
+                                    {tour.meetingPointCoordinates && (
+                                        <a
+                                            href={`https://www.google.com/maps/search/?api=1&query=${tour.meetingPointCoordinates.lat},${tour.meetingPointCoordinates.lng}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-xs text-primary hover:underline flex items-center gap-1 mt-0.5"
+                                        >
+                                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                            Ver en mapa
+                                        </a>
+                                    )}
+                                </div>
+
+                                {tour.meetingPointDescription && (
+                                    <div className="text-sm text-gray-600 dark:text-gray-400 border-t border-stroke dark:border-dark-3 pt-2 mt-2">
+                                        {tour.meetingPointDescription}
+                                    </div>
+                                )}
+
+                                {(!tour.meetingPoint && !tour.meetingPointDescription) && (
+                                    <span className="text-sm text-gray-400 italic">Sin información de punto de encuentro.</span>
+                                )}
                             </div>
                         )}
                     </EditableSection>

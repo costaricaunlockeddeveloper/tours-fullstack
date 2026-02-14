@@ -4,6 +4,8 @@ const PlaceSchema = new mongoose.Schema({
     name: { type: String, required: true },
     description: { type: String, required: true },
     images: [{ type: String }],
+    rating: { type: Number, default: 4.5 },
+    reviews: { type: Number, default: 0 },
     slug: { type: String },
     officialName: { type: String },
     shortDescription: { type: String },

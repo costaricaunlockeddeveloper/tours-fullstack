@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -5,6 +6,8 @@ import Image from "next/image";
 import { Tour, Place } from "@/services/api-service";
 import LocationPickerModal from "@/components/Admin/LocationPickerModal";
 import GalleryUploader from "@/components/Admin/GalleryUploader";
+import ListManager from "@/components/Admin/Commons/ListManager";
+import StarRatingInput from "@/components/Admin/Commons/StarRatingInput";
 import CalendarScheduler from "@/components/Admin/tours/CalendarScheduler";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
@@ -34,6 +37,9 @@ export default function TourForm({ initialData, availablePlaces, onSubmit, isSub
         meetingPoint: "",
         meetingPointLink: "",
         meetingPointCoordinates: { lat: 0, lng: 0 },
+        rating: 0,
+        reviews: 0,
+        location: "",
         // Lists
         features: {
             accommodation: false,
@@ -51,7 +57,6 @@ export default function TourForm({ initialData, availablePlaces, onSubmit, isSub
     };
 
     const [formData, setFormData] = useState<Partial<Tour>>(initialData || defaultFormState);
-    const [offersText, setOffersText] = useState("");
     const [isLocationPickerOpen, setIsLocationPickerOpen] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
 
@@ -66,7 +71,6 @@ export default function TourForm({ initialData, availablePlaces, onSubmit, isSub
                 availableDates: initialData.availableDates || [],
                 gallery: initialData.gallery || []
             }));
-            setOffersText(initialData.whatItOffers?.join("\n") || "");
         }
     }, [initialData]);
 
@@ -93,11 +97,7 @@ export default function TourForm({ initialData, availablePlaces, onSubmit, isSub
 
     const handleFormSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const submissionData = {
-            ...formData,
-            whatItOffers: offersText.split("\n").filter(line => line.trim() !== ""),
-        };
-        await onSubmit(submissionData);
+        await onSubmit(formData);
     };
 
     // Gallery is now handled by GalleryUploader
@@ -105,14 +105,11 @@ export default function TourForm({ initialData, availablePlaces, onSubmit, isSub
 
     return (
         <>
-            <form id="tourForm" onSubmit={handleFormSubmit} className="space-y-8">
+            <form id="tourForm" onSubmit={handleFormSubmit} className="bg-white dark:bg-dark-2 p-6 rounded-xl shadow-1 space-y-6">
 
                 {/* 1. Destinos Select */}
-                <div className="bg-white dark:bg-gray-dark p-6 rounded-xl shadow-1">
-                    <h3 className="text-lg font-bold text-dark dark:text-white mb-4 flex items-center gap-2">
-                        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary text-sm">1</span>
-                        Destinos Asociados
-                    </h3>
+                <div>
+                    <h3 className="text-lg font-bold text-dark dark:text-white mb-4">Destinos Asociados</h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                         {availablePlaces.map((place) => (
                             <label
@@ -121,7 +118,7 @@ export default function TourForm({ initialData, availablePlaces, onSubmit, isSub
                                     relative flex items-start gap-3 p-4 rounded-xl cursor-pointer border transition-all duration-200
                                     ${formData.placeIds?.includes(place.id)
                                         ? "bg-primary/5 border-primary shadow-sm"
-                                        : "bg-gray-50 dark:bg-dark-2 border-transparent hover:border-stroke dark:hover:border-dark-3"}
+                                        : "bg-gray-50 dark:bg-white/5 border-transparent hover:border-stroke dark:hover:border-dark-3"}
                                 `}
                             >
                                 <div className="flex items-center h-5">
@@ -139,19 +136,16 @@ export default function TourForm({ initialData, availablePlaces, onSubmit, isSub
                             </label>
                         ))}
                         {availablePlaces.length === 0 && (
-                            <p className="text-sm text-dark-6 italic col-span-full text-center py-4 bg-gray-50 rounded-lg">
-                                No hay destinos disponibles. Por favor cree destinos primero.
+                            <p className="text-sm text-dark-6 italic col-span-full">
+                                No hay destinos disponibles.
                             </p>
                         )}
                     </div>
                 </div>
 
                 {/* 2. Información General */}
-                <div className="bg-white dark:bg-gray-dark p-6 rounded-xl shadow-1">
-                    <h3 className="text-lg font-bold text-dark dark:text-white mb-6 flex items-center gap-2">
-                        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary text-sm">2</span>
-                        Información General
-                    </h3>
+                <div>
+                    <h3 className="text-lg font-bold text-dark dark:text-white mb-4">Información General</h3>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div className="md:col-span-2">
@@ -176,70 +170,80 @@ export default function TourForm({ initialData, availablePlaces, onSubmit, isSub
                                 required
                             />
                         </div>
+                        {!simpleMode && (
+                            <div className="md:col-span-2">
+                                <label className="mb-2.5 block font-medium text-dark dark:text-white">Ubicación (Texto para Card)</label>
+                                <input
+                                    type="text"
+                                    placeholder="Ej: La Fortuna, San Carlos"
+                                    value={formData.location}
+                                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                                    className="w-full rounded-lg border border-stroke bg-transparent px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
+                                />
+                            </div>
+                        )}
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
                             <label className="mb-2.5 block font-medium text-dark dark:text-white">Duración</label>
-                            <div className="relative">
-                                <input
-                                    type="text"
-                                    value={formData.duration}
-                                    onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-                                    className="w-full rounded-lg border border-stroke bg-transparent px-5 py-3 pl-10 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
-                                    placeholder="Ej: 3 días"
-                                    required={simpleMode}
-                                />
-                                <span className="absolute left-3.5 top-3.5 text-dark-6">
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                </span>
-                            </div>
+                            <input
+                                type="text"
+                                value={formData.duration}
+                                onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+                                className="w-full rounded-lg border border-stroke bg-transparent px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
+                                placeholder="Ej: 3 días"
+                                required={simpleMode}
+                            />
                         </div>
                         <div>
                             <label className="mb-2.5 block font-medium text-dark dark:text-white">Dificultad</label>
-                            <div className="relative">
-                                <select
-                                    value={formData.difficulty}
-                                    onChange={(e) => setFormData({ ...formData, difficulty: e.target.value as any })}
-                                    className="w-full appearance-none rounded-lg border border-stroke bg-transparent px-5 py-3 pl-10 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
-                                >
-                                    <option value="Fácil">Fácil</option>
-                                    <option value="Moderado">Moderado</option>
-                                    <option value="Difícil">Difícil</option>
-                                    <option value="Extremo">Extremo</option>
-                                </select>
-                                <span className="absolute left-3.5 top-3.5 text-dark-6">
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                                </span>
-                                <span className="absolute right-4 top-4 text-dark-6 pointer-events-none">
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
-                                </span>
-                            </div>
+                            <select
+                                value={formData.difficulty}
+                                onChange={(e) => setFormData({ ...formData, difficulty: e.target.value as any })}
+                                className="w-full rounded-lg border border-stroke bg-transparent px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
+                            >
+                                <option value="Fácil">Fácil</option>
+                                <option value="Moderado">Moderado</option>
+                                <option value="Difícil">Difícil</option>
+                                <option value="Extremo">Extremo</option>
+                            </select>
                         </div>
                         <div>
                             <label className="mb-2.5 block font-medium text-dark dark:text-white">Cupo Máximo</label>
-                            <div className="relative">
-                                <input
-                                    type="number"
-                                    value={formData.maxQuota}
-                                    onChange={(e) => setFormData({ ...formData, maxQuota: Number(e.target.value) })}
-                                    className="w-full rounded-lg border border-stroke bg-transparent px-5 py-3 pl-10 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
-                                    required={simpleMode}
-                                />
-                                <span className="absolute left-3.5 top-3.5 text-dark-6">
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                                </span>
-                            </div>
+                            <input
+                                type="number"
+                                value={formData.maxQuota}
+                                onChange={(e) => setFormData({ ...formData, maxQuota: Number(e.target.value) })}
+                                className="w-full rounded-lg border border-stroke bg-transparent px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
+                                required={simpleMode}
+                            />
                         </div>
                     </div>
+
+                    {!simpleMode && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                            <StarRatingInput
+                                value={formData.rating || 0}
+                                onChange={(val) => setFormData({ ...formData, rating: val })}
+                                label="Calificación (0-5)"
+                            />
+                            <div>
+                                <label className="mb-2.5 block font-medium text-dark dark:text-white">Cantidad de Reseñas</label>
+                                <input
+                                    type="number" min="0"
+                                    value={formData.reviews}
+                                    onChange={(e) => setFormData({ ...formData, reviews: parseInt(e.target.value) })}
+                                    className="w-full rounded-lg border border-stroke bg-transparent px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
+                                />
+                            </div>
+                        </div>
+                    )}
                 </div>
 
-                {/* 3. Multimedia (Moved up for Simple Mode) */}
-                <div className="bg-white dark:bg-gray-dark p-6 rounded-xl shadow-1">
-                    <h3 className="text-lg font-bold text-dark dark:text-white mb-6 flex items-center gap-2">
-                        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary text-sm">3</span>
-                        Imágenes del Tour
-                    </h3>
+                {/* 3. Multimedia */}
+                <div>
+                    <h3 className="text-lg font-bold text-dark dark:text-white mb-4">Imágenes del Tour</h3>
                     <GalleryUploader
                         images={formData.gallery || []}
                         onImagesChange={(newImages) => setFormData(prev => ({ ...prev, gallery: newImages }))}
@@ -251,91 +255,79 @@ export default function TourForm({ initialData, availablePlaces, onSubmit, isSub
 
                 {/* 4. Advanced Sections (Hidden in Simple Mode) */}
                 {!simpleMode && (
-                    <div className="bg-white dark:bg-gray-dark p-6 rounded-xl shadow-1 space-y-8 animate-in fade-in duration-300">
-                        <div className="flex items-center gap-2 mb-4 border-b border-stroke pb-4 dark:border-dark-3">
-                            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary text-sm">4</span>
-                            <h3 className="text-lg font-bold text-dark dark:text-white">Detalles Avanzados</h3>
-                        </div>
+                    <div className="space-y-8">
+                        <hr className="border-stroke dark:border-dark-3" />
+
+                        <h3 className="text-lg font-bold text-dark dark:text-white">Detalles Avanzados</h3>
 
                         {/* Incluye (Checkboxes) */}
                         <div>
                             <label className="mb-4 block font-medium text-dark dark:text-white">Servicios Incluidos</label>
                             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                <label className="flex items-center gap-3 p-3 rounded-lg border border-stroke dark:border-dark-3 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer transition-colors">
+                                <label className="flex items-center gap-3">
                                     <input type="checkbox" checked={formData.features?.accommodation} onChange={e => setFormData({ ...formData, features: { ...formData.features, accommodation: e.target.checked } })} className="w-5 h-5 rounded text-primary focus:ring-primary" />
-                                    <span className="text-sm font-medium">Alojamiento</span>
+                                    <span>Alojamiento</span>
                                 </label>
-                                <label className="flex items-center gap-3 p-3 rounded-lg border border-stroke dark:border-dark-3 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer transition-colors">
+                                <label className="flex items-center gap-3">
                                     <input type="checkbox" checked={formData.features?.transport} onChange={e => setFormData({ ...formData, features: { ...formData.features, transport: e.target.checked } })} className="w-5 h-5 rounded text-primary focus:ring-primary" />
-                                    <span className="text-sm font-medium">Transporte</span>
+                                    <span>Transporte</span>
                                 </label>
-                                <label className="flex items-center gap-3 p-3 rounded-lg border border-stroke dark:border-dark-3 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer transition-colors">
+                                <label className="flex items-center gap-3">
                                     <input type="checkbox" checked={formData.features?.entranceFee} onChange={e => setFormData({ ...formData, features: { ...formData.features, entranceFee: e.target.checked } })} className="w-5 h-5 rounded text-primary focus:ring-primary" />
-                                    <span className="text-sm font-medium">Entradas</span>
+                                    <span>Entradas</span>
                                 </label>
-                                <label className="flex items-center gap-3 p-3 rounded-lg border border-stroke dark:border-dark-3 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer transition-colors">
+                                <label className="flex items-center gap-3">
                                     <input type="checkbox" checked={formData.features?.guide} onChange={e => setFormData({ ...formData, features: { ...formData.features, guide: e.target.checked } })} className="w-5 h-5 rounded text-primary focus:ring-primary" />
-                                    <span className="text-sm font-medium">Guía</span>
+                                    <span>Guía</span>
                                 </label>
-                                <label className="flex items-center gap-3 p-3 rounded-lg border border-stroke dark:border-dark-3 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer transition-colors">
+                                <label className="flex items-center gap-3">
                                     <input type="checkbox" checked={formData.features?.translator} onChange={e => setFormData({ ...formData, features: { ...formData.features, translator: e.target.checked } })} className="w-5 h-5 rounded text-primary focus:ring-primary" />
-                                    <span className="text-sm font-medium">Traductor</span>
+                                    <span>Traductor</span>
                                 </label>
                             </div>
                         </div>
 
-                        {/* Que brinda */}
-                        <div>
-                            <label className="mb-2 block font-medium text-dark dark:text-white">¿Qué brinda? <span className="text-sm text-gray-500 font-normal">(Items adicionales por línea)</span></label>
-                            <textarea
-                                value={offersText}
-                                onChange={(e) => setOffersText(e.target.value)}
-                                className="w-full rounded-lg border border-stroke bg-transparent px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
-                                rows={4}
-                                placeholder="- Equipo de seguridad&#10;- Bebidas hidratantes&#10;- Fotografías digitales"
+                        {/* What It Offers - ListManager */}
+                        <div className="mb-6">
+                            <ListManager
+                                label="Lo que ofrece el tour"
+                                items={formData.whatItOffers || []}
+                                onItemsChange={(items) => setFormData({ ...formData, whatItOffers: items })}
+                                placeholder="Ej: Transporte ida y vuelta"
                             />
                         </div>
-
-                        <hr className="border-stroke dark:border-dark-3" />
 
                         {/* Precios */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label className="mb-2 block font-medium text-dark dark:text-white">Precio Adultos ($)</label>
-                                <div className="relative">
-                                    <span className="absolute left-4 top-3 text-dark-6">$</span>
-                                    <input
-                                        type="number"
-                                        value={formData.price}
-                                        onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
-                                        className="w-full rounded-lg border border-stroke bg-transparent px-5 py-3 pl-8 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
-                                    />
-                                </div>
+                                <input
+                                    type="number"
+                                    value={formData.price}
+                                    onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
+                                    className="w-full rounded-lg border border-stroke bg-transparent px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
+                                />
                             </div>
                             <div>
                                 <label className="mb-2 block font-medium text-dark dark:text-white">Precio Niños ($)</label>
-                                <div className="relative">
-                                    <span className="absolute left-4 top-3 text-dark-6">$</span>
-                                    <input
-                                        type="number"
-                                        value={formData.priceChild}
-                                        onChange={(e) => setFormData({ ...formData, priceChild: Number(e.target.value) })}
-                                        className="w-full rounded-lg border border-stroke bg-transparent px-5 py-3 pl-8 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
-                                    />
-                                </div>
+                                <input
+                                    type="number"
+                                    value={formData.priceChild}
+                                    onChange={(e) => setFormData({ ...formData, priceChild: Number(e.target.value) })}
+                                    className="w-full rounded-lg border border-stroke bg-transparent px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
+                                />
                             </div>
                         </div>
 
                         {/* Punto de Encuentro */}
-                        <div className="p-5 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashed border-stroke dark:border-dark-3">
+                        <div>
                             <div className="flex justify-between items-start mb-3">
                                 <label className="block font-medium text-dark dark:text-white">Punto de Encuentro</label>
                                 <button
                                     type="button"
                                     onClick={() => setIsLocationPickerOpen(true)}
-                                    className="text-sm text-primary hover:underline flex items-center gap-1"
+                                    className="text-sm text-primary hover:underline"
                                 >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                                     Seleccionar en Mapa
                                 </button>
                             </div>
@@ -346,11 +338,6 @@ export default function TourForm({ initialData, availablePlaces, onSubmit, isSub
                                 className="w-full rounded-lg border border-stroke bg-transparent px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
                                 placeholder="Ej: Lobby del Hotel Principal"
                             />
-                            {formData.meetingPointLink && (
-                                <p className="mt-2 text-xs text-gray-500 truncate">
-                                    Link: {formData.meetingPointLink}
-                                </p>
-                            )}
                         </div>
 
                         {/* Horarios */}
@@ -390,14 +377,7 @@ export default function TourForm({ initialData, availablePlaces, onSubmit, isSub
                         className={`rounded-lg px-8 py-3 font-medium text-white shadow-lg hover:shadow-xl transition-all flex items-center gap-2 ${isSubmitting || isUploading ? "bg-primary/70 cursor-wait" : "bg-primary hover:bg-opacity-90 active:scale-95"}`}
                         disabled={isSubmitting || isUploading}
                     >
-                        {isSubmitting ? (
-                            <>
-                                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                Guardando...
-                            </>
-                        ) : (
-                            "Guardar Tour"
-                        )}
+                        {isSubmitting ? "Guardando..." : "Guardar Tour"}
                     </button>
                 </div>
             </form>

@@ -1,37 +1,12 @@
 "use client";
 
 import { GoogleIcon } from "@/assets/icons";
-import { auth } from "@/lib/firebase";
-import { ApiService } from "@/services/api-service";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 export default function GoogleSigninButton({ text }: { text: string }) {
-  const router = useRouter();
 
   const handleGoogleSignIn = async () => {
-    try {
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-
-      // Sync user to DB and get role
-      const dbUser = await ApiService.syncUser({
-        uid: user.uid,
-        email: user.email || "",
-        displayName: user.displayName || "",
-        photoURL: user.photoURL
-      });
-
-      if (dbUser.role === 'admin') {
-        router.push("/admin/destinos");
-      } else {
-        router.push("/");
-      }
-    } catch (error) {
-      console.error("Google Sign-in Error:", error);
-      alert("Error al iniciar sesión con Google");
-    }
+    await signIn("google", { callbackUrl: "/" });
   };
 
   return (

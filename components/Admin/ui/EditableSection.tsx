@@ -30,7 +30,7 @@ export default function EditableSection({
                 {!isEditing && (
                     <button
                         onClick={onEdit}
-                        className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-primary transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
+                        className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/5 text-primary transition-colors"
                         title="Editar sección"
                     >
                         <svg className="w-5 h-5 fill-current" viewBox="0 0 20 20">
@@ -49,14 +49,14 @@ export default function EditableSection({
                     <button
                         onClick={onCancel}
                         disabled={isSaving}
-                        className="rounded-lg border border-stroke px-4 py-2 text-sm font-medium text-dark hover:bg-gray-50 dark:border-dark-3 dark:text-white dark:hover:bg-white/5 transition-colors disabled:opacity-50"
+                        className="rounded-full border border-stroke px-4 py-2 text-sm font-medium text-dark hover:bg-gray-50 dark:border-dark-3 dark:text-white dark:hover:bg-white/5 transition-colors disabled:opacity-50"
                     >
                         Cancelar
                     </button>
                     <button
                         onClick={onSave}
                         disabled={isSaving}
-                        className="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-white hover:bg-opacity-90 transition-colors shadow-md disabled:opacity-50 flex items-center gap-2"
+                        className="rounded-full bg-primary px-6 py-2 text-sm font-medium text-white hover:bg-opacity-90 transition-colors shadow-md disabled:opacity-50 flex items-center gap-2"
                     >
                         {isSaving ? (
                             <>

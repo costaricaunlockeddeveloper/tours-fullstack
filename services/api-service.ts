@@ -13,6 +13,8 @@ export interface Place {
     name: string;
     description: string;
     images: string[];
+    rating?: number;
+    reviews?: number;
     slug?: string;
     officialName?: string;
     shortDescription?: string;
@@ -39,6 +41,9 @@ export interface Tour {
     description: string;
     price: number;
     priceChild?: number;
+    rating?: number;
+    reviews?: number;
+    location?: string;
     placeIds: string[];
     places?: Place[];
     gallery?: string[];
@@ -56,6 +61,7 @@ export interface Tour {
         other?: boolean; // Added for flexibility
     };
     meetingPoint?: string;
+    meetingPointDescription?: string;
     meetingPointCoordinates?: { lat: number; lng: number };
     meetingPointLink?: string;
     schedules?: string[];
@@ -66,15 +72,20 @@ export interface Tour {
     cancellationPolicy?: string;
     pricingTiers?: TourPricing[];
     schedule?: string;
-    guideName?: string;
     includes?: string[];
     excludes?: string[];
+    itinerary?: {
+        title: string;
+        description: string;
+        duration: string;
+    }[];
 }
 
 export interface DailyItinerary {
     day: number;
     title: string;
     description: string;
+    accommodation?: string;
     activities?: string[]; // Added
     meals?: string[]; // Added
 }
@@ -89,6 +100,9 @@ export interface Package {
     duration_nights: number;
     included: string[];
     description?: string;
+    rating?: number;
+    reviews?: number;
+    location?: string;
     tourIds?: string[];
     tours?: Tour[];
     itinerary?: DailyItinerary[];
@@ -323,15 +337,7 @@ export const ApiService = {
         if (!res.ok) throw new Error("Failed to fetch users");
         return res.json();
     },
-    syncUser: async (user: { uid: string; email: string; displayName?: string; photoURL?: string | null }) => {
-        const res = await fetch("/api/auth/sync", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(user),
-        });
-        if (!res.ok) throw new Error("Failed to sync user");
-        return res.json();
-    },
+
     updateUserRole: async (uid: string, role: "admin" | "client") => {
         const res = await fetch(`${USERS_API}/${uid}`, {
             method: "PUT",

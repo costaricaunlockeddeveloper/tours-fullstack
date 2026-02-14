@@ -9,11 +9,15 @@ const PackageSchema = new mongoose.Schema({
     duration_nights: { type: Number, required: true },
     included: [{ type: String }],
     description: { type: String },
+    rating: { type: Number, default: 0 },
+    reviews: { type: Number, default: 0 },
+    location: { type: String },
     tourIds: [{ type: String }],
     itinerary: [{
         day: { type: Number },
         title: { type: String },
         description: { type: String },
+        accommodation: { type: String },
     }],
     priceType: {
         type: String,

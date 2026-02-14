@@ -40,7 +40,7 @@ export default function CreatePackagePage() {
                 </div>
             </div>
 
-            <PackageForm onSubmit={handleSubmit} isSubmitting={isSubmitting} />
+            <PackageForm onSubmit={handleSubmit} isSubmitting={isSubmitting} simpleMode={true} />
         </div>
     );
 }

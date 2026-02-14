@@ -5,6 +5,9 @@ const TourSchema = new mongoose.Schema({
     description: { type: String, required: true },
     price: { type: Number, required: true },
     priceChild: { type: Number },
+    rating: { type: Number, default: 0 },
+    reviews: { type: Number, default: 0 },
+    location: { type: String },
     placeIds: [{ type: String }],
     gallery: [{ type: String }],
     duration: { type: String },
@@ -23,6 +26,7 @@ const TourSchema = new mongoose.Schema({
         translator: { type: Boolean },
     },
     meetingPoint: { type: String },
+    meetingPointDescription: { type: String },
     meetingPointCoordinates: {
         lat: { type: Number },
         lng: { type: Number },
@@ -42,6 +46,11 @@ const TourSchema = new mongoose.Schema({
     guideName: { type: String },
     includes: [{ type: String }],
     excludes: [{ type: String }],
+    itinerary: [{
+        title: { type: String },
+        description: { type: String },
+        duration: { type: String }
+    }],
 }, {
     timestamps: true,
     toJSON: {
