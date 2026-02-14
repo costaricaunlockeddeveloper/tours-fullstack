@@ -74,11 +74,6 @@ export default function DestinationsAdmin() {
                                 fill
                                 className="object-cover transition-transform duration-300 group-hover:scale-110"
                             />
-                            {place.heroImage && (
-                                <div className="absolute top-2 left-2 bg-primary/80 px-2 py-1 rounded text-xs text-white backdrop-blur-sm">
-                                    Hero Asset
-                                </div>
-                            )}
                         </div>
 
                         <div className="p-6 flex-1 flex flex-col">

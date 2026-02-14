@@ -7,7 +7,7 @@ export const NAV_DATA = [
     items: [
       {
         title: "Dashboard",
-        url: "/",
+        url: "/dashboard",
         icon: Icons.HomeIcon,
         items: [],
         roles: ["admin", "client"], // Example idea, but I can't change type definition easily here without updating usages.

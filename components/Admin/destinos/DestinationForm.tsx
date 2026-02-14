@@ -19,18 +19,12 @@ export default function DestinationForm({ initialData, onSubmit, isSubmitting, o
     const defaultFormState: Partial<Place> = {
         name: "",
         slug: "",
-        officialName: "",
-        shortDescription: "",
         description: "",
         region: "",
         category: "playas",
         ecosystem: "",
-        rating: 4.8,
-        reviews: 0,
         googleMapsLink: "",
-        howToGetThere: "",
         view360Main: "",
-        view360Extras: [],
         heroImage: "",
         galleryImages: [], // For new flow
         images: [], // Legacy flow
@@ -74,7 +68,7 @@ export default function DestinationForm({ initialData, onSubmit, isSubmitting, o
         const placeData: any = {
             ...formData,
             // Provide defaults for required fields in schema if in simple mode
-            description: formData.description || formData.shortDescription || "Descripción pendiente...",
+            description: formData.description || "Descripción pendiente...",
             images: formData.galleryImages || [] // Sync legacy field
         };
 
@@ -139,20 +133,7 @@ export default function DestinationForm({ initialData, onSubmit, isSubmitting, o
                             />
                             {!simpleMode && <p className="text-xs text-gray-500 mt-1">Usado para la carpeta: /public/destino/{formData.slug || "slug"}</p>}
                         </div>
-                        {!simpleMode && (
-                            <div>
-                                <label className="mb-2 block font-medium text-dark dark:text-white text-sm">
-                                    Nombre Oficial
-                                </label>
-                                <input
-                                    type="text"
-                                    value={formData.officialName}
-                                    onChange={(e) => setFormData({ ...formData, officialName: e.target.value })}
-                                    className="w-full rounded-lg border border-stroke bg-transparent px-4 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
-                                    placeholder="ej: Parque Nacional Manuel Antonio"
-                                />
-                            </div>
-                        )}
+
                         <div>
                             <label className="mb-2 block font-medium text-dark dark:text-white text-sm">
                                 Región
@@ -175,7 +156,7 @@ export default function DestinationForm({ initialData, onSubmit, isSubmitting, o
                             </select>
                         </div>
 
-                        <div className={simpleMode ? "md:col-span-2" : "md:col-span-2"}>
+                        <div>
                             <label className="mb-2 block font-medium text-dark dark:text-white text-sm">
                                 Categoría Principal
                             </label>
@@ -192,20 +173,36 @@ export default function DestinationForm({ initialData, onSubmit, isSubmitting, o
                             </select>
                         </div>
 
-                        <div className="md:col-span-2">
-                            <label className="mb-2 block font-medium text-dark dark:text-white text-sm flex justify-between">
-                                Descripción Corta (SEO & Cards)
-                                <span className={`${(formData.shortDescription?.length || 0) > 120 ? 'text-red-500' : 'text-gray-400'}`}>
-                                    {(formData.shortDescription?.length || 0)}/120
-                                </span>
+                        <div>
+                            <label className="mb-2 block font-medium text-dark dark:text-white text-sm">
+                                Tipo de Clima/Ecosistema
                             </label>
-                            <textarea
-                                value={formData.shortDescription}
-                                onChange={(e) => setFormData({ ...formData, shortDescription: e.target.value })}
+                            <select
+                                value={formData.ecosystem}
+                                onChange={(e) => setFormData({ ...formData, ecosystem: e.target.value })}
                                 className="w-full rounded-lg border border-stroke bg-transparent px-4 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
-                                rows={2}
-                                maxLength={120}
-                                placeholder="Breve descripción atractiva para las tarjetas y SEO..."
+                            >
+                                <option value="">Seleccionar Clima/Ecosistema</option>
+                                <option value="Bosque Nuboso">Bosque Nuboso</option>
+                                <option value="Bosque Lluvioso">Bosque Lluvioso</option>
+                                <option value="Bosque Seco">Bosque Seco</option>
+                                <option value="Playa">Playa</option>
+                                <option value="Montaña">Montaña</option>
+                                <option value="Volcánico">Volcánico</option>
+                                <option value="Manglar">Manglar</option>
+                                <option value="Urbano">Urbano</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="mb-2 block font-medium text-dark dark:text-white text-sm">
+                                Vista 360 Principal (Link)
+                            </label>
+                            <input
+                                type="text"
+                                value={formData.view360Main}
+                                onChange={(e) => setFormData({ ...formData, view360Main: e.target.value })}
+                                className="w-full rounded-lg border border-stroke bg-transparent px-4 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
+                                placeholder="https://kuula.co/..."
                             />
                         </div>
                     </div>
@@ -215,58 +212,12 @@ export default function DestinationForm({ initialData, onSubmit, isSubmitting, o
                     <>
                         <hr className="border-stroke dark:border-dark-3" />
 
-                        {/* Section 2: Datos Operativos */}
+                        {/* Section 2: Ubicación */}
                         <div>
                             <h4 className="flex items-center gap-2 mb-4 text-lg font-semibold text-primary">
                                 <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs">2</span>
-                                Datos Operativos y Specs
+                                Ubicación y Coordenadas
                             </h4>
-                            {/* Sub-section: Categorización y Clima */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-
-                                <div>
-                                    <label className="mb-2 block font-medium text-dark dark:text-white text-sm">
-                                        Tipo de Clima/Ecosistema
-                                    </label>
-                                    <select
-                                        value={formData.ecosystem}
-                                        onChange={(e) => setFormData({ ...formData, ecosystem: e.target.value })}
-                                        className="w-full rounded-lg border border-stroke bg-transparent px-4 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
-                                    >
-                                        <option value="">Seleccionar Clima/Ecosistema</option>
-                                        <option value="Bosque Nuboso">Bosque Nuboso</option>
-                                        <option value="Bosque Lluvioso">Bosque Lluvioso</option>
-                                        <option value="Bosque Seco">Bosque Seco</option>
-                                        <option value="Playa">Playa</option>
-                                        <option value="Montaña">Montaña</option>
-                                        <option value="Volcánico">Volcánico</option>
-                                        <option value="Manglar">Manglar</option>
-                                        <option value="Urbano">Urbano</option>
-                                    </select>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="mb-2 block font-medium text-dark dark:text-white text-sm">Rating (0-5)</label>
-                                        <input
-                                            type="number" step="0.1" min="0" max="5"
-                                            value={formData.rating}
-                                            onChange={e => setFormData({ ...formData, rating: parseFloat(e.target.value) })}
-                                            className="w-full rounded-lg border border-stroke bg-transparent px-3 py-3 text-dark outline-none dark:border-dark-3 dark:text-white"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="mb-2 block font-medium text-dark dark:text-white text-sm">Reviews Count</label>
-                                        <input
-                                            type="number" min="0"
-                                            value={formData.reviews}
-                                            onChange={e => setFormData({ ...formData, reviews: parseInt(e.target.value) })}
-                                            className="w-full rounded-lg border border-stroke bg-transparent px-3 py-3 text-dark outline-none dark:border-dark-3 dark:text-white"
-                                        />
-                                    </div>
-                                </div>
-
-                            </div>
 
                             {/* Sub-section: Ubicación (Full Row) */}
                             <div className="mb-6 p-4 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashed border-stroke dark:border-dark-3">

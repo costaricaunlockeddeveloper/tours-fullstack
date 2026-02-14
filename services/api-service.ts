@@ -1,7 +1,8 @@
 
 // Types matching models
 export interface User {
-    uid: string;
+    id: string;
+    uid?: string; // Optional for backward compat
     email: string;
     displayName: string;
     role: "admin" | "client";
@@ -13,11 +14,7 @@ export interface Place {
     name: string;
     description: string;
     images: string[];
-    rating?: number;
-    reviews?: number;
     slug?: string;
-    officialName?: string;
-    shortDescription?: string;
     region?: string;
     heroImage?: string;
     galleryImages?: string[];
@@ -25,9 +22,7 @@ export interface Place {
     ecosystem?: string;
     category: "playas" | "volcanes" | "parques" | "rutas" | "otro";
     googleMapsLink?: string;
-    howToGetThere?: string;
     view360Main?: string;
-    view360Extras?: string[];
 }
 
 export interface TourPricing {
@@ -94,17 +89,18 @@ export interface Package {
     id: string;
     title: string;
     price: number;
+    priceChild?: number;
     images: string[];
     tags: string[];
-    duration_days: number;
-    duration_nights: number;
     included: string[];
     description?: string;
     rating?: number;
     reviews?: number;
     location?: string;
     tourIds?: string[];
+    placeIds?: string[];
     tours?: Tour[];
+    places?: Place[];
     itinerary?: DailyItinerary[];
     priceType?: "per_person" | "per_group";
     includesTransport?: boolean;
@@ -241,7 +237,8 @@ export const ApiService = {
         return packages.map((pkg) => ({
             ...pkg,
             id: (pkg as any)._id || pkg.id,
-            tours: tours.filter((t) => pkg.tourIds?.includes(t.id))
+            tours: tours.filter((t) => pkg.tourIds?.includes(t.id)),
+            places: placesData.filter((p) => pkg.placeIds?.includes((p as any)._id || p.id))
         }));
     },
     getPackage: async (id: string): Promise<Package> => {
@@ -338,19 +335,19 @@ export const ApiService = {
         return res.json();
     },
 
-    updateUserRole: async (uid: string, role: "admin" | "client") => {
-        const res = await fetch(`${USERS_API}/${uid}`, {
+    updateUserRole: async (id: string, role: "admin" | "client") => {
+        const res = await fetch(`${USERS_API}/${id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ role }),
         });
         if (!res.ok) throw new Error("Failed to update user role");
     },
-    getUserRole: async (uid: string): Promise<"admin" | "client" | null> => {
+    getUserRole: async (id: string): Promise<"admin" | "client" | null> => {
         // Since users are fetched via AuthContext usually, we might not need this.
         // But if admin checks another user:
         try {
-            const res = await fetch(`${USERS_API}/${uid}`);
+            const res = await fetch(`${USERS_API}/${id}`);
             if (!res.ok) return null;
             const user = await res.json();
             return user.role;

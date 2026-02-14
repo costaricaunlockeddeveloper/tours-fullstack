@@ -45,7 +45,7 @@ export default function CreateDestinationPage() {
                 onSubmit={handleSubmit}
                 isSubmitting={isSubmitting}
                 onCancel={() => router.push("/admin/destinos")}
-                simpleMode={true}
+                simpleMode={false}
             />
         </div>
     );

@@ -41,24 +41,6 @@ export default function SigninWithPassword() {
     }
   };
 
-  const handleDirectAdminLogin = async () => {
-    setLoading(true);
-    const adminEmail = "admin@admin.com";
-    const adminPass = "admin";
-
-    try {
-      // Create seed just in case
-      await fetch('/api/seed');
-      await login(adminEmail, adminPass);
-      router.push("/admin/destinos");
-    } catch (error) {
-      console.error("Direct admin login failed:", error);
-      alert("No se pudo acceder como administrador. Verifica la consola.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <InputGroup
@@ -116,17 +98,6 @@ export default function SigninWithPassword() {
           {loading && (
             <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-white border-t-transparent" />
           )}
-        </button>
-
-        <button
-          type="button"
-          onClick={handleDirectAdminLogin}
-          disabled={loading}
-          className="group relative flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-stroke bg-white p-4 font-medium text-dark transition hover:bg-gray-1 dark:border-white/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20"
-        >
-          <span className="relative flex items-center gap-2">
-            🚀 Acceso Directo Admin
-          </span>
         </button>
       </div>
     </form>

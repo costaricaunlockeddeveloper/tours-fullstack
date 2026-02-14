@@ -4,11 +4,7 @@ const PlaceSchema = new mongoose.Schema({
     name: { type: String, required: true },
     description: { type: String, required: true },
     images: [{ type: String }],
-    rating: { type: Number, default: 4.5 },
-    reviews: { type: Number, default: 0 },
     slug: { type: String },
-    officialName: { type: String },
-    shortDescription: { type: String },
     region: { type: String },
     heroImage: { type: String },
     galleryImages: [{ type: String }],
@@ -23,9 +19,7 @@ const PlaceSchema = new mongoose.Schema({
         required: true,
     },
     googleMapsLink: { type: String },
-    howToGetThere: { type: String },
     view360Main: { type: String },
-    view360Extras: [{ type: String }],
 }, {
     timestamps: true,
     toJSON: {

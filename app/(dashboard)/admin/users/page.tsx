@@ -25,10 +25,10 @@ export default function UsersAdmin() {
         loadUsers();
     }, []);
 
-    const handleRoleChange = async (uid: string, newRole: "admin" | "client") => {
+    const handleRoleChange = async (id: string, newRole: "admin" | "client") => {
         if (confirm(`¿Cambiar rol a ${newRole === "admin" ? "Administrador" : "Cliente"}?`)) {
             try {
-                await ApiService.updateUserRole(uid, newRole);
+                await ApiService.updateUserRole(id, newRole);
                 loadUsers();
             } catch (error) {
                 alert("Error al actualizar rol");
@@ -89,7 +89,7 @@ export default function UsersAdmin() {
                         <div className="col-span-2 flex items-center">
                             <select
                                 value={user.role || "client"}
-                                onChange={(e) => handleRoleChange(user.uid, e.target.value as "admin" | "client")}
+                                onChange={(e) => handleRoleChange(user.id, e.target.value as "admin" | "client")}
                                 className={`inline-flex rounded-full bg-opacity-10 px-3 py-1 text-sm font-medium ${user.role === "admin"
                                     ? "bg-success text-success"
                                     : "bg-warning text-warning"

@@ -80,10 +80,10 @@ export interface Package {
     price: number;
     images: string[];
     tags: string[];
-    duration_days: number;
-    duration_nights: number;
     included: string[];
     description?: string;
+    placeIds?: string[];
+    places?: Place[];
     tourIds?: string[];
     tours?: Tour[];
     itinerary?: DailyItinerary[];
