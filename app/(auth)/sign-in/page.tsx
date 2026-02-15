@@ -58,7 +58,7 @@ export default function SignIn() {
               Bienvenido de nuevo
             </h2>
             <p className="text-body-color dark:text-dark-6">
-              Ingresa con Google o tus credenciales
+              Ingresa con Google
             </p>
           </div>
 
