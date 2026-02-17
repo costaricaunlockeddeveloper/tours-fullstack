@@ -28,7 +28,7 @@ export async function PUT(
     try {
         const body = await request.json();
         const tour = await Tour.findByIdAndUpdate(id, body, {
-            new: true,
+            returnDocument: 'after',
             runValidators: true,
         });
         if (!tour) {

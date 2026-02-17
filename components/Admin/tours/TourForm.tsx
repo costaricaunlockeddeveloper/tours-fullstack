@@ -2,97 +2,99 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
-import { Tour, Place } from "@/services/api-service";
+import { Tour, Place, TourDefaults } from "@/services/api-service";
+import { generateSlug } from "@/utils/generate-slug";
 import LocationPickerModal from "@/components/Admin/LocationPickerModal";
-import GalleryUploader from "@/components/Admin/GalleryUploader";
-import ListManager from "@/components/Admin/Commons/ListManager";
+import MediaGalleryEditor from "@/components/Admin/Commons/MediaGalleryEditor";
 import StarRatingInput from "@/components/Admin/Commons/StarRatingInput";
 import CalendarScheduler from "@/components/Admin/tours/CalendarScheduler";
-import dayjs from "dayjs";
-import "dayjs/locale/es";
-
-dayjs.locale("es");
 
 interface TourFormProps {
     initialData?: Partial<Tour>;
-    availablePlaces: Place[]; // For the selection list
+    availablePlaces: Place[];
     onSubmit: (data: Partial<Tour>) => Promise<void>;
     isSubmitting: boolean;
     onCancel?: () => void;
-    simpleMode?: boolean; // New prop for simplified creation
+    simpleMode?: boolean;
 }
 
+const DEFAULT_DEFAULTS: TourDefaults = {
+    price: 0,
+    priceChild: 0,
+    maxQuota: 0,
+    schedules: [],
+};
+
 export default function TourForm({ initialData, availablePlaces, onSubmit, isSubmitting, onCancel, simpleMode = false }: TourFormProps) {
-    // Initial State
     const defaultFormState: Partial<Tour> = {
         name: "",
+        slug: "",
         description: "",
-        price: 0,
-        priceChild: 0,
+        duration: 0,
         placeIds: [],
-        duration: "",
-        difficulty: "Moderado",
-        maxQuota: 0,
-        meetingPoint: "",
-        meetingPointLink: "",
-        meetingPointCoordinates: { lat: 0, lng: 0 },
+        meetingPoint: { name: "", description: "", link: "" },
         rating: 0,
         reviews: 0,
-        location: "",
-        // Lists
-        features: {
-            accommodation: false,
-            transport: false,
-            entranceFee: false,
-            nextTour: false,
-            guide: false,
-            translator: false,
-        },
-        whatItOffers: [],
-        schedules: [],
+        images: {},
+        defaults: { ...DEFAULT_DEFAULTS },
         availableDates: [],
-        cancellationPolicy: "",
-        gallery: []
+        includes: [],
+        excludes: [],
     };
 
     const [formData, setFormData] = useState<Partial<Tour>>(initialData || defaultFormState);
     const [isLocationPickerOpen, setIsLocationPickerOpen] = useState(false);
-    const [isUploading, setIsUploading] = useState(false);
 
     useEffect(() => {
         if (initialData) {
             setFormData(prev => ({
                 ...defaultFormState,
                 ...initialData,
-                features: initialData.features || defaultFormState.features,
-                whatItOffers: initialData.whatItOffers || [],
-                schedules: initialData.schedules || [],
+                meetingPoint: initialData.meetingPoint || { name: "", description: "", link: "" },
+                defaults: initialData.defaults || { ...DEFAULT_DEFAULTS },
                 availableDates: initialData.availableDates || [],
-                gallery: initialData.gallery || []
+                images: initialData.images || {},
             }));
         }
     }, [initialData]);
+
+    // Auto-generate slug from name
+    useEffect(() => {
+        if (formData.name && !initialData?.slug) {
+            setFormData(prev => ({ ...prev, slug: generateSlug(prev.name || "") }));
+        }
+    }, [formData.name, initialData?.slug]);
 
     const togglePlaceSelection = (placeId: string) => {
         setFormData((prev) => {
             const currentIds = prev.placeIds || [];
             const isSelected = currentIds.includes(placeId);
-            if (isSelected) {
-                return { ...prev, placeIds: currentIds.filter(id => id !== placeId) };
-            } else {
-                return { ...prev, placeIds: [...currentIds, placeId] };
-            }
+            return {
+                ...prev,
+                placeIds: isSelected
+                    ? currentIds.filter(id => id !== placeId)
+                    : [...currentIds, placeId]
+            };
         });
     };
 
     const handleLocationConfirm = (lat: number, lng: number) => {
         setFormData(prev => ({
             ...prev,
-            meetingPointCoordinates: { lat, lng },
-            meetingPointLink: `https://www.google.com/maps/?q=${lat},${lng}`
+            meetingPoint: {
+                ...prev.meetingPoint,
+                coordinates: { lat, lng },
+                link: `https://www.google.com/maps/?q=${lat},${lng}`,
+            },
         }));
         setIsLocationPickerOpen(false);
+    };
+
+    const updateMeetingPoint = (field: string, value: any) => {
+        setFormData(prev => ({
+            ...prev,
+            meetingPoint: { ...prev.meetingPoint, [field]: value },
+        }));
     };
 
     const handleFormSubmit = async (e: React.FormEvent) => {
@@ -100,8 +102,7 @@ export default function TourForm({ initialData, availablePlaces, onSubmit, isSub
         await onSubmit(formData);
     };
 
-    // Gallery is now handled by GalleryUploader
-
+    const currentDefaults = formData.defaults || { ...DEFAULT_DEFAULTS };
 
     return (
         <>
@@ -148,15 +149,24 @@ export default function TourForm({ initialData, availablePlaces, onSubmit, isSub
                     <h3 className="text-lg font-bold text-dark dark:text-white mb-4">Información General</h3>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div className="md:col-span-2">
+                        <div>
                             <label className="mb-2.5 block font-medium text-dark dark:text-white">Nombre del Tour <span className="text-red-500">*</span></label>
                             <input
                                 type="text"
                                 placeholder="Ej: Aventura en la Amazonía"
                                 value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                className="w-full rounded-lg border border-stroke bg-transparent px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary disabled:cursor-default disabled:bg-gray-2 dark:disabled:bg-dark-2"
+                                className="w-full rounded-lg border border-stroke bg-transparent px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
                                 required
+                            />
+                        </div>
+                        <div>
+                            <label className="mb-2.5 block font-medium text-dark dark:text-white">Slug</label>
+                            <input
+                                type="text"
+                                value={formData.slug || ""}
+                                readOnly
+                                className="w-full rounded-lg border border-stroke bg-gray-100 dark:bg-white/5 px-5 py-3 text-dark/60 outline-none dark:border-dark-3 dark:text-white/60 cursor-not-allowed"
                             />
                         </div>
                         <div className="md:col-span-2">
@@ -170,53 +180,19 @@ export default function TourForm({ initialData, availablePlaces, onSubmit, isSub
                                 required
                             />
                         </div>
-                        {!simpleMode && (
-                            <div className="md:col-span-2">
-                                <label className="mb-2.5 block font-medium text-dark dark:text-white">Ubicación (Texto para Card)</label>
-                                <input
-                                    type="text"
-                                    placeholder="Ej: La Fortuna, San Carlos"
-                                    value={formData.location}
-                                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                                    className="w-full rounded-lg border border-stroke bg-transparent px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
-                                />
-                            </div>
-                        )}
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label className="mb-2.5 block font-medium text-dark dark:text-white">Duración</label>
-                            <input
-                                type="text"
-                                value={formData.duration}
-                                onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-                                className="w-full rounded-lg border border-stroke bg-transparent px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
-                                placeholder="Ej: 3 días"
-                                required={simpleMode}
-                            />
-                        </div>
-                        <div>
-                            <label className="mb-2.5 block font-medium text-dark dark:text-white">Dificultad</label>
-                            <select
-                                value={formData.difficulty}
-                                onChange={(e) => setFormData({ ...formData, difficulty: e.target.value as any })}
-                                className="w-full rounded-lg border border-stroke bg-transparent px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
-                            >
-                                <option value="Fácil">Fácil</option>
-                                <option value="Moderado">Moderado</option>
-                                <option value="Difícil">Difícil</option>
-                                <option value="Extremo">Extremo</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label className="mb-2.5 block font-medium text-dark dark:text-white">Cupo Máximo</label>
+                            <label className="mb-2.5 block font-medium text-dark dark:text-white">Duración (horas)</label>
                             <input
                                 type="number"
-                                value={formData.maxQuota}
-                                onChange={(e) => setFormData({ ...formData, maxQuota: Number(e.target.value) })}
+                                min="0"
+                                step="0.5"
+                                value={formData.duration || ""}
+                                onChange={(e) => setFormData({ ...formData, duration: Number(e.target.value) })}
                                 className="w-full rounded-lg border border-stroke bg-transparent px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
-                                required={simpleMode}
+                                placeholder="Ej: 4"
                             />
                         </div>
                     </div>
@@ -241,15 +217,14 @@ export default function TourForm({ initialData, availablePlaces, onSubmit, isSub
                     )}
                 </div>
 
-                {/* 3. Multimedia */}
+                {/* 3. Galería Multimedia */}
                 <div>
-                    <h3 className="text-lg font-bold text-dark dark:text-white mb-4">Imágenes del Tour</h3>
-                    <GalleryUploader
-                        images={formData.gallery || []}
-                        onImagesChange={(newImages) => setFormData(prev => ({ ...prev, gallery: newImages }))}
+                    <h3 className="text-lg font-bold text-dark dark:text-white mb-4">Galería Multimedia</h3>
+                    <MediaGalleryEditor
+                        images={formData.images || {}}
+                        onChange={(newImages) => setFormData(prev => ({ ...prev, images: newImages }))}
                         folderName="tours"
-                        slug={initialData?.id || formData.name?.toLowerCase() || "new-tour"}
-                        title=""
+                        slug={formData.slug || initialData?.id || "new-tour"}
                     />
                 </div>
 
@@ -260,103 +235,68 @@ export default function TourForm({ initialData, availablePlaces, onSubmit, isSub
 
                         <h3 className="text-lg font-bold text-dark dark:text-white">Detalles Avanzados</h3>
 
-                        {/* Incluye (Checkboxes) */}
+                        {/* Punto de Encuentro (Unified) */}
                         <div>
-                            <label className="mb-4 block font-medium text-dark dark:text-white">Servicios Incluidos</label>
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                <label className="flex items-center gap-3">
-                                    <input type="checkbox" checked={formData.features?.accommodation} onChange={e => setFormData({ ...formData, features: { ...formData.features, accommodation: e.target.checked } })} className="w-5 h-5 rounded text-primary focus:ring-primary" />
-                                    <span>Alojamiento</span>
-                                </label>
-                                <label className="flex items-center gap-3">
-                                    <input type="checkbox" checked={formData.features?.transport} onChange={e => setFormData({ ...formData, features: { ...formData.features, transport: e.target.checked } })} className="w-5 h-5 rounded text-primary focus:ring-primary" />
-                                    <span>Transporte</span>
-                                </label>
-                                <label className="flex items-center gap-3">
-                                    <input type="checkbox" checked={formData.features?.entranceFee} onChange={e => setFormData({ ...formData, features: { ...formData.features, entranceFee: e.target.checked } })} className="w-5 h-5 rounded text-primary focus:ring-primary" />
-                                    <span>Entradas</span>
-                                </label>
-                                <label className="flex items-center gap-3">
-                                    <input type="checkbox" checked={formData.features?.guide} onChange={e => setFormData({ ...formData, features: { ...formData.features, guide: e.target.checked } })} className="w-5 h-5 rounded text-primary focus:ring-primary" />
-                                    <span>Guía</span>
-                                </label>
-                                <label className="flex items-center gap-3">
-                                    <input type="checkbox" checked={formData.features?.translator} onChange={e => setFormData({ ...formData, features: { ...formData.features, translator: e.target.checked } })} className="w-5 h-5 rounded text-primary focus:ring-primary" />
-                                    <span>Traductor</span>
-                                </label>
+                            <h4 className="font-medium text-dark dark:text-white mb-3">Punto de Encuentro</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label className="block text-xs font-semibold uppercase text-gray-500 mb-1">Nombre del Lugar</label>
+                                    <input
+                                        type="text"
+                                        value={formData.meetingPoint?.name || ""}
+                                        onChange={(e) => updateMeetingPoint("name", e.target.value)}
+                                        className="w-full rounded-lg border border-stroke bg-transparent px-5 py-3 text-dark outline-none transition focus:border-primary dark:border-dark-3 dark:text-white"
+                                        placeholder="Ej: Lobby del Hotel Principal"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-semibold uppercase text-gray-500 mb-1">Google Maps Link</label>
+                                    <input
+                                        type="text"
+                                        value={formData.meetingPoint?.link || ""}
+                                        onChange={(e) => updateMeetingPoint("link", e.target.value)}
+                                        className="w-full rounded-lg border border-stroke bg-transparent px-5 py-3 text-dark outline-none transition focus:border-primary dark:border-dark-3 dark:text-white"
+                                        placeholder="https://maps.google.com/..."
+                                    />
+                                </div>
                             </div>
-                        </div>
-
-                        {/* What It Offers - ListManager */}
-                        <div className="mb-6">
-                            <ListManager
-                                label="Lo que ofrece el tour"
-                                items={formData.whatItOffers || []}
-                                onItemsChange={(items) => setFormData({ ...formData, whatItOffers: items })}
-                                placeholder="Ej: Transporte ida y vuelta"
-                            />
-                        </div>
-
-                        {/* Precios */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label className="mb-2 block font-medium text-dark dark:text-white">Precio Adultos ($)</label>
-                                <input
-                                    type="number"
-                                    value={formData.price}
-                                    onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
-                                    className="w-full rounded-lg border border-stroke bg-transparent px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
+                            <div className="mb-4">
+                                <label className="block text-xs font-semibold uppercase text-gray-500 mb-1">Instrucciones / Descripción</label>
+                                <textarea
+                                    value={formData.meetingPoint?.description || ""}
+                                    onChange={(e) => updateMeetingPoint("description", e.target.value)}
+                                    className="w-full rounded-lg border border-stroke bg-transparent px-5 py-3 text-dark outline-none transition focus:border-primary dark:border-dark-3 dark:text-white"
+                                    rows={2}
+                                    placeholder="Instrucciones breves para llegar..."
                                 />
                             </div>
-                            <div>
-                                <label className="mb-2 block font-medium text-dark dark:text-white">Precio Niños ($)</label>
-                                <input
-                                    type="number"
-                                    value={formData.priceChild}
-                                    onChange={(e) => setFormData({ ...formData, priceChild: Number(e.target.value) })}
-                                    className="w-full rounded-lg border border-stroke bg-transparent px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
-                                />
-                            </div>
+                            <button
+                                type="button"
+                                onClick={() => setIsLocationPickerOpen(true)}
+                                className="flex items-center gap-2 rounded-full border border-primary border-dashed px-4 py-2 text-primary hover:bg-primary/5 transition text-sm"
+                            >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                Seleccionar Ubicación en Mapa
+                            </button>
+                            {formData.meetingPoint?.coordinates && (
+                                <p className="text-xs text-green-600 mt-1">
+                                    ✓ ({formData.meetingPoint.coordinates.lat.toFixed(4)}, {formData.meetingPoint.coordinates.lng.toFixed(4)})
+                                </p>
+                            )}
                         </div>
 
-                        {/* Punto de Encuentro */}
+                        {/* Programación y Fechas */}
                         <div>
-                            <div className="flex justify-between items-start mb-3">
-                                <label className="block font-medium text-dark dark:text-white">Punto de Encuentro</label>
-                                <button
-                                    type="button"
-                                    onClick={() => setIsLocationPickerOpen(true)}
-                                    className="text-sm text-primary hover:underline"
-                                >
-                                    Seleccionar en Mapa
-                                </button>
-                            </div>
-                            <input
-                                type="text"
-                                value={formData.meetingPoint}
-                                onChange={(e) => setFormData({ ...formData, meetingPoint: e.target.value })}
-                                className="w-full rounded-lg border border-stroke bg-transparent px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
-                                placeholder="Ej: Lobby del Hotel Principal"
+                            <h3 className="text-lg font-bold text-dark dark:text-white mb-4">Programación y Fechas</h3>
+                            <CalendarScheduler
+                                defaults={currentDefaults}
+                                availableDates={formData.availableDates || []}
+                                onChange={(dates) => setFormData(prev => ({ ...prev, availableDates: dates }))}
+                                onDefaultsChange={(newDefaults) => setFormData(prev => ({ ...prev, defaults: newDefaults }))}
                             />
                         </div>
 
-                        {/* Horarios */}
-                        <CalendarScheduler
-                            schedules={formData.schedules || []}
-                            availableDates={formData.availableDates || []}
-                            onChange={(schedules, dates) => setFormData({ ...formData, schedules, availableDates: dates })}
-                        />
 
-                        {/* Políticas */}
-                        <div>
-                            <label className="mb-2 block font-medium text-dark dark:text-white">Políticas de Cancelación</label>
-                            <textarea
-                                value={formData.cancellationPolicy}
-                                onChange={(e) => setFormData({ ...formData, cancellationPolicy: e.target.value })}
-                                className="w-full rounded-lg border border-stroke bg-transparent px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
-                                rows={2}
-                            />
-                        </div>
                     </div>
                 )}
 
@@ -367,15 +307,15 @@ export default function TourForm({ initialData, availablePlaces, onSubmit, isSub
                             type="button"
                             onClick={onCancel}
                             className="rounded-lg border border-stroke px-8 py-3 font-medium text-dark hover:bg-gray-50 dark:border-dark-3 dark:text-white dark:hover:bg-white/5 transition-all shadow-sm"
-                            disabled={isSubmitting || isUploading}
+                            disabled={isSubmitting}
                         >
                             Cancelar
                         </button>
                     )}
                     <button
                         type="submit"
-                        className={`rounded-lg px-8 py-3 font-medium text-white shadow-lg hover:shadow-xl transition-all flex items-center gap-2 ${isSubmitting || isUploading ? "bg-primary/70 cursor-wait" : "bg-primary hover:bg-opacity-90 active:scale-95"}`}
-                        disabled={isSubmitting || isUploading}
+                        className={`rounded-lg px-8 py-3 font-medium text-white shadow-lg hover:shadow-xl transition-all flex items-center gap-2 ${isSubmitting ? "bg-primary/70 cursor-wait" : "bg-primary hover:bg-opacity-90 active:scale-95"}`}
+                        disabled={isSubmitting}
                     >
                         {isSubmitting ? "Guardando..." : "Guardar Tour"}
                     </button>
@@ -387,7 +327,7 @@ export default function TourForm({ initialData, availablePlaces, onSubmit, isSub
                     isOpen={isLocationPickerOpen}
                     onClose={() => setIsLocationPickerOpen(false)}
                     onConfirm={handleLocationConfirm}
-                    initialCoordinates={formData.meetingPointCoordinates}
+                    initialCoordinates={formData.meetingPoint?.coordinates}
                 />
             )}
         </>

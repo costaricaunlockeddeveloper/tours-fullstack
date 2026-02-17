@@ -2,47 +2,52 @@ import mongoose from 'mongoose';
 
 const TourSchema = new mongoose.Schema({
     name: { type: String, required: true },
+    slug: { type: String, unique: true, sparse: true },
     description: { type: String, required: true },
-    price: { type: Number, required: true },
-    priceChild: { type: Number },
+    duration: { type: Number }, // Horas
+    isVisible: { type: Boolean, default: false },
     rating: { type: Number, default: 0 },
     reviews: { type: Number, default: 0 },
-    location: { type: String },
     placeIds: [{ type: String }],
-    gallery: [{ type: String }],
-    duration: { type: String },
-    difficulty: {
-        type: String,
-        enum: ['Fácil', 'Moderado', 'Difícil', 'Extremo'],
+    // Structured images (same as Places)
+    images: {
+        heroImage: {
+            path: { type: String },
+            size: { type: Number },
+            typefile: { type: String },
+        },
+        secondaryAssets: [{
+            path: { type: String },
+            size: { type: Number },
+            typefile: { type: String },
+        }],
     },
-    maxQuota: { type: Number },
-    whatItOffers: [{ type: String }],
-    features: {
-        accommodation: { type: Boolean },
-        transport: { type: Boolean },
-        entranceFee: { type: Boolean },
-        nextTour: { type: Boolean },
-        guide: { type: Boolean },
-        translator: { type: Boolean },
+    // Default values template — copied to each date
+    defaults: {
+        price: { type: Number, default: 0 },
+        priceChild: { type: Number, default: 0 },
+        maxQuota: { type: Number, default: 0 },
+        schedules: [{ type: String }],
     },
-    meetingPoint: { type: String },
-    meetingPointDescription: { type: String },
-    meetingPointCoordinates: {
-        lat: { type: Number },
-        lng: { type: Number },
+    // Unified meeting point
+    meetingPoint: {
+        name: { type: String },
+        description: { type: String },
+        coordinates: {
+            lat: { type: Number },
+            lng: { type: Number },
+        },
+        link: { type: String },
     },
-    meetingPointLink: { type: String },
-    schedules: [{ type: String }],
+    // Each date has its own copy of price/quota/schedules + enrolled count
     availableDates: [{
         date: { type: String },
-        schedules: [{ type: String }],
-    }],
-    cancellationPolicy: { type: String },
-    pricingTiers: [{
-        label: { type: String },
         price: { type: Number },
+        priceChild: { type: Number },
+        maxQuota: { type: Number },
+        schedules: [{ type: String }],
+        enrolled: { type: Number, default: 0 },
     }],
-    schedule: { type: String },
     guideName: { type: String },
     includes: [{ type: String }],
     excludes: [{ type: String }],

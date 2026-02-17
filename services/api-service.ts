@@ -32,48 +32,46 @@ export interface Place {
     googleMapsLink?: string;
 }
 
-export interface TourPricing {
-    label: string;
+
+
+export interface TourDefaults {
     price: number;
+    priceChild: number;
+    maxQuota: number;
+    schedules: string[];
+}
+
+export interface TourDateEntry {
+    date: string;
+    price: number;
+    priceChild: number;
+    maxQuota: number;
+    schedules: string[];
+    enrolled: number;
+}
+
+export interface TourMeetingPoint {
+    name?: string;
+    description?: string;
+    coordinates?: { lat: number; lng: number };
+    link?: string;
 }
 
 export interface Tour {
     id: string;
     name: string;
+    slug?: string;
     description: string;
-    price: number;
-    priceChild?: number;
+    duration?: number; // Horas
+    isVisible?: boolean;
     rating?: number;
     reviews?: number;
-    location?: string;
     placeIds: string[];
     places?: Place[];
-    gallery?: string[];
-    duration?: string;
-    difficulty?: "Fácil" | "Moderado" | "Difícil" | "Extremo";
-    maxQuota?: number;
-    whatItOffers?: string[];
-    features?: {
-        accommodation?: boolean;
-        transport?: boolean;
-        entranceFee?: boolean;
-        nextTour?: boolean;
-        guide?: boolean;
-        translator?: boolean;
-        other?: boolean; // Added for flexibility
-    };
-    meetingPoint?: string;
-    meetingPointDescription?: string;
-    meetingPointCoordinates?: { lat: number; lng: number };
-    meetingPointLink?: string;
-    schedules?: string[];
-    availableDates?: {
-        date: string;
-        schedules: string[];
-    }[];
-    cancellationPolicy?: string;
-    pricingTiers?: TourPricing[];
-    schedule?: string;
+    images?: PlaceImages;
+    defaults?: TourDefaults;
+    meetingPoint?: TourMeetingPoint;
+    availableDates?: TourDateEntry[];
     includes?: string[];
     excludes?: string[];
     itinerary?: {

@@ -32,46 +32,51 @@ export interface Place {
     howToGetThere?: string;
 }
 
-export interface TourPricing {
-    label: string;
-    price: number;
-}
+
 
 export interface Tour {
     id: string;
     name: string;
+    slug?: string;
     description: string;
-    price: number;
-    priceChild?: number;
+    duration?: number;
+    isVisible?: boolean;
+    rating?: number;
+    reviews?: number;
     placeIds: string[];
     places?: Place[];
-    gallery?: string[];
-    duration?: string;
-    difficulty?: "Fácil" | "Moderado" | "Difícil" | "Extremo";
-    maxQuota?: number;
-    whatItOffers?: string[];
-    features?: {
-        accommodation?: boolean;
-        transport?: boolean;
-        entranceFee?: boolean;
-        nextTour?: boolean;
-        guide?: boolean;
-        translator?: boolean;
+    images?: {
+        heroImage?: { path: string; size: number; typefile: string };
+        secondaryAssets?: { path: string; size: number; typefile: string }[];
     };
-    meetingPoint?: string;
-    meetingPointCoordinates?: { lat: number; lng: number };
-    meetingPointLink?: string;
-    schedules?: string[];
+    defaults?: {
+        price: number;
+        priceChild: number;
+        maxQuota: number;
+        schedules: string[];
+    };
+    meetingPoint?: {
+        name?: string;
+        description?: string;
+        coordinates?: { lat: number; lng: number };
+        link?: string;
+    };
     availableDates?: {
         date: string;
+        price: number;
+        priceChild: number;
+        maxQuota: number;
         schedules: string[];
+        enrolled: number;
     }[];
-    cancellationPolicy?: string;
-    pricingTiers?: TourPricing[];
-    schedule?: string;
     guideName?: string;
     includes?: string[];
     excludes?: string[];
+    itinerary?: {
+        title: string;
+        description: string;
+        duration: string;
+    }[];
 }
 
 export interface DailyItinerary {

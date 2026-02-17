@@ -59,9 +59,9 @@ export default function ToursAdmin() {
                         className="rounded-[10px] bg-white shadow-1 dark:bg-gray-dark dark:shadow-card group hover:shadow-2 transition-all duration-300 overflow-hidden flex flex-col h-full"
                     >
                         <div className="relative h-48 w-full overflow-hidden">
-                            {tour.gallery && tour.gallery.length > 0 ? (
+                            {tour.images?.heroImage?.path ? (
                                 <Image
-                                    src={tour.gallery[0]}
+                                    src={tour.images.heroImage.path}
                                     alt={tour.name}
                                     fill
                                     className="object-cover group-hover:scale-110 transition-transform duration-300"
@@ -71,15 +71,23 @@ export default function ToursAdmin() {
                                     <span className="text-sm text-gray-500">Sin imagen</span>
                                 </div>
                             )}
-                            <div className="absolute top-2 right-2 flex flex-col gap-1 items-end">
-                                <span className="inline-flex rounded-full bg-primary/90 px-3 py-1 text-xs font-bold text-white shadow-sm backdrop-blur-sm">
-                                    Adul: ${tour.price}
+                            <div className="absolute top-2 left-2">
+                                <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold shadow-sm backdrop-blur-sm ${tour.isVisible ? "bg-green-500/90 text-white" : "bg-gray-500/90 text-white"}`}>
+                                    <span className={`w-1.5 h-1.5 rounded-full ${tour.isVisible ? "bg-white" : "bg-gray-300"}`}></span>
+                                    {tour.isVisible ? "Visible" : "Oculto"}
                                 </span>
-                                {tour.priceChild !== undefined && tour.priceChild > 0 && (
-                                    <span className="inline-flex rounded-full bg-secondary/90 px-3 py-1 text-xs font-bold text-white shadow-sm backdrop-blur-sm">
-                                        Niños: ${tour.priceChild}
+                            </div>
+                            <div className="absolute top-2 right-2 flex flex-col gap-1 items-end">
+                                {tour.defaults?.price ? (
+                                    <span className="inline-flex rounded-full bg-primary/90 px-3 py-1 text-xs font-bold text-white shadow-sm backdrop-blur-sm">
+                                        Adul: ${tour.defaults.price}
                                     </span>
-                                )}
+                                ) : null}
+                                {tour.defaults?.priceChild ? (
+                                    <span className="inline-flex rounded-full bg-secondary/90 px-3 py-1 text-xs font-bold text-white shadow-sm backdrop-blur-sm">
+                                        Niños: ${tour.defaults.priceChild}
+                                    </span>
+                                ) : null}
                             </div>
                         </div>
 

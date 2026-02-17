@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { Place, ApiService, AssetMeta } from "@/services/api-service";
+import { Place, ApiService } from "@/services/api-service";
+import MediaGalleryEditor from "@/components/Admin/Commons/MediaGalleryEditor";
 import { generateSlug } from "@/utils/generate-slug";
 import Link from "next/link";
 import Image from "next/image";
@@ -31,7 +32,7 @@ export default function DestinationDetailsPage() {
 
     // Specific state for location picker
     const [isLocationPickerOpen, setIsLocationPickerOpen] = useState(false);
-    const [isUploading, setIsUploading] = useState(false);
+
 
     useEffect(() => {
         const fetchPlace = async () => {
@@ -136,123 +137,12 @@ export default function DestinationDetailsPage() {
                 className="mb-8"
             >
                 {editMode['gallery'] ? (
-                    <div className="space-y-6">
-                        {/* Hero Image Edit */}
-                        <div>
-                            <label className="block font-medium text-dark dark:text-white mb-2 text-sm">Hero Image</label>
-                            <div className="relative border-2 border-dashed border-stroke dark:border-dark-3 rounded-lg p-4 text-center hover:bg-gray-50 dark:hover:bg-dark-2 transition-all cursor-pointer mb-3">
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                                    onChange={async (e) => {
-                                        const file = e.target.files?.[0];
-                                        if (!file) return;
-                                        const slug = formData.slug || place.slug || place.id;
-                                        setIsUploading(true);
-                                        try {
-                                            const payload = new FormData();
-                                            payload.append("file", file);
-                                            payload.append("slug", slug);
-                                            payload.append("folder", "destino");
-                                            const res = await fetch("/api/upload", { method: "POST", body: payload });
-                                            const data = await res.json();
-                                            if (!data.success) throw new Error(data.message);
-                                            const heroAsset: AssetMeta = { path: data.url, size: file.size, typefile: file.type };
-                                            setFormData(prev => ({ ...prev, images: { ...prev.images, heroImage: heroAsset } }));
-                                        } catch (err) { console.error(err); alert("Error subiendo Hero Image"); }
-                                        finally { setIsUploading(false); e.target.value = ""; }
-                                    }}
-                                    disabled={isUploading}
-                                />
-                                <div className="flex items-center justify-center gap-2 text-sm text-dark dark:text-white">
-                                    <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                                    {isUploading ? "Subiendo..." : "Cambiar Hero Image"}
-                                </div>
-                            </div>
-                            {formData.images?.heroImage?.path && (
-                                <div className="relative w-full h-40 rounded-lg overflow-hidden border border-stroke">
-                                    <Image src={formData.images.heroImage.path} alt="Hero" fill className="object-cover" />
-                                    <span className="absolute bottom-1 right-1 bg-black/60 text-white text-xs px-2 py-0.5 rounded">
-                                        {(formData.images.heroImage.size / 1024).toFixed(0)} KB · {formData.images.heroImage.typefile}
-                                    </span>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Secondary Assets Edit */}
-                        <div>
-                            <label className="block font-medium text-dark dark:text-white mb-2 text-sm">Assets Secundarios</label>
-                            <div className="relative border-2 border-dashed border-stroke dark:border-dark-3 rounded-lg p-4 text-center hover:bg-gray-50 dark:hover:bg-dark-2 transition-all cursor-pointer mb-3">
-                                <input
-                                    type="file"
-                                    accept="image/*,video/*"
-                                    multiple
-                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                                    onChange={async (e) => {
-                                        const files = e.target.files;
-                                        if (!files || files.length === 0) return;
-                                        const slug = formData.slug || place.slug || place.id;
-                                        setIsUploading(true);
-                                        try {
-                                            const newAssets: AssetMeta[] = [];
-                                            for (const file of Array.from(files)) {
-                                                const payload = new FormData();
-                                                payload.append("file", file);
-                                                payload.append("slug", slug);
-                                                payload.append("folder", "destino");
-                                                const res = await fetch("/api/upload", { method: "POST", body: payload });
-                                                const data = await res.json();
-                                                if (!data.success) throw new Error(data.message);
-                                                newAssets.push({ path: data.url, size: file.size, typefile: file.type });
-                                            }
-                                            setFormData(prev => ({
-                                                ...prev,
-                                                images: { ...prev.images, secondaryAssets: [...(prev.images?.secondaryAssets || []), ...newAssets] },
-                                            }));
-                                        } catch (err) { console.error(err); alert("Error subiendo archivos"); }
-                                        finally { setIsUploading(false); e.target.value = ""; }
-                                    }}
-                                    disabled={isUploading}
-                                />
-                                <div className="flex items-center justify-center gap-2 text-sm text-dark dark:text-white">
-                                    <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
-                                    {isUploading ? "Subiendo..." : "Agregar imágenes / videos"}
-                                </div>
-                            </div>
-                            {(formData.images?.secondaryAssets || []).length > 0 && (
-                                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                                    {formData.images!.secondaryAssets!.map((asset, idx) => (
-                                        <div key={idx} className="relative group rounded-lg overflow-hidden border border-stroke shadow-sm">
-                                            {asset.typefile.startsWith("video/") ? (
-                                                <video src={asset.path} className="w-full h-28 object-cover" muted />
-                                            ) : (
-                                                <div className="relative w-full h-28">
-                                                    <Image src={asset.path} alt={`Asset ${idx + 1}`} fill className="object-cover" />
-                                                </div>
-                                            )}
-                                            <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-xs px-2 py-0.5 flex justify-between">
-                                                <span>{(asset.size / 1024).toFixed(0)} KB</span>
-                                                <span>{asset.typefile.split("/")[1]}</span>
-                                            </div>
-                                            <button
-                                                type="button"
-                                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
-                                                onClick={() => {
-                                                    setFormData(prev => ({
-                                                        ...prev,
-                                                        images: { ...prev.images, secondaryAssets: (prev.images?.secondaryAssets || []).filter((_, i) => i !== idx) },
-                                                    }));
-                                                }}
-                                            >
-                                                ✕
-                                            </button>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    </div>
+                    <MediaGalleryEditor
+                        images={formData.images || {}}
+                        onChange={(newImages) => setFormData(prev => ({ ...prev, images: newImages }))}
+                        folderName="destino"
+                        slug={formData.slug || place.slug || place.id}
+                    />
                 ) : (
                     hasImages ? (
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
