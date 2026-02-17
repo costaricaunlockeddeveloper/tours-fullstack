@@ -66,28 +66,34 @@ const TourPackageDetails = () => {
             // Destinations included in this package
             const packageDestinations = [
                 {
-                    img: '/assets/img/destination/03.jpg',
-                    location: 'Alajuela',
-                    title: 'Arenal Volcano',
-                    climate: 'Volcano & Hot Springs',
+                    id: 'pkg-md-1',
+                    images: { heroImage: { path: '/assets/img/destination/03.jpg' } },
+                    region: 'Alajuela',
+                    name: 'Arenal Volcano',
+                    ecosystem: 'Volcano & Hot Springs',
                     tours: 20,
-                    packages: 12
+                    packages: 12,
+                    description: 'Mock description'
                 },
                 {
-                    img: '/assets/img/destination/01.jpg',
-                    location: 'Puntarenas',
-                    title: 'Manuel Antonio',
-                    climate: 'Beach & Wildlife',
+                    id: 'pkg-md-2',
+                    images: { heroImage: { path: '/assets/img/destination/01.jpg' } },
+                    region: 'Puntarenas',
+                    name: 'Manuel Antonio',
+                    ecosystem: 'Beach & Wildlife',
                     tours: 12,
-                    packages: 8
+                    packages: 8,
+                    description: 'Mock description'
                 },
                 {
-                    img: '/assets/img/destination/02.jpg',
-                    location: 'Puntarenas',
-                    title: 'Monteverde',
-                    climate: 'Cloud Forest',
+                    id: 'pkg-md-3',
+                    images: { heroImage: { path: '/assets/img/destination/02.jpg' } },
+                    region: 'Puntarenas',
+                    name: 'Monteverde',
+                    ecosystem: 'Cloud Forest',
                     tours: 18,
-                    packages: 14
+                    packages: 14,
+                    description: 'Mock description'
                 }
             ];              
 
@@ -346,12 +352,7 @@ const TourPackageDetails = () => {
                                         {packageDestinations.map((destination, index) => (
                                             <div key={index} className="col-lg-4 col-md-6">
                                                 <DestinationCard
-                                                    img={destination.img}
-                                                    location={destination.location}
-                                                    title={destination.title}
-                                                    climate={destination.climate}
-                                                    tours={destination.tours}
-                                                    packages={destination.packages}
+                                                    {...destination}
                                                 />
                                             </div>
                                         ))}

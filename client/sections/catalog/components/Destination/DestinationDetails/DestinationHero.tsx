@@ -6,11 +6,10 @@ interface DestinationHeroProps {
     title: string;
     climate: string;
     region: string;
-    province: string;
     description?: string; // Added description prop
 }
 
-const DestinationHero = ({ title, climate, region, province, description }: DestinationHeroProps) => {
+const DestinationHero = ({ title, climate, region, description }: DestinationHeroProps) => {
 
 
 
@@ -60,11 +59,10 @@ const DestinationHero = ({ title, climate, region, province, description }: Dest
                     <div className="meta-row">
                         <div className="meta-item">
                             <i className="bi bi-geo-alt-fill text-primary"></i>
-                            <span className="fw-medium">{region}, {province}</span>
+                            <span className="fw-medium">Costa Rica, {region}</span>
                         </div>
                         <div className="meta-item">
                             <div className="climate-badge">
-                                <i className="bi bi-sun-fill text-warning"></i>
                                 {climate}
                             </div>
                         </div>

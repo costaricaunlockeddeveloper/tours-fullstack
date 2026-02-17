@@ -11,8 +11,8 @@ export interface User {
 
 export interface AssetMeta {
     path: string;
-    size: number;
-    typefile: string;
+    size?: number;
+    typefile?: string;
 }
 
 export interface PlaceImages {
@@ -30,6 +30,8 @@ export interface Place {
     coordinates?: { lat: number; lng: number };
     ecosystem?: string;
     googleMapsLink?: string;
+    tours?: number;
+    packages?: number;
 }
 
 
@@ -217,6 +219,23 @@ export const ApiService = {
     deleteTour: async (id: string) => {
         const res = await fetch(`${TOURS_API}/${id}`, { method: "DELETE" });
         if (!res.ok) throw new Error("Failed to delete tour");
+    },
+    getToursByPlace: async (placeId: string): Promise<Tour[]> => {
+        const [toursRes, placesRes] = await Promise.all([
+            fetch(`${TOURS_API}?placeId=${placeId}`),
+            fetch(PLACES_API)
+        ]);
+        if (!toursRes.ok) throw new Error("Failed to fetch tours");
+        if (!placesRes.ok) throw new Error("Failed to fetch places");
+
+        const tours: Tour[] = await toursRes.json();
+        const places: Place[] = await placesRes.json();
+
+        return tours.map((tour) => ({
+            ...tour,
+            id: (tour as any)._id || tour.id,
+            places: places.filter((p) => tour.placeIds?.includes((p as any)._id || p.id))
+        }));
     },
 
     // Packages

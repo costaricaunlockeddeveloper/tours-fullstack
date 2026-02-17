@@ -69,4 +69,7 @@ const TourSchema = new mongoose.Schema({
     toObject: { virtuals: true }
 });
 
+// Index for faster queries by destination
+TourSchema.index({ placeIds: 1 });
+
 export default mongoose.models.Tour || mongoose.model('Tour', TourSchema);

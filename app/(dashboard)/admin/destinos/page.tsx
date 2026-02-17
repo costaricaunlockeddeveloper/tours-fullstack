@@ -85,7 +85,7 @@ export default function DestinationsAdmin() {
                                     {place.officialName}
                                 </p>
                             )}
-                            <p className="mb-4 text-sm text-body-color dark:text-dark-6 line-clamp-2 min-h-[2.5rem]">
+                            <p className="mb-4 text-sm text-body-color dark:text-dark-6 line-clamp-2 min-h-10">
                                 {place.shortDescription || place.description}
                             </p>
                             <div className="mb-4 flex flex-wrap gap-2 mt-auto">

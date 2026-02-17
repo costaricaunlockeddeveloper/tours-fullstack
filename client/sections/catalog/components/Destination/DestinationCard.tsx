@@ -2,17 +2,27 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
+import { Place } from '@/services/api-service';
 
-interface DestinationCardProps {
-    img: string;
-    location: string;
-    title: string;
-    climate: string;
-    tours: number;
-    packages: number;
+// Extend Place with counts
+interface DestinationCardProps extends Place {
+    tours?: number;
+    packages?: number;
 }
 
-const DestinationCard: React.FC<DestinationCardProps> = ({ img, location, title, climate, tours, packages }) => {
+const DestinationCard: React.FC<DestinationCardProps> = ({ 
+    id,
+    name, 
+    region, 
+    ecosystem, 
+    tours = 0, 
+    packages = 0,
+    images,
+    slug
+}) => {
+    // Fallback image logic
+    const imgStr = images?.heroImage?.path || '/images/placeholder.jpg';
+    
     return (
         <>
             <style jsx>{`
@@ -67,14 +77,12 @@ const DestinationCard: React.FC<DestinationCardProps> = ({ img, location, title,
                     top: 12px;
                     left: 12px;
                     padding: 6px 12px;
-                    background: rgba(255, 255, 255, 0.2);
-                    backdrop-filter: blur(5px);
-                    border: 1px solid rgba(255, 255, 255, 0.6);
+                    background: rgba(220, 53, 69, 0.95); /* High contrast Red */
                     border-radius: 16px;
                     font-size: 12px;
                     font-weight: 600;
                     color: #fff;
-                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+                    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
                     z-index: 2;
                     letter-spacing: 0.3px;
                     display: flex;
@@ -229,32 +237,36 @@ const DestinationCard: React.FC<DestinationCardProps> = ({ img, location, title,
                 }
             `}</style>
             
-            <Link href="/destination/destination-details" className="destination-card-link">
+            <Link href={`/destination/${slug || id}`} className="destination-card-link">
                 <div className="destination-card-items">
                     <div className="destination-image">
                         <Image 
-                            src={img} 
-                            alt={title} 
+                            src={imgStr} 
+                            alt={name} 
                             width={400} 
                             height={300}
                         />
                         {/* Location Badge on Image */}
-                        <div className="location-badge">
-                            <i className="bi bi-geo-alt-fill"></i>
-                            {location}
-                        </div>
+                        {region && (
+                            <div className="location-badge">
+                                <i className="bi bi-geo-alt-fill"></i>
+                                {region}
+                            </div>
+                        )}
                     </div>
                     <div className="destination-content">
                         {/* Climate tag with fixed icon */}
-                        <ul className="meta">
-                            <li>
-                                <i className="bi bi-sun"></i>
-                                {climate}
-                            </li>
-                        </ul>
+                        {ecosystem && (
+                            <ul className="meta">
+                                <li>
+                                    <i className="bi bi-sun"></i>
+                                    {ecosystem}
+                                </li>
+                            </ul>
+                        )}
                         
                         {/* Title - tighter to climate */}
-                        <h5>{title}</h5>
+                        <h5>{name}</h5>
 
                         {/* Stats: Tours & Packages - grouped tightly */}
                         <div className="stats-container">

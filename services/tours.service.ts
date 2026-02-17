@@ -43,4 +43,19 @@ export const ToursService = {
         });
         if (!res.ok) throw new Error("Failed to delete tour");
     },
+    getToursByPlace: async (placeId: string): Promise<Tour[]> => {
+        const [toursRes, places] = await Promise.all([
+            fetch(`${API_URL}?placeId=${placeId}`),
+            PlacesService.getPlaces(),
+        ]);
+
+        if (!toursRes.ok) throw new Error("Failed to fetch tours");
+
+        const tours: Tour[] = await toursRes.json();
+
+        return tours.map((tour) => ({
+            ...tour,
+            places: places.filter((p) => tour.placeIds?.includes(p.id)),
+        }));
+    },
 };

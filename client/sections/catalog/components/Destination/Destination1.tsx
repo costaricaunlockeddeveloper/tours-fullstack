@@ -2,75 +2,27 @@
 import Image from 'next/image';
 import React from 'react';
 import DestinationCard from './DestinationCard';
+import { ApiService, Place } from '@/services/api-service';
+import Loading from '@/client/sections/shared/common/Loading';
+
 
 const Destination1 = () => {
+    const [destinations, setDestinations] = React.useState<Place[]>([]);
+    const [loading, setLoading] = React.useState(true);
 
-    const destinationContent = [
-        {
-            img: '/assets/img/destination/01.jpg', 
-            location: 'Puntarenas', 
-            title: 'Manuel Antonio National Park',
-            climate: 'Beach & Wildlife',
-            tours: 12,
-            packages: 8
-        },      
-        {
-            img: '/assets/img/destination/02.jpg', 
-            location: 'Guanacaste', 
-            title: 'Tamarindo Beach',
-            climate: 'Coastal Paradise',
-            tours: 15,
-            packages: 10
-        },      
-        {
-            img: '/assets/img/destination/03.jpg', 
-            location: 'Alajuela', 
-            title: 'Arenal Volcano',
-            climate: 'Volcano & Hot Springs',
-            tours: 20,
-            packages: 12
-        },      
-        {
-            img: '/assets/img/destination/04.jpg', 
-            location: 'Limón', 
-            title: 'Puerto Viejo',
-            climate: 'Caribbean Coast',
-            tours: 10,
-            packages: 6
-        },      
-        {
-            img: '/assets/img/destination/01.jpg', 
-            location: 'Puntarenas', 
-            title: 'Monteverde Cloud Forest',
-            climate: 'Rainforest',
-            tours: 18,
-            packages: 14
-        },      
-        {
-            img: '/assets/img/destination/02.jpg', 
-            location: 'Guanacaste', 
-            title: 'Playa Conchal',
-            climate: 'Tropical Beach',
-            tours: 8,
-            packages: 5
-        },      
-        {
-            img: '/assets/img/destination/03.jpg', 
-            location: 'Puntarenas', 
-            title: 'Corcovado National Park',
-            climate: 'Wildlife & Jungle',
-            tours: 14,
-            packages: 9
-        },      
-        {
-            img: '/assets/img/destination/04.jpg', 
-            location: 'Cartago', 
-            title: 'Irazú Volcano',
-            climate: 'Mountain',
-            tours: 11,
-            packages: 7
-        },       
-    ]; 
+    React.useEffect(() => {
+        const fetchDestinations = async () => {
+            try {
+                const data = await ApiService.getPlaces();
+                setDestinations(data);
+            } catch (error) {
+                console.error("Failed to fetch destinations", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchDestinations();
+    }, []);
 
     return (
         <>
@@ -105,18 +57,19 @@ const Destination1 = () => {
                         </div>
                     </div> 
                     <div className="row g-4 ">
-                        {destinationContent.map((item, i) => (
-                            <div key={i} className="col-xl-3 col-lg-6 col-md-6 wow fadeInUp" data-wow-delay={`.${i + 2}s`}>
-                                <DestinationCard 
-                                    img={item.img}
-                                    location={item.location}
-                                    title={item.title}
-                                    climate={item.climate}
-                                    tours={item.tours}
-                                    packages={item.packages}
-                                />
+                        {loading ? (
+                            <div className="col-12 py-5">
+                                <Loading />
                             </div>
-                        ))}
+                        ) : (
+                            destinations.map((place, i) => (
+                                <div key={place.id} className="col-xl-3 col-lg-6 col-md-6 wow fadeInUp" data-wow-delay={`.${(i % 4) + 2}s`}>
+                                    <DestinationCard 
+                                        {...place}
+                                    />
+                                </div>
+                            ))
+                        )}
                     </div>
                 </div>
             </section>
