@@ -13,7 +13,7 @@ export default function GoogleSigninButton({ text }: { text: string }) {
     <button
       onClick={handleGoogleSignIn}
       type="button"
-      className="flex w-full items-center justify-center gap-3.5 rounded-xl border border-white/20 bg-white/5 p-[15px] font-medium text-white transition hover:bg-white/10 hover:shadow-lg"
+      className="flex w-full items-center justify-center gap-3.5 rounded-xl border border-stroke bg-gray-2 p-[15px] font-medium text-black transition hover:bg-opacity-90 hover:shadow-lg dark:border-strokedark dark:bg-white/10 dark:text-white"
     >
       <GoogleIcon />
       {text} with Google

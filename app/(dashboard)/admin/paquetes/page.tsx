@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { PackagesService } from "@/services/packages.service";
-import { Package } from "@/types";
+import { ApiService, Package } from "@/services/api-service";
 import { useSearchPagination } from "@/hooks/useSearchPagination";
 import AnimatedButton from "@/components/ui/AnimatedButton";
 import { AdminHeader } from "@/components/Admin/AdminHeader";
@@ -17,7 +16,7 @@ export default function PackagesAdmin() {
     const loadData = async () => {
         try {
             setLoading(true);
-            const data = await PackagesService.getPackages();
+            const data = await ApiService.getPackages();
             setPackages(data);
         } catch (error) {
             console.error("Error loading packages:", error);
@@ -86,11 +85,7 @@ export default function PackagesAdmin() {
                                     </span>
                                 ))}
                             </div>
-                            <div className="absolute bottom-2 right-2">
-                                <span className="inline-block rounded bg-primary px-2 py-1 text-xs font-bold text-white shadow-sm">
-                                    {pkg.duration_days} Días / {pkg.duration_nights} Noches
-                                </span>
-                            </div>
+
                         </div>
 
                         <div className="p-6 flex-1 flex flex-col">
@@ -100,6 +95,28 @@ export default function PackagesAdmin() {
                             <p className="mb-4 text-sm text-body-color dark:text-dark-6 line-clamp-2 flex-grow">
                                 {pkg.description || "Sin descripción"}
                             </p>
+
+                            {/* Associated Destinations */}
+                            {pkg.places && pkg.places.length > 0 && (
+                                <div className="mb-4 flex flex-wrap gap-2">
+                                    {pkg.places.slice(0, 3).map((place, index) => (
+                                        <div key={index} className="flex items-center gap-1 rounded bg-gray-50 px-2 py-1 text-xs text-dark dark:bg-dark-3 dark:text-white border border-stroke dark:border-dark-3">
+                                            <div className="relative h-4 w-4 overflow-hidden rounded-full">
+                                                <Image
+                                                    src={place.images?.heroImage?.path || "/placeholder.jpg"}
+                                                    alt={place.name}
+                                                    fill
+                                                    className="object-cover"
+                                                />
+                                            </div>
+                                            <span className="truncate max-w-[100px]">{place.name}</span>
+                                        </div>
+                                    ))}
+                                    {pkg.places.length > 3 && (
+                                        <span className="text-xs text-gray-500 flex items-center">+{pkg.places.length - 3}</span>
+                                    )}
+                                </div>
+                            )}
 
                             <div className="mb-4">
                                 <p className="text-xs font-semibold uppercase text-dark-5 mb-2">Incluye:</p>
@@ -131,43 +148,46 @@ export default function PackagesAdmin() {
                                 </AnimatedButton>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    </div >
+                ))
+                }
 
                 {currentItems.length === 0 && !loading && <EmptyState />}
-            </AdminGrid>
+            </AdminGrid >
 
             {/* Pagination */}
-            {totalPages > 1 && (
-                <div className="mt-8 flex justify-center gap-2">
-                    <button
-                        onClick={prevPage}
-                        disabled={currentPage === 1}
-                        className="rounded px-3 py-1 bg-white dark:bg-dark-2 border border-stroke dark:border-dark-3 disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-white/5"
-                    >
-                        Anterior
-                    </button>
-                    {Array.from({ length: totalPages }).map((_, i) => (
+            {
+                totalPages > 1 && (
+                    <div className="mt-8 flex justify-center gap-2">
                         <button
-                            key={i}
-                            onClick={() => goToPage(i + 1)}
-                            className={`rounded px-3 py-1 border border-stroke dark:border-dark-3 ${currentPage === i + 1
-                                ? "bg-primary text-white border-primary"
-                                : "bg-white dark:bg-dark-2 hover:bg-gray-50 dark:hover:bg-white/5"
-                                }`}
+                            onClick={prevPage}
+                            disabled={currentPage === 1}
+                            className="rounded px-3 py-1 bg-white dark:bg-dark-2 border border-stroke dark:border-dark-3 disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-white/5"
                         >
-                            {i + 1}
+                            Anterior
                         </button>
-                    ))}
-                    <button
-                        onClick={nextPage}
-                        disabled={currentPage === totalPages}
-                        className="rounded px-3 py-1 bg-white dark:bg-dark-2 border border-stroke dark:border-dark-3 disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-white/5"
-                    >
-                        Siguiente
-                    </button>
-                </div>
-            )}
-        </div>
+                        {Array.from({ length: totalPages }).map((_, i) => (
+                            <button
+                                key={i}
+                                onClick={() => goToPage(i + 1)}
+                                className={`rounded px-3 py-1 border border-stroke dark:border-dark-3 ${currentPage === i + 1
+                                    ? "bg-primary text-white border-primary"
+                                    : "bg-white dark:bg-dark-2 hover:bg-gray-50 dark:hover:bg-white/5"
+                                    }`}
+                            >
+                                {i + 1}
+                            </button>
+                        ))}
+                        <button
+                            onClick={nextPage}
+                            disabled={currentPage === totalPages}
+                            className="rounded px-3 py-1 bg-white dark:bg-dark-2 border border-stroke dark:border-dark-3 disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-white/5"
+                        >
+                            Siguiente
+                        </button>
+                    </div>
+                )
+            }
+        </div >
     );
 }

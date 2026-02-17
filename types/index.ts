@@ -6,24 +6,30 @@ export interface User {
     createdAt?: string;
 }
 
+export interface AssetMeta {
+    path: string;
+    size: number;
+    typefile: string;
+}
+
+export interface PlaceImages {
+    heroImage?: AssetMeta;
+    secondaryAssets?: AssetMeta[];
+}
+
 export interface Place {
     id: string;
     name: string;
     description: string;
-    images: string[];
     slug?: string;
     officialName?: string;
     shortDescription?: string;
     region?: string;
-    heroImage?: string;
-    galleryImages?: string[];
+    images?: PlaceImages;
     coordinates?: { lat: number; lng: number };
     ecosystem?: string;
-    category: "playas" | "volcanes" | "parques" | "rutas" | "otro";
     googleMapsLink?: string;
     howToGetThere?: string;
-    view360Main?: string;
-    view360Extras?: string[];
 }
 
 export interface TourPricing {
@@ -80,10 +86,10 @@ export interface Package {
     price: number;
     images: string[];
     tags: string[];
-    duration_days: number;
-    duration_nights: number;
     included: string[];
     description?: string;
+    placeIds?: string[];
+    places?: Place[];
     tourIds?: string[];
     tours?: Tour[];
     itinerary?: DailyItinerary[];

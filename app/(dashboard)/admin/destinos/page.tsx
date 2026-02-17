@@ -69,16 +69,11 @@ export default function DestinationsAdmin() {
                     >
                         <div className="relative h-48 w-full overflow-hidden">
                             <Image
-                                src={place.heroImage || (place.images && place.images[0]) || "/images/place-01.jpg"}
+                                src={place.images?.heroImage?.path || "/images/place-01.jpg"}
                                 alt={place.name}
                                 fill
                                 className="object-cover transition-transform duration-300 group-hover:scale-110"
                             />
-                            {place.heroImage && (
-                                <div className="absolute top-2 left-2 bg-primary/80 px-2 py-1 rounded text-xs text-white backdrop-blur-sm">
-                                    Hero Asset
-                                </div>
-                            )}
                         </div>
 
                         <div className="p-6 flex-1 flex flex-col">
@@ -95,7 +90,7 @@ export default function DestinationsAdmin() {
                             </p>
                             <div className="mb-4 flex flex-wrap gap-2 mt-auto">
                                 <span className="inline-block rounded bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
-                                    {place.category?.toUpperCase() || "SIN CATEGORÍA"}
+                                    {place.ecosystem?.toUpperCase() || place.region?.toUpperCase() || "DESTINO"}
                                 </span>
                                 {place.region && (
                                     <span className="inline-block rounded bg-indigo-500/10 px-2.5 py-0.5 text-xs font-medium text-indigo-500">

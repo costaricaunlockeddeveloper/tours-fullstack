@@ -1,14 +1,17 @@
+"use client";
+
 import React, { useState } from 'react';
-import AnimatedButton from "@/components/ui/AnimatedButton";
 
 interface ListManagerProps {
     items: string[];
     onItemsChange: (items: string[]) => void;
     placeholder?: string;
     label?: string;
+    type?: "check" | "cross" | "default"; // New prop for styling
+    layout?: "list" | "grid";
 }
 
-export default function ListManager({ items, onItemsChange, placeholder = "Agregar nuevo item...", label, layout = "list" }: ListManagerProps & { layout?: "list" | "grid" }) {
+export default function ListManager({ items, onItemsChange, placeholder = "Agregar nuevo item...", label, layout = "list", type = "default" }: ListManagerProps) {
     const [newItem, setNewItem] = useState("");
     const [editIndex, setEditIndex] = useState<number | null>(null);
     const [editValue, setEditValue] = useState("");
@@ -42,39 +45,54 @@ export default function ListManager({ items, onItemsChange, placeholder = "Agreg
         setEditValue("");
     };
 
+    const getIcon = () => {
+        if (type === "check") return <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" /></svg>;
+        if (type === "cross") return <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>;
+        return <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>;
+    };
+
     return (
-        <div className="space-y-3">
-            {label && <label className="block font-medium text-dark dark:text-white">{label}</label>}
+        <div className="space-y-4">
+            {label && (
+                <div className="flex items-center gap-2 mb-2">
+                    <span className={`p-1.5 rounded-md ${type === "check" ? "bg-green-100 dark:bg-green-900/30 text-green-600" : type === "cross" ? "bg-red-100 dark:bg-red-900/30 text-red-600" : "bg-primary/10 text-primary"}`}>
+                        {getIcon()}
+                    </span>
+                    <label className="block font-bold text-lg text-dark dark:text-white">{label}</label>
+                </div>
+            )}
 
             {/* Input Area */}
-            <div className="flex gap-2">
+            <div className="flex gap-3 group focus-within:ring-2 ring-primary/20 rounded-xl transition-all">
                 <input
                     type="text"
                     value={newItem}
                     onChange={(e) => setNewItem(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAdd())}
                     placeholder={placeholder}
-                    className="flex-1 rounded-lg border border-stroke bg-transparent px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
+                    className="flex-1 rounded-xl border border-stroke bg-white dark:bg-dark-2 px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary shadow-sm"
                 />
                 <button
                     onClick={handleAdd}
                     disabled={!newItem.trim()}
-                    className={`flex-none flex items-center justify-center w-10 h-10 !rounded-full bg-primary text-white shadow-md transition-all hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed`}
+                    className={`flex-none flex items-center justify-center w-12 h-12 rounded-xl bg-primary text-white shadow-lg shadow-primary/30 transition-all hover:bg-opacity-90 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none`}
                     title="Añadir"
                 >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" /></svg>
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" /></svg>
                 </button>
             </div>
 
             {/* List Area */}
-            <ul className={`${layout === "grid" ? "flex flex-wrap gap-2" : "space-y-2"} max-h-60 overflow-y-auto custom-scrollbar`}>
+            <ul className={`${layout === "grid" ? "flex flex-wrap gap-3" : "space-y-3"} max-h-[300px] overflow-y-auto custom-scrollbar p-1`}>
                 {items.map((item, index) => (
                     <li
                         key={index}
-                        className={`group flex items-center justify-between gap-2 p-2 rounded-lg border transition-all ${layout === "grid"
-                            ? "bg-gray-50 dark:bg-white/5 border-stroke dark:border-dark-3"
-                            : "bg-gray-50 dark:bg-white/5 border-transparent hover:border-stroke dark:hover:border-dark-3"
-                            }`}
+                        className={`group flex items-center justify-between gap-3 p-3 rounded-xl border transition-all duration-200 
+                            ${layout === "grid"
+                                ? "bg-white dark:bg-dark-2 border-stroke dark:border-dark-3 hover:shadow-md"
+                                : "bg-white dark:bg-dark-2 border-stroke dark:border-dark-3 hover:shadow-card hover:border-primary/50"
+                            }
+                        `}
                     >
                         {editIndex === index ? (
                             <div className="flex flex-1 gap-2 items-center">
@@ -82,37 +100,33 @@ export default function ListManager({ items, onItemsChange, placeholder = "Agreg
                                     type="text"
                                     value={editValue}
                                     onChange={(e) => setEditValue(e.target.value)}
-                                    // onKeyDown={(e) => e.key === 'Enter' && saveEdit(index)}
-                                    className="min-w-[100px] flex-1 rounded border border-primary bg-white dark:bg-dark-2 px-2 py-1 text-sm outline-none"
+                                    className="flex-1 rounded-lg border border-primary bg-white dark:bg-dark-2 px-3 py-2 text-dark dark:text-white outline-none shadow-sm"
                                     autoFocus
                                 />
-                                <button
-                                    onClick={() => saveEdit(index)}
-                                    className="text-green-600 hover:text-green-700"
-                                >
+                                <button onClick={() => saveEdit(index)} className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors">
                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" /></svg>
                                 </button>
-                                <button
-                                    onClick={cancelEdit}
-                                    className="text-red-500 hover:text-red-600"
-                                >
+                                <button onClick={cancelEdit} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
                                 </button>
                             </div>
                         ) : (
                             <>
-                                <span className="text-sm text-dark dark:text-white break-words">{item}</span>
-                                <div className="flex items-center gap-1">
+                                <div className="flex items-center gap-3 flex-1 min-w-0">
+                                    <span className={`flex-shrink-0 w-2 h-2 rounded-full ${type === 'check' ? 'bg-green-500' : type === 'cross' ? 'bg-red-500' : 'bg-primary'}`}></span>
+                                    <span className="text-dark dark:text-white truncate font-medium">{item}</span>
+                                </div>
+                                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <button
                                         onClick={() => startEdit(index)}
-                                        className="p-1 text-primary hover:bg-primary/10 rounded"
+                                        className="p-2 text-gray-500 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
                                         title="Editar"
                                     >
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 00 2 2h11a2 2 0 00 2-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                     </button>
                                     <button
                                         onClick={() => handleDelete(index)}
-                                        className="p-1 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/20 rounded"
+                                        className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                                         title="Eliminar"
                                     >
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
@@ -122,11 +136,6 @@ export default function ListManager({ items, onItemsChange, placeholder = "Agreg
                         )}
                     </li>
                 ))}
-                {items.length === 0 && (
-                    <li className="text-center py-4 text-sm text-dark-6 italic bg-gray-50 dark:bg-white/5 rounded-lg border border-dashed border-stroke dark:border-dark-3 w-full">
-                        No hay elementos en la lista.
-                    </li>
-                )}
             </ul>
         </div>
     );

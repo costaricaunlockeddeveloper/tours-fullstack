@@ -38,7 +38,7 @@ const AuthContextContent = ({ children }: { children: React.ReactNode }) => {
 
     const logout = async () => {
         await signOut({ redirect: false });
-        router.push("/sign-in");
+        router.push("/");
         router.refresh();
     };
 

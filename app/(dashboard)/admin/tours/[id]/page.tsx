@@ -8,6 +8,7 @@ import Image from "next/image";
 import EditableSection from "@/components/Admin/ui/EditableSection";
 import CalendarScheduler from "@/components/Admin/tours/CalendarScheduler";
 import GalleryUploader from "@/components/Admin/GalleryUploader";
+import ImageGallery from "@/components/Admin/Commons/ImageGallery";
 import ListManager from "@/components/Admin/Commons/ListManager";
 import TourItineraryManager from "@/components/Admin/tours/TourItineraryManager";
 import LocationPickerModal from "@/components/Admin/LocationPickerModal";
@@ -23,8 +24,8 @@ export default function TourDetailsPage() {
 
     const [tour, setTour] = useState<Tour | null>(null);
     const [relatedPlaces, setRelatedPlaces] = useState<Place[]>([]);
+    const [availablePlaces, setAvailablePlaces] = useState<Place[]>([]); // All places for selection
     const [loading, setLoading] = useState(true);
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
     // Edit State
     const [editMode, setEditMode] = useState<{ [key: string]: boolean }>({});
@@ -36,20 +37,29 @@ export default function TourDetailsPage() {
         const fetchTour = async () => {
             if (!id) return;
             try {
-                const tourData = await ApiService.getTour(id);
+                // Fetch Tour and Places in parallel
+                const [tourData, allPlaces] = await Promise.all([
+                    ApiService.getTour(id),
+                    ApiService.getPlaces()
+                ]);
+
                 // Ensure defaults
                 if (!tourData.gallery) tourData.gallery = [];
+
                 setTour(tourData);
                 setFormData(tourData);
+                setAvailablePlaces(allPlaces);
 
                 if (tourData.placeIds && tourData.placeIds.length > 0) {
-                    const allPlaces = await ApiService.getPlaces();
                     const relevant = allPlaces.filter(p => tourData.placeIds.includes(p.id));
                     setRelatedPlaces(relevant);
+                } else {
+                    setRelatedPlaces([]);
                 }
+
             } catch (error) {
-                console.error("Error fetching tour:", error);
-                router.push("/admin/tours");
+                console.error("Error fetching data:", error);
+                // router.push("/admin/tours"); // Commented out to debug if error occurs
             } finally {
                 setLoading(false);
             }
@@ -77,6 +87,13 @@ export default function TourDetailsPage() {
             setIsSaving(true);
             await ApiService.updateTour(id, formData);
             setTour(prev => ({ ...prev, ...formData } as Tour));
+
+            // If updating places, refresh relatedPlaces
+            if (section === 'places' && formData.placeIds) {
+                const relevant = availablePlaces.filter(p => formData.placeIds?.includes(p.id));
+                setRelatedPlaces(relevant);
+            }
+
             setEditMode(prev => ({ ...prev, [section]: false }));
         } catch (error) {
             console.error("Error updating tour:", error);
@@ -126,8 +143,6 @@ export default function TourDetailsPage() {
 
     const allImages = tour.gallery || [];
     const hasImages = allImages.length > 0;
-    const nextImage = () => setCurrentImageIndex((prev) => (prev + 1) % allImages.length);
-    const prevImage = () => setCurrentImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
 
     return (
         <div className="mx-auto max-w-7xl">
@@ -175,7 +190,7 @@ export default function TourDetailsPage() {
                         initialCoordinates={formData.meetingPointCoordinates ? { lat: formData.meetingPointCoordinates.lat, lng: formData.meetingPointCoordinates.lng } : undefined}
                     />
                 )}
-                {/* ... Gallery Content ... */}
+
                 {editMode['gallery'] ? (
                     <GalleryUploader
                         images={formData.gallery || []}
@@ -185,28 +200,11 @@ export default function TourDetailsPage() {
                         title="Gestionar Imágenes"
                     />
                 ) : (
-                    hasImages ? (
-                        <div className="relative h-[400px] w-full overflow-hidden rounded-lg group">
-                            <Image src={allImages[currentImageIndex]} alt="Slide" fill className="object-cover" />
-                            {allImages.length > 1 && (
-                                <>
-                                    <button onClick={prevImage} className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white hover:bg-black/70 transition-colors">
-                                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
-                                    </button>
-                                    <button onClick={nextImage} className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white hover:bg-black/70 transition-colors">
-                                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
-                                    </button>
-                                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 px-3 py-1 rounded-full text-white text-xs">
-                                        {currentImageIndex + 1} / {allImages.length}
-                                    </div>
-                                </>
-                            )}
-                        </div>
-                    ) : (
-                        <div className="h-60 flex items-center justify-center bg-gray-100 dark:bg-dark-2 rounded-lg text-dark-6">
-                            Sin imágenes. Haz clic en Editar para agregar.
-                        </div>
-                    )
+                    <ImageGallery
+                        images={allImages}
+                        alt={tour.name}
+                        height="h-[450px]"
+                    />
                 )}
             </EditableSection>
 
@@ -214,6 +212,8 @@ export default function TourDetailsPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2 space-y-8">
+
+
                     {/* Description */}
                     <EditableSection
                         title="Descripción Turística"
@@ -311,6 +311,8 @@ export default function TourDetailsPage() {
                                     onItemsChange={handleOffersChange}
                                     placeholder="Ej: Transporte ida y vuelta"
                                     layout="list"
+                                    type="check"
+                                    label=""
                                 />
                             </div>
                         </div>
@@ -326,6 +328,8 @@ export default function TourDetailsPage() {
                                     onItemsChange={handleExcludesChange}
                                     placeholder="Ej: Gastos personales"
                                     layout="list"
+                                    type="cross"
+                                    label=""
                                 />
                             </div>
                         </div>
@@ -501,6 +505,82 @@ export default function TourDetailsPage() {
 
                                 {(!tour.meetingPoint && !tour.meetingPointDescription) && (
                                     <span className="text-sm text-gray-400 italic">Sin información de punto de encuentro.</span>
+                                )}
+                            </div>
+                        )}
+                    </EditableSection>
+
+                    {/* Associated Destinations */}
+                    <EditableSection
+                        title="Destinos Asociados"
+                        isEditing={!!editMode['places']}
+                        onEdit={() => toggleEdit('places')}
+                        onSave={() => handleSave('places')}
+                        onCancel={() => toggleEdit('places')}
+                        isSaving={isSaving}
+                    >
+                        {editMode['places'] ? (
+                            <div className="grid grid-cols-2 gap-3 max-h-96 overflow-y-auto p-1">
+                                {availablePlaces.map(place => {
+                                    const isSelected = formData.placeIds?.includes(place.id);
+                                    return (
+                                        <div
+                                            key={place.id}
+                                            onClick={() => {
+                                                const currentIds = formData.placeIds || [];
+                                                const newIds = isSelected
+                                                    ? currentIds.filter(id => id !== place.id)
+                                                    : [...currentIds, place.id];
+                                                setFormData({ ...formData, placeIds: newIds });
+                                            }}
+                                            className={`cursor-pointer rounded-lg border p-2 flex flex-col gap-2 transition-all ${isSelected
+                                                ? "border-primary bg-primary/5 dark:bg-primary/20"
+                                                : "border-stroke dark:border-dark-3 hover:border-primary/50"
+                                                }`}
+                                        >
+                                            <div className="relative h-20 w-full overflow-hidden rounded-md">
+                                                {(place.images?.heroImage?.path) ? (
+                                                    <Image
+                                                        src={place.images?.heroImage?.path || ""}
+                                                        alt={place.name}
+                                                        fill
+                                                        className="object-cover"
+                                                    />
+                                                ) : (
+                                                    <div className="flex h-full w-full items-center justify-center bg-gray-100 dark:bg-dark-2">
+                                                        <span className="text-xs text-gray-400">Sin foto</span>
+                                                    </div>
+                                                )}
+                                                {isSelected && (
+                                                    <div className="absolute top-1 right-1 bg-primary text-white rounded-full p-0.5">
+                                                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" /></svg>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <span className="text-xs font-semibold text-dark dark:text-white line-clamp-1 text-center">
+                                                {place.name}
+                                            </span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        ) : (
+                            <div className="flex flex-wrap gap-2">
+                                {relatedPlaces.length > 0 ? (
+                                    relatedPlaces.map(place => (
+                                        <div key={place.id} className="flex items-center gap-2 rounded-lg bg-gray-50 dark:bg-dark-2 border border-stroke dark:border-dark-3 p-1 pr-3">
+                                            <div className="relative h-8 w-8 overflow-hidden rounded-md">
+                                                {(place.images?.heroImage?.path) ? (
+                                                    <Image src={place.images?.heroImage?.path || ""} alt={place.name} fill className="object-cover" />
+                                                ) : (
+                                                    <div className="bg-gray-200 h-full w-full" />
+                                                )}
+                                            </div>
+                                            <span className="text-sm font-medium text-dark dark:text-white">{place.name}</span>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <span className="text-sm text-gray-500 italic">No hay destinos asociados.</span>
                                 )}
                             </div>
                         )}

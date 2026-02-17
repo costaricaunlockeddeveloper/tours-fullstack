@@ -13,43 +13,62 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn({ user, account, profile }) {
       if (account?.provider === "google") {
-        await dbConnect();
-        const existingUser = await User.findOne({ email: user.email });
+        try {
+          await dbConnect();
+          const existingUser = await User.findOne({ email: user.email });
 
-        if (existingUser) {
-           // Attach the role from the DB to the user object so jwt callback can read it
-           (user as any).role = existingUser.role;
-           (user as any).id = existingUser._id.toString();
-           return true; 
-        } else {
-            const newUser = await User.create({
+          if (existingUser) {
+            return true;
+          } else {
+            try {
+              await User.create({
                 email: user.email,
                 displayName: user.name,
                 photoURL: user.image,
                 role: "client",
                 provider: "google",
                 uid: user.id
-            });
-            (user as any).role = "client";
-            (user as any).id = newUser._id.toString();
-            return true;
+              });
+              return true;
+            } catch (createError: any) {
+              // Handle race condition: if user was created between findOne and create
+              if (createError.code === 11000) {
+                return true;
+              }
+              console.error("Error creating user in signIn:", createError);
+              return false;
+            }
+          }
+        } catch (error) {
+          console.error("Error in signIn callback:", error);
+          return false;
         }
       }
       return true;
     },
-    async jwt({ token, user }) {
-        if (user) {
-            token.role = (user as any).role;
-            token.id = (user as any).id;
+    async jwt({ token, user, trigger, session }) {
+      if (user) {
+        token.id = user.id;
+
+        try {
+          await dbConnect();
+          const dbUser = await User.findOne({ email: user.email });
+          if (dbUser) {
+            token.role = dbUser.role;
+            token.id = dbUser._id.toString();
+          }
+        } catch (error) {
+          console.error("Error in JWT callback:", error);
         }
-        return token;
+      }
+      return token;
     },
     async session({ session, token }) {
-        if (session.user) {
-            (session.user as any).role = token.role;
-            (session.user as any).id = token.id;
-        }
-        return session;
+      if (session.user) {
+        (session.user as any).role = token.role;
+        (session.user as any).id = token.id;
+      }
+      return session;
     }
   },
   pages: {

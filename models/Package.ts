@@ -3,16 +3,16 @@ import mongoose from 'mongoose';
 const PackageSchema = new mongoose.Schema({
     title: { type: String, required: true },
     price: { type: Number, required: true },
+    priceChild: { type: Number },
     images: [{ type: String }],
     tags: [{ type: String }],
-    duration_days: { type: Number, required: true },
-    duration_nights: { type: Number, required: true },
     included: [{ type: String }],
     description: { type: String },
     rating: { type: Number, default: 0 },
     reviews: { type: Number, default: 0 },
     location: { type: String },
     tourIds: [{ type: String }],
+    placeIds: [{ type: String }], // Direct association with Places (Destinations)
     itinerary: [{
         day: { type: Number },
         title: { type: String },

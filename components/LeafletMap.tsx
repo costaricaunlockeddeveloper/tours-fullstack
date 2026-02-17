@@ -13,7 +13,7 @@ L.Icon.Default.mergeOptions({
 });
 
 interface LeafletMapProps {
-    onLocationSelect: (lat: number, lng: number) => void;
+    onLocationSelect?: (lat: number, lng: number) => void;
     boundaryCoords?: { lat: number; lng: number }[];
 }
 
@@ -26,7 +26,7 @@ function ClickHandler({ onLocationSelect }: { onLocationSelect: (lat: number, ln
     return null;
 }
 
-export default function LeafletMap({ onLocationSelect, boundaryCoords, selectedPos, className }: LeafletMapProps & { selectedPos?: [number, number] | null, className?: string }) {
+export default function LeafletMap({ onLocationSelect, boundaryCoords, selectedPos, className, ...props }: LeafletMapProps & { selectedPos?: [number, number] | null, className?: string, readOnly?: boolean }) {
     // Center of Costa Rica or the bounds
     const center: [number, number] = [9.0, -84.0];
 
@@ -49,7 +49,8 @@ export default function LeafletMap({ onLocationSelect, boundaryCoords, selectedP
                 <Marker position={selectedPos} />
             )}
 
-            <ClickHandler onLocationSelect={onLocationSelect} />
+            {/* Only handle clicks if not readOnly */}
+            {!props.readOnly && <ClickHandler onLocationSelect={onLocationSelect || (() => {})} />}
         </MapContainer>
     );
 }
