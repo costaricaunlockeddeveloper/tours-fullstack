@@ -1,17 +1,29 @@
 "use client"
-import React from "react";
+import React, { useMemo } from "react";
 import GalleryImages from "@/client/sections/shared/common/GalleryImages";
 import ExpandableTitleDescription from "@/client/sections/shared/common/ExpandableTitleDescription";
+import { PlaceImages } from "@/services/api-service";
 
 interface TourHeroProps {
     title: string;
     description: string;
     rating: number;
     reviews: number;
-    images: string[];
+    images?: PlaceImages;
 }
 
 const TourHero = ({ title, description, rating, reviews, images }: TourHeroProps) => {
+    // Combine heroImage + secondaryAssets into a single gallery array
+    const galleryImages = useMemo(() => {
+        const result: string[] = [];
+        if (images?.heroImage?.path) result.push(images.heroImage.path);
+        if (images?.secondaryAssets?.length) {
+            images.secondaryAssets.forEach(asset => {
+                if (asset.path) result.push(asset.path);
+            });
+        }
+        return result.length > 0 ? result : ['/assets/img/destination/01.jpg'];
+    }, [images]);
 
 
 
@@ -80,7 +92,7 @@ const TourHero = ({ title, description, rating, reviews, images }: TourHeroProps
                 </div>
 
                 {/* Gallery Component */}
-                <GalleryImages images={images} />
+                <GalleryImages images={galleryImages} />
             </div>
         </section>
     );

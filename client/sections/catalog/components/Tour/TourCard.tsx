@@ -6,14 +6,15 @@ import React from 'react';
 interface TourCardProps {
     img: string;
     title: string;
+    slug: string;
     destinations: number;
     duration: number;
-    rating: string;
-    reviews: string;
-    price: string;
+    rating: number;
+    reviews: number;
+    price: number;
 }
 
-const TourCard: React.FC<TourCardProps> = ({ img, title, destinations, duration, rating, reviews, price }) => {
+const TourCard: React.FC<TourCardProps> = ({ img, title, slug, destinations, duration, rating, reviews, price }) => {
     return (
         <>
             <style jsx>{`
@@ -142,7 +143,7 @@ const TourCard: React.FC<TourCardProps> = ({ img, title, destinations, duration,
                 </div>
                 <div className="destination-content">
                     <h5>
-                        <Link href="/tour/tour-details">
+                        <Link href={`/tour/${slug || '#'}`}>
                             {title}
                         </Link>
                     </h5>
@@ -157,16 +158,16 @@ const TourCard: React.FC<TourCardProps> = ({ img, title, destinations, duration,
                         </li>
                         <li>
                             <i className="bi bi-star-fill text-warning"></i>
-                            {rating} ({reviews})
+                            {typeof rating === 'number' ? rating.toFixed(1) : rating} ({reviews})
                         </li>
                     </ul>
                     <div className="price">
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
                         <span style={{ fontSize: '11px', color: '#666', fontWeight: '400', lineHeight:'1' }}>From</span>
-                        <h6 style={{ margin: 0, lineHeight: '1.2' }}>US${price}</h6>
+                        <h6 style={{ margin: 0, lineHeight: '1.2' }}>US${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</h6>
                         <span style={{ fontSize: '10px', color: '#999', fontWeight: '400', lineHeight:'1' }}>per person</span>
                     </div>
-                        <Link href="/tour/tour-details" className="theme-btn style-2">
+                        <Link href={`/tour/${slug || '#'}`} className="theme-btn style-2">
                             View tour <i className="bi bi-arrow-right"></i>
                         </Link>
                     </div>

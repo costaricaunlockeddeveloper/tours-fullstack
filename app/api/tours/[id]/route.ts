@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Tour from '@/models/Tour';
+import mongoose from 'mongoose';
 
 export async function GET(
     request: Request,
@@ -8,8 +9,18 @@ export async function GET(
 ) {
     const { id } = await params;
     await dbConnect();
+    
     try {
-        const tour = await Tour.findById(id);
+        let tour;
+
+        if (mongoose.Types.ObjectId.isValid(id)) {
+            tour = await Tour.findById(id);
+        }
+
+        if (!tour) {
+            tour = await Tour.findOne({ slug: id });
+        }
+
         if (!tour) {
             return NextResponse.json({ error: 'Tour not found' }, { status: 404 });
         }

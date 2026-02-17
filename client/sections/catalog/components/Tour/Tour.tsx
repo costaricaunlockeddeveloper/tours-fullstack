@@ -1,94 +1,27 @@
 "use client"
-import React from 'react';
-import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import TourCard from './TourCard';
+import { ApiService, TourCatalogItem } from '@/services/api-service';
+import Loading from '@/client/sections/shared/common/Loading';
 
 const Tour = () => {
+    const [tours, setTours] = useState<TourCatalogItem[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    const tourContent = [
-        {
-            img: '/assets/img/destination/01.jpg',
-            title: 'Arenal Volcano Adventure',
-            destinations: 2,
-            duration: 5,
-            rating: '4.9',
-            reviews: '120',
-            price: '850.00'
-        },
-        {
-            img: '/assets/img/destination/02.jpg',
-            title: 'Manuel Antonio Beach & Wildlife',
-            destinations: 1,
-            duration: 3,
-            rating: '4.8',
-            reviews: '95',
-            price: '450.00'
-        },
-        {
-            img: '/assets/img/destination/03.jpg',
-            title: 'Monteverde Cloud Forest Expedition',
-            destinations: 1,
-            duration: 4,
-            rating: '4.7',
-            reviews: '82',
-            price: '520.00'
-        },
-        {
-            img: '/assets/img/destination/04.jpg',
-            title: 'Tortuguero Channels & Turtle Watch',
-            destinations: 1,
-            duration: 3,
-            rating: '4.9',
-            reviews: '110',
-            price: '380.00'
-        },
-        {
-            img: '/assets/img/destination/01.jpg',
-            title: 'Guanacaste Gold Coast Relaxation',
-            destinations: 3,
-            duration: 7,
-            rating: '4.8',
-            reviews: '150',
-            price: '1,200.00'
-        },
-        {
-            img: '/assets/img/destination/02.jpg',
-            title: 'Corcovado Wilderness Experience',
-            destinations: 1,
-            duration: 6,
-            rating: '5.0',
-            reviews: '45',
-            price: '950.00'
-        },
-        {
-            img: '/assets/img/destination/03.jpg',
-            title: 'Costa Rica Highlights Tour',
-            destinations: 5,
-            duration: 12,
-            rating: '4.9',
-            reviews: '200',
-            price: '2,100.00'
-        },
-        {
-            img: '/assets/img/destination/04.jpg',
-            title: 'Pacuare River Rafting & Jungle',
-            destinations: 1,
-            duration: 2,
-            rating: '4.8',
-            reviews: '75',
-            price: '290.00'
-        },
-        {
-            img: '/assets/img/destination/01.jpg',
-            title: 'Secret Beaches of Nicoya',
-            destinations: 4,
-            duration: 8,
-            rating: '4.7',
-            reviews: '60',
-            price: '1,400.00'
-        }
-    ];
+    useEffect(() => {
+        const fetchTours = async () => {
+            try {
+                const data = await ApiService.getToursCatalog();
+                setTours(data);
+            } catch (error) {
+                console.error("Failed to fetch tours", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchTours();
+    }, []);
 
     return (
         <section className="tour-section section-padding pt-6">
@@ -129,19 +62,26 @@ const Tour = () => {
 
                 {/* Tour Grid */}
                 <div className="row g-4">
-                    {tourContent.map((item, i) => (
-                        <div key={i} className="col-xl-3 col-lg-6 col-md-6 wow fadeInUp" data-wow-delay={`.${i + 2}s`}>
-                           <TourCard 
-                                img={item.img}
-                                title={item.title}
-                                destinations={item.destinations}
-                                duration={item.duration}
-                                rating={item.rating}
-                                reviews={item.reviews}
-                                price={item.price}
-                            />
+                    {loading ? (
+                        <div className="col-12 py-5">
+                            <Loading />
                         </div>
-                    ))}
+                    ) : (
+                        tours.map((item, i) => (
+                            <div key={item.id} className="col-xl-3 col-lg-6 col-md-6 wow fadeInUp" data-wow-delay={`.${(i % 4) + 2}s`}>
+                            <TourCard 
+                                    img={item.imageUrl || '/assets/img/destination/01.jpg'}
+                                    title={item.title}
+                                    slug={item.slug || ''}
+                                    destinations={item.destinationsCount}
+                                    duration={item.duration || 0}
+                                    rating={item.rating || 0}
+                                    reviews={item.reviews || 0}
+                                    price={item.price || 0}
+                                />
+                            </div>
+                        ))
+                    )}
                 </div>
 
                 {/* Pagination (Optional, keeping it simple or matching current flow) */}

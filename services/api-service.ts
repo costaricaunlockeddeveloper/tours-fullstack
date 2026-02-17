@@ -92,6 +92,18 @@ export interface DailyItinerary {
     meals?: string[]; // Added
 }
 
+export interface TourCatalogItem {
+    id: string;
+    title: string;
+    slug?: string;
+    duration?: number;
+    rating?: number;
+    reviews?: number;
+    price: number;
+    destinationsCount: number;
+    imageUrl?: string;
+}
+
 export interface Package {
     id: string;
     title: string;
@@ -236,6 +248,11 @@ export const ApiService = {
             id: (tour as any)._id || tour.id,
             places: places.filter((p) => tour.placeIds?.includes((p as any)._id || p.id))
         }));
+    },
+    getToursCatalog: async (): Promise<TourCatalogItem[]> => {
+        const res = await fetch(`${TOURS_API}?select=catalog`);
+        if (!res.ok) throw new Error("Failed to fetch catalog tours");
+        return res.json();
     },
 
     // Packages
