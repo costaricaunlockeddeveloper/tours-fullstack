@@ -3,99 +3,27 @@ import React, { useEffect, useState } from 'react';
 import loadBackgroudImages from '../../../../shared/common/loadBackgroudImages';
 import PackageBookingWidget from './PackageBookingWidget';
 import DestinationCard from '../../Destination/DestinationCard';
+import { Package } from '@/services/api-service';
 
-const TourPackageDetails = () => {
+interface TourPackageDetailsProps {
+    pkg: Package;
+}
+
+const TourPackageDetails = ({ pkg }: TourPackageDetailsProps) => {
 
             useEffect(() => {
                 loadBackgroudImages();
             }, []);
             
-            // Itinerary data
-            const itineraryDays = [
-                {
-                    day: 1,
-                    title: "Arrival & Welcome",
-                    description: "Private transfer from Juan Santamaría International Airport (SJO) to your hotel in San José. Welcome briefing and free afternoon to explore the city at your leisure.",
-                    accommodation: "Hotel Presidente (or similar)"
-                },
-                {
-                    day: 2,
-                    title: "San José to Arenal Volcano",
-                    description: "Scenic drive to La Fortuna (3.5 hours). Visit Arenal Volcano National Park with guided hike. Afternoon relaxation at natural hot springs with dinner included.",
-                    accommodation: "Arenal Springs Resort & Spa (or similar)"
-                },
-                {
-                    day: 3,
-                    title: "Arenal Adventures",
-                    description: "Morning zip-lining through the rainforest canopy. Afternoon hanging bridges walk with wildlife spotting. Evening free to explore La Fortuna town.",
-                    accommodation: "Arenal Springs Resort & Spa (or similar)"
-                },
-                {
-                    day: 4,
-                    title: "Arenal to Manuel Antonio",
-                    description: "Scenic drive along the Pacific Coast to Manuel Antonio (4 hours). Check-in at beachfront hotel. Sunset beach walk and welcome cocktail.",
-                    accommodation: "Parador Resort & Spa (or similar)"
-                },
-                {
-                    day: 5,
-                    title: "Manuel Antonio National Park",
-                    description: "Guided tour of Manuel Antonio National Park. Wildlife spotting (sloths, monkeys, toucans) and pristine beach time. Free afternoon for optional water activities.",
-                    accommodation: "Parador Resort & Spa (or similar)"
-                },
-                {
-                    day: 6,
-                    title: "Beach Day & Relaxation",
-                    description: "Full day at leisure to enjoy the beach and resort amenities. Optional activities: snorkeling, kayaking, or spa treatments. Farewell dinner with ocean views.",
-                    accommodation: "Parador Resort & Spa (or similar)"
-                },
-                {
-                    day: 7,
-                    title: "Departure",
-                    description: "Morning at leisure for last-minute shopping or beach time. Private transfer to San José airport for your departure flight. ¡Pura Vida!",
-                    accommodation: null
-                }
-            ];
-            
-            // State for showing all days or just first 3
-            const [showAllDays, setShowAllDays] = useState(false);
-            const daysToShow = showAllDays ? itineraryDays.length : 3;
+            // State for showing all activities or just first 3
+            const [showAllActivities, setShowAllActivities] = useState(false);
+            const activitiesToShow = showAllActivities ? (pkg.activities?.length || 0) : 3;
             
             // Tab state
             const [activeTab, setActiveTab] = useState('info');
             
-            // Destinations included in this package
-            const packageDestinations = [
-                {
-                    id: 'pkg-md-1',
-                    images: { heroImage: { path: '/assets/img/destination/03.jpg' } },
-                    region: 'Alajuela',
-                    name: 'Arenal Volcano',
-                    ecosystem: 'Volcano & Hot Springs',
-                    tours: 20,
-                    packages: 12,
-                    description: 'Mock description'
-                },
-                {
-                    id: 'pkg-md-2',
-                    images: { heroImage: { path: '/assets/img/destination/01.jpg' } },
-                    region: 'Puntarenas',
-                    name: 'Manuel Antonio',
-                    ecosystem: 'Beach & Wildlife',
-                    tours: 12,
-                    packages: 8,
-                    description: 'Mock description'
-                },
-                {
-                    id: 'pkg-md-3',
-                    images: { heroImage: { path: '/assets/img/destination/02.jpg' } },
-                    region: 'Puntarenas',
-                    name: 'Monteverde',
-                    ecosystem: 'Cloud Forest',
-                    tours: 18,
-                    packages: 14,
-                    description: 'Mock description'
-                }
-            ];              
+            // Places/destinations from the package
+            const packageDestinations = pkg.places || [];
 
     return (
 <section className="activities-details-section fix section-padding">
@@ -104,8 +32,10 @@ const TourPackageDetails = () => {
                 <div className="row g-4 justify-content-center flex-row-reverse">
                     <div className="col-12 col-lg-4">
                         <PackageBookingWidget 
-                            adultPrice={1200}
-                            childPrice={800}
+                            adultPrice={pkg.price}
+                            childPrice={pkg.priceChild || 0}
+                            packageId={pkg.id}
+                            packageName={pkg.name}
                         />
                     </div>
                     <div className="col-12 col-lg-8">
@@ -194,6 +124,7 @@ const TourPackageDetails = () => {
                             {activeTab === 'info' && (
                                 <>
                                     {/* Activities - Timeline Vertical */}
+                                    {pkg.activities && pkg.activities.length > 0 && (
                                     <div className="mt-5">
                                         <h3 className="mb-4">Activities Included</h3>
                                         <div className="timeline-wrapper" style={{ position: 'relative', paddingLeft: '40px' }}>
@@ -207,8 +138,8 @@ const TourPackageDetails = () => {
                                                 backgroundColor: '#e9ecef'
                                             }}></div>
 
-                                            {itineraryDays.slice(0, daysToShow).map((activity, index) => {
-                                                const isLastShown = index === daysToShow - 1;
+                                            {pkg.activities.slice(0, activitiesToShow).map((activity, index) => {
+                                                const isLastShown = index === activitiesToShow - 1;
                                                 
                                                 return (
                                                     <div 
@@ -254,10 +185,10 @@ const TourPackageDetails = () => {
                                         </div>
                                         
                                         {/* Show All Activities Button */}
-                                        {!showAllDays && itineraryDays.length > 3 && (
+                                        {!showAllActivities && (pkg.activities?.length || 0) > 3 && (
                                             <div className="text-center mt-4">
                                                 <button 
-                                                    onClick={() => setShowAllDays(true)}
+                                                    onClick={() => setShowAllActivities(true)}
                                                     className="theme-btn"
                                                     style={{
                                                         display: 'inline-flex',
@@ -265,17 +196,17 @@ const TourPackageDetails = () => {
                                                         gap: '8px'
                                                     }}
                                                 >
-                                                    Show All {itineraryDays.length} Activities
+                                                    Show All {pkg.activities?.length} Activities
                                                     <i className="bi bi-chevron-down"></i>
                                                 </button>
                                             </div>
                                         )}
                                         
                                         {/* Collapse Button */}
-                                        {showAllDays && (
+                                        {showAllActivities && (
                                             <div className="text-center mt-4">
                                                 <button 
-                                                    onClick={() => setShowAllDays(false)}
+                                                    onClick={() => setShowAllActivities(false)}
                                                     className="theme-btn style-2"
                                                     style={{
                                                         display: 'inline-flex',
@@ -289,28 +220,17 @@ const TourPackageDetails = () => {
                                             </div>
                                         )}
                                     </div>
+                                    )}
 
                                     {/* WHAT'S INCLUDED / NOT INCLUDED - Two Columns */}
                                     <div className="mt-5">
                                         <div className="row g-4">
                                             {/* Included Column */}
+                                            {pkg.included && pkg.included.length > 0 && (
                                             <div className="col-md-6">
                                                 <h3 className="mb-4">What&apos;s Included</h3>
                                                 <ul className="list-unstyled d-flex flex-column gap-3">
-                                                    {[
-                                                        "6 nights hotel accommodation (4-star)",
-                                                        "Private airport transfers",
-                                                        "Transportation between destinations",
-                                                        "Daily breakfast at hotels",
-                                                        "Arenal Volcano National Park tour",
-                                                        "Manuel Antonio National Park tour",
-                                                        "Hot springs entrance & dinner",
-                                                        "Zip-line & hanging bridges activity",
-                                                        "Bilingual certified guides",
-                                                        "All entrance fees included",
-                                                        "24/7 emergency support",
-                                                        "Hotel taxes & service charges"
-                                                    ].map((item, index) => (
+                                                    {pkg.included.map((item, index) => (
                                                         <li key={index} className="d-flex align-items-start gap-3">
                                                             <i className="bi bi-check-lg fs-5 text-success mt-1"></i>
                                                             <span className="text-secondary" style={{ fontSize: '16px', lineHeight: '1.6' }}>{item}</span>
@@ -318,20 +238,14 @@ const TourPackageDetails = () => {
                                                     ))}
                                                 </ul>
                                             </div>
+                                            )}
 
                                             {/* Not Included Column */}
+                                            {pkg.excludes && pkg.excludes.length > 0 && (
                                             <div className="col-md-6">
                                                 <h3 className="mb-4">What&apos;s Not Included</h3>
                                                 <ul className="list-unstyled d-flex flex-column gap-3">
-                                                    {[
-                                                        "International flights to/from Costa Rica",
-                                                        "Meals not mentioned in itinerary",
-                                                        "Alcoholic beverages",
-                                                        "Tips for guides and drivers",
-                                                        "Personal expenses and souvenirs",
-                                                        "Optional activities not listed",
-                                                        "Travel insurance upgrade"
-                                                    ].map((item, index) => (
+                                                    {pkg.excludes.map((item, index) => (
                                                         <li key={index} className="d-flex align-items-start gap-3">
                                                             <i className="bi bi-x-lg fs-5 text-danger mt-1"></i>
                                                             <span className="text-secondary" style={{ fontSize: '16px', lineHeight: '1.6' }}>{item}</span>
@@ -339,6 +253,7 @@ const TourPackageDetails = () => {
                                                     ))}
                                                 </ul>
                                             </div>
+                                            )}
                                         </div>
                                     </div>
                                 </>

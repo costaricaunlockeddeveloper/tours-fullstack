@@ -26,6 +26,7 @@ export default function PackageForm({
         name: initialData?.name || "",
         slug: initialData?.slug || "",
         description: initialData?.description || "",
+        region: initialData?.region || "",
         price: initialData?.price || 0,
         priceChild: initialData?.priceChild || 0,
         rating: initialData?.rating || 0,
@@ -95,6 +96,25 @@ export default function PackageForm({
                             className="w-full rounded-lg border border-stroke bg-gray-50 px-4 py-3 text-dark outline-none dark:border-dark-3 dark:text-white dark:bg-white/5 focus:border-primary"
                         />
                         <p className="mt-1 text-xs text-dark-6">Se genera automáticamente del nombre.</p>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-dark dark:text-white mb-2">Región</label>
+                        <select
+                            value={formData.region || ""}
+                            onChange={(e) => setFormData(prev => ({ ...prev, region: e.target.value }))}
+                            className="w-full rounded-lg border border-stroke bg-transparent px-4 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
+                        >
+                            <option value="">Seleccionar Región</option>
+                            <option value="Guanacaste">Guanacaste</option>
+                            <option value="Puntarenas">Puntarenas</option>
+                            <option value="Limón (Caribe)">Limón (Caribe)</option>
+                            <option value="San José (Valle Central)">San José (Valle Central)</option>
+                            <option value="Alajuela">Alajuela</option>
+                            <option value="Heredia">Heredia</option>
+                            <option value="Cartago">Cartago</option>
+                            <option value="Zona Norte">Zona Norte</option>
+                            <option value="Zona Sur">Zona Sur</option>
+                        </select>
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-dark dark:text-white mb-2">Precio Adulto (USD) *</label>

@@ -4,6 +4,7 @@ const PackageSchema = new mongoose.Schema({
     name: { type: String, required: true },
     slug: { type: String, unique: true, sparse: true },
     description: { type: String },
+    region: { type: String },
     price: { type: Number, required: true },
     priceChild: { type: Number },
     isVisible: { type: Boolean, default: false },

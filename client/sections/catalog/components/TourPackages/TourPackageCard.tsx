@@ -4,27 +4,26 @@ import Link from 'next/link';
 import React from 'react';
 
 interface TourPackageCardProps {
-    images: string[];
-    title: string;
-    location: string;
-    rating: string;
-    reviews: string;
-    price_adult: number;
+    imageUrl: string;
+    name: string;
+    region: string;
+    rating: number;
+    reviews: number;
+    price: number;
+    slug: string;
 }
 
 const TourPackageCard: React.FC<TourPackageCardProps> = ({ 
-    images, 
-    title, 
-    location,
+    imageUrl, 
+    name, 
+    region,
     rating,
     reviews,
-    price_adult 
+    price,
+    slug 
 }) => {
 
-
-
     return (
-        // Removing the 'col' wrapper to let parent handle grid layout, as per learned pattern
         <div className="destination-card-items mt-0">
              <style jsx>{`
                 /* Reuse styles from TourCard and DestinationCard for consistency */
@@ -97,7 +96,7 @@ const TourPackageCard: React.FC<TourPackageCardProps> = ({
                     margin-top: 12px;
                     margin-bottom: 12px !important;
                     display: flex;
-                    flex-wrap: wrap; /* Allow wrapping for inclusions */
+                    flex-wrap: wrap;
                     gap: 15px;
                 }
 
@@ -119,7 +118,7 @@ const TourPackageCard: React.FC<TourPackageCardProps> = ({
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
-                    margin-top: auto; /* Push to bottom if flex column */
+                    margin-top: auto;
                 }
 
                 .price h6 {
@@ -140,8 +139,8 @@ const TourPackageCard: React.FC<TourPackageCardProps> = ({
             {/* A. Zona Visual */}
             <div className="destination-image">
                 <Image 
-                    src={images[0]} 
-                    alt={title} 
+                    src={imageUrl} 
+                    alt={name} 
                     width={400} 
                     height={300} 
                 />
@@ -183,21 +182,21 @@ const TourPackageCard: React.FC<TourPackageCardProps> = ({
             <div className="destination-content">
                 {/* B. Cuerpo Superior (El Gancho) */}
                 <h5>
-                    <Link href="/tour-packages/tour-packages-details">
-                        {title}
+                    <Link href={`/tour-packages/${slug}`}>
+                        {name}
                     </Link>
                 </h5>
                 {/* Ubicación: Icono de pin de mapa */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '2px' }}>
                     <i className="bi bi-geo-alt-fill text-(--brand-blue)" style={{ fontSize: '12px' }}></i>
-                    <span style={{ fontSize: '12px', color: '#777', fontWeight: '500' }}>{location}</span>
+                    <span style={{ fontSize: '12px', color: '#777', fontWeight: '500' }}>{region}</span>
                 </div>
                 
                 {/* 3. Cuerpo Central ("The Power Bar") */}
                 <div style={{ 
                     display: 'flex', 
                     alignItems: 'center', 
-                    justifyContent: 'space-between', /* Better distribution */
+                    justifyContent: 'space-between',
                     gap: '4px',
                     marginBottom: '8px',
                     fontSize: '12px',
@@ -227,10 +226,10 @@ const TourPackageCard: React.FC<TourPackageCardProps> = ({
                 <div className="price" style={{ borderTop: '1px dashed #ddd', paddingTop: '12px', marginTop: 'auto' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
                         <span style={{ fontSize: '11px', color: '#666', fontWeight: '400', lineHeight:'1' }}>From</span>
-                        <h6 style={{ margin: 0, lineHeight: '1.2' }}>US${price_adult.toLocaleString()}</h6>
+                        <h6 style={{ margin: 0, lineHeight: '1.2' }}>US${price.toLocaleString()}</h6>
                         <span style={{ fontSize: '10px', color: '#999', fontWeight: '400', lineHeight:'1' }}>per person</span>
                     </div>
-                    <Link href="/tour-packages/tour-packages-details" className="theme-btn style-2">
+                    <Link href={`/tour-packages/${slug}`} className="theme-btn style-2">
                         View More <i className="bi bi-arrow-right"></i>
                     </Link>
                 </div>

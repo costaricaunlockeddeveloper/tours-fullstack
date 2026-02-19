@@ -1,87 +1,27 @@
 "use client"
 import Image from 'next/image';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import TourPackageCard from './TourPackageCard';
+import { ApiService, PackageCatalogItem } from '@/services/api-service';
+import Loading from '@/client/sections/shared/common/Loading';
 
 const TourPackages = () => {
+    const [packages, setPackages] = useState<PackageCatalogItem[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    // Sample tour package data structure based on your requirements
-    // First 3 inclusions are standardized (Hotel, Transfer, Meals) for easy comparison
-    // 4th inclusion is the differentiator
-    const packageContent = [
-        {
-            images: ['/assets/img/destination/01.jpg'],
-            title: 'Arenal Adventure Experience',
-            location: 'La Fortuna, Alajuela',
-            rating: '4.8',
-            reviews: '120',
-            price_adult: 1200
-        },
-        {
-            images: ['/assets/img/destination/02.jpg'],
-            title: 'Manuel Antonio Experience',
-            location: 'Quepos, Puntarenas',
-            rating: '4.9',
-            reviews: '85',
-            price_adult: 950
-        },
-        {
-            images: ['/assets/img/destination/03.jpg'],
-            title: 'Monteverde Discovery',
-            location: 'Santa Elena, Puntarenas',
-            rating: '4.7',
-            reviews: '150',
-            price_adult: 1500
-        },
-        {
-            images: ['/assets/img/destination/04.jpg'],
-            title: 'Tortuguero Wildlife Expedition',
-            location: 'Pococí, Limón',
-            rating: '4.8',
-            reviews: '95',
-            price_adult: 1350
-        },
-        {
-            images: ['/assets/img/destination/01.jpg'],
-            title: 'Guanacaste Sun & Surf Journey',
-            location: 'Tamarindo, Guanacaste',
-            rating: '4.6',
-            reviews: '110',
-            price_adult: 1100
-        },
-        {
-            images: ['/assets/img/destination/02.jpg'],
-            title: 'Corcovado Deep Jungle Adventure',
-            location: 'Puerto Jiménez, Puntarenas',
-            rating: '5.0',
-            reviews: '200',
-            price_adult: 2200
-        },
-        {
-            images: ['/assets/img/destination/03.jpg'],
-            title: 'Puerto Viejo Vibes',
-            location: 'Puerto Viejo, Limón',
-            rating: '4.7',
-            reviews: '75',
-            price_adult: 1400
-        },
-        {
-            images: ['/assets/img/destination/04.jpg'],
-            title: 'Rincón de la Vieja Volcanic Trek',
-            location: 'Liberia, Guanacaste',
-            rating: '4.8',
-            reviews: '130',
-            price_adult: 1650
-        },
-        {
-            images: ['/assets/img/destination/01.jpg'],
-            title: 'San José Cultural Highlights',
-            location: 'San José, San José',
-            rating: '4.5',
-            reviews: '60',
-            price_adult: 850
-        },
-    ];
+    useEffect(() => {
+        const fetchPackages = async () => {
+            try {
+                const data = await ApiService.getPackagesCatalog();
+                setPackages(data);
+            } catch (error) {
+                console.error("Failed to fetch packages", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchPackages();
+    }, []);
 
     return (
         <section className="tour-section section-padding pt-6">
@@ -121,18 +61,25 @@ const TourPackages = () => {
 
                 {/* Tour Packages Grid */}
                 <div className="row g-4">
-                    {packageContent.map((item, i) => (
-                        <div key={i} className="col-xl-3 col-lg-6 col-md-6 wow fadeInUp" data-wow-delay={`.${i + 2}s`}>
-                            <TourPackageCard 
-                                images={item.images}
-                                title={item.title}
-                                location={item.location}
-                                rating={item.rating}
-                                reviews={item.reviews}
-                                price_adult={item.price_adult}
-                            />
+                    {loading ? (
+                        <div className="col-12 py-5">
+                            <Loading />
                         </div>
-                    ))}
+                    ) : (
+                        packages.map((item, i) => (
+                            <div key={item.id} className="col-xl-3 col-lg-6 col-md-6 wow fadeInUp" data-wow-delay={`.${(i % 4) + 2}s`}>
+                                <TourPackageCard 
+                                    imageUrl={item.imageUrl || '/assets/img/destination/01.jpg'}
+                                    name={item.name}
+                                    region={item.region || ''}
+                                    rating={item.rating || 0}
+                                    reviews={item.reviews || 0}
+                                    price={item.price}
+                                    slug={item.slug || ''}
+                                />
+                            </div>
+                        ))
+                    )}
                 </div>
 
                 {/* Pagination */}

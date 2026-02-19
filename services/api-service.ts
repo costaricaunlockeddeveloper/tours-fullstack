@@ -114,6 +114,7 @@ export interface Package {
     name: string;
     slug?: string;
     description?: string;
+    region?: string;
     price: number;
     priceChild?: number;
     isVisible?: boolean;
@@ -125,6 +126,17 @@ export interface Package {
     places?: Place[];
     activities?: PackageActivity[];
     excludes?: string[];
+}
+
+export interface PackageCatalogItem {
+    id: string;
+    name: string;
+    slug?: string;
+    region?: string;
+    rating?: number;
+    reviews?: number;
+    price: number;
+    imageUrl?: string;
 }
 
 export interface MapPin {
@@ -252,6 +264,11 @@ export const ApiService = {
     getToursCatalog: async (): Promise<TourCatalogItem[]> => {
         const res = await fetch(`${TOURS_API}?select=catalog`);
         if (!res.ok) throw new Error("Failed to fetch catalog tours");
+        return res.json();
+    },
+    getPackagesCatalog: async (): Promise<PackageCatalogItem[]> => {
+        const res = await fetch(`${PACKAGES_API}?select=catalog`);
+        if (!res.ok) throw new Error("Failed to fetch catalog packages");
         return res.json();
     },
 
