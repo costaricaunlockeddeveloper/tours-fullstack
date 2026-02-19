@@ -8,8 +8,13 @@ const ReservationSchema = new mongoose.Schema({
     tourName: { type: String },
     packageId: { type: String },
     packageName: { type: String },
-    date: { type: String, required: true }, // ISO Date string
-    pax: { type: Number, required: true },
+    startDate: { type: Date },
+    endDate: { type: Date },
+    date: { type: String }, // Keep for backward compatibility or remove if not needed, but safe to keep for now.
+    pax: { type: Number }, // Total pax, could be calculated
+    adults: { type: Number, required: true },
+    children: { type: Number, required: true },
+    subtotal: { type: Number, required: true },
     totalPrice: { type: Number, required: true },
     status: {
         type: String,

@@ -1,82 +1,88 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PurchaseCard, { PurchaseCardProps } from '../Components/PurchaseCard';
 import PurchasesTabs, { TabType } from '../Components/PurchasesTabs';
 import EmptyState from '../Components/EmptyState';
-
-// Mock data for demonstration
-const mockPurchases: PurchaseCardProps[] = [
-    {
-        id: '1',
-        type: 'tour',
-        image: '/assets/img/about/01.png',
-        title: 'Parque Nacional Manuel Antonio Tour',
-        location: 'Manuel Antonio, Puntarenas',
-        date: '2026-02-15T08:00:00',
-        adults: 2,
-        children: 0,
-        status: 'confirmed',
-        price: 130,
-        meetingPointUrl: 'https://www.google.com/maps/place/Manuel+Antonio+National+Park',
-        onViewDetails: () => console.log('View details clicked'),
-        onDownloadReceipt: () => console.log('Download receipt clicked'),
-        onRequestRefund: () => console.log('Request refund clicked')
-    },
-    {
-        id: '2',
-        type: 'tour_package',
-        image: '/assets/img/about/01.png',
-        title: 'Arenal Volcano & Hot Springs Package',
-        location: 'La Fortuna, Alajuela',
-        date: '2026-03-10T09:00:00',
-        endDate: '2026-03-12T17:00:00',
-        adults: 2,
-        children: 1,
-        status: 'pending',
-        price: 2800,
-        whatsappNumber: '50612345678',
-        onViewDetails: () => console.log('View details clicked'),
-        onDownloadReceipt: () => console.log('Download receipt clicked'),
-        onRequestRefund: () => console.log('Request refund clicked')
-    },
-    {
-        id: '3',
-        type: 'tour',
-        image: '/assets/img/about/01.png',
-        title: 'Monteverde Cloud Forest Adventure',
-        location: 'Monteverde, Puntarenas',
-        date: '2026-01-20T07:30:00',
-        adults: 3,
-        children: 2,
-        status: 'cancelled',
-        price: 450,
-        meetingPointUrl: 'https://www.google.com/maps/place/Monteverde+Cloud+Forest',
-        onViewDetails: () => console.log('View details clicked'),
-        onDownloadReceipt: () => console.log('Download receipt clicked'),
-        onRequestRefund: () => console.log('Request refund clicked')
-    }
-];
+import { useAuth } from '@/contexts/AuthContext';
 
 const HistoricalPurchasesView: React.FC = () => {
     const [activeTab, setActiveTab] = useState<TabType>('upcoming');
+    const [purchases, setPurchases] = useState<PurchaseCardProps[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const { user, loading: authLoading } = useAuth();
+
+    useEffect(() => {
+        const fetchReservations = async () => {
+            if (!user) return;
+
+            try {
+                const response = await fetch('/api/reservations/user');
+                if (response.ok) {
+                    const data = await response.json();
+                    const mappedPurchases: PurchaseCardProps[] = data.map((res: any) => ({
+                        id: res._id || res.id,
+                        type: res.packageId ? 'tour_package' : 'tour',
+                        image: '/assets/img/destination/01.jpg', // Placeholder, ideally typically fetched or stored
+                        title: res.packageName || res.tourName || 'Unknown Booking',
+                        location: 'Costa Rica', // Placeholder
+                        date: res.startDate || res.date,
+                        endDate: res.endDate,
+                        adults: res.adults || 0,
+                        children: res.children || 0,
+                        status: res.status,
+                        price: res.totalPrice,
+                        // Additional methods could be implemented
+                        onViewDetails: () => console.log('View details', res._id),
+                        onDownloadReceipt: () => console.log('Download receipt', res._id),
+                    }));
+                    setPurchases(mappedPurchases);
+                }
+            } catch (error) {
+                console.error("Failed to fetch reservations", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        if (!authLoading) {
+            if (user) {
+                fetchReservations();
+            } else {
+                setIsLoading(false); // No user, so no loading needed (empty state or redirect)
+            }
+        }
+    }, [user, authLoading]);
 
     // Filter purchases by upcoming vs past
     const now = new Date();
-    const upcomingPurchases = mockPurchases.filter(purchase => 
-        new Date(purchase.date) >= now && 
+    const upcomingPurchases = purchases.filter(purchase =>
+        new Date(purchase.endDate || purchase.date) >= now &&
         (purchase.status === 'confirmed' || purchase.status === 'pending')
     );
-    const pastPurchases = mockPurchases.filter(purchase => 
-        new Date(purchase.date) < now || 
-        purchase.status === 'completed' || 
+    const pastPurchases = purchases.filter(purchase =>
+        new Date(purchase.endDate || purchase.date) < now ||
+        purchase.status === 'completed' ||
         purchase.status === 'cancelled'
     );
 
     const currentPurchases = activeTab === 'upcoming' ? upcomingPurchases : pastPurchases;
 
+    if (authLoading || isLoading) {
+        return (
+            <div className="historical-purchases-container">
+                <div className="content-wrapper">
+                    <div className="loading-state">
+                        <div className="spinner"></div>
+                        <p>Loading your trips...</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <>
-         <section className='top-blue-rect' style={{marginBottom: '0px'}}></section>
+            <section className='top-blue-rect' style={{ marginBottom: '0px' }}></section>
             <style jsx>{`
                 .historical-purchases-container {
                     background: linear-gradient(135deg, #f5f7fa 0%, #e8eef4 100%);

@@ -1,26 +1,39 @@
 "use client"
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
+import { loadStripe } from '@stripe/stripe-js';
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 interface PackageBookingWidgetProps {
     adultPrice?: number; // Price per adult (default 1200)
     childPrice?: number; // Price per child (default 800)
+    packageId?: string;
+    packageName?: string;
 }
 
-const PackageBookingWidget = ({ 
+const PackageBookingWidget = ({
     adultPrice = 1200,
-    childPrice = 800
+    childPrice = 800,
+    packageId = 'default-package',
+    packageName = 'Costa Rica Tour Package'
 }: PackageBookingWidgetProps) => {
     const [adults, setAdults] = useState(2);
     const [children, setChildren] = useState(0);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
+    const { user, loading: authLoading } = useAuth();
+    const router = useRouter();
 
     const formatDate = (dateStr: string) => {
         if (!dateStr) return '';
-        return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { 
-            month: 'short', 
-            day: 'numeric', 
-            year: 'numeric' 
+        return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
         });
     };
 
@@ -52,19 +65,58 @@ const PackageBookingWidget = ({
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log({
-            startDate,
-            endDate,
-            adults,
-            children,
-            totalPrice,
-            nights: getNights()
-        });
+
+        if (authLoading) return;
+
+        if (!user) {
+            // Redirect to sign in if not logged in
+            // Store booking intent in localStorage or URL params if needed
+            router.push('/auth/signin?redirect=' + encodeURIComponent(window.location.pathname));
+            return;
+        }
+
+        setIsLoading(true);
+
+        try {
+            const response = await fetch('/api/checkout_sessions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    packageId,
+                    packageName,
+                    userId: user.uid || user.id || user.email, // Adjust based on user object structure
+                    userEmail: user.email,
+                    userName: user.name || user.displayName,
+                    startDate,
+                    endDate,
+                    adults,
+                    children,
+                    subtotal: totalPrice, // Assuming subtotal = total for now
+                    total: totalPrice,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                window.location.href = data.url;
+            } else {
+                console.error('Checkout failed:', data.error);
+                alert('Checkout failed. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error during checkout:', error);
+            alert('An error occurred. Please try again.');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
-    const minCheckoutDate = startDate 
+    const minCheckoutDate = startDate
         ? new Date(new Date(startDate + 'T00:00:00').getTime() + 86400000).toISOString().split('T')[0]
         : new Date(Date.now() + 172800000).toISOString().split('T')[0]; // At least 2 days from now if no start date
 
@@ -78,16 +130,16 @@ const PackageBookingWidget = ({
                     <div className="desti-booking-form">
                         <form onSubmit={handleSubmit} id="package-booking-form">
                             <div className="row g-3">
-                                
+
                                 {/* Step 1: Check-in Date */}
                                 <div className="col-lg-12">
                                     <label className="form-label fw-bold mb-1" style={{ fontSize: '13px', color: '#666' }}>
                                         Check-in
                                     </label>
                                     <div className="position-relative">
-                                        <div 
+                                        <div
                                             className="form-control d-flex align-items-center"
-                                            style={{ 
+                                            style={{
                                                 cursor: 'pointer',
                                                 minHeight: '48px',
                                                 position: 'relative',
@@ -99,12 +151,12 @@ const PackageBookingWidget = ({
                                                 {startDate ? formatDate(startDate) : 'Select date'}
                                             </span>
                                         </div>
-                                        <input 
-                                            type="date" 
-                                            name="package-start-date" 
-                                            id="package-start-date" 
+                                        <input
+                                            type="date"
+                                            name="package-start-date"
+                                            id="package-start-date"
                                             className="form-control"
-                                            style={{ 
+                                            style={{
                                                 position: 'absolute',
                                                 top: 0,
                                                 left: 0,
@@ -135,9 +187,9 @@ const PackageBookingWidget = ({
                                         Check-out
                                     </label>
                                     <div className="position-relative">
-                                        <div 
+                                        <div
                                             className="form-control d-flex align-items-center"
-                                            style={{ 
+                                            style={{
                                                 cursor: 'pointer',
                                                 minHeight: '48px',
                                                 position: 'relative',
@@ -150,12 +202,12 @@ const PackageBookingWidget = ({
                                                 {endDate ? formatDate(endDate) : 'Select date'}
                                             </span>
                                         </div>
-                                        <input 
-                                            type="date" 
-                                            name="package-end-date" 
-                                            id="package-end-date" 
+                                        <input
+                                            type="date"
+                                            name="package-end-date"
+                                            id="package-end-date"
                                             className="form-control"
-                                            style={{ 
+                                            style={{
                                                 position: 'absolute',
                                                 top: 0,
                                                 left: 0,
@@ -182,13 +234,13 @@ const PackageBookingWidget = ({
                                         <i className="bi bi-people me-2"></i>
                                         Passengers
                                     </label>
-                                    
+
                                     {/* Adults Counter */}
-                                    <div className="d-flex justify-content-between align-items-center mb-3 p-3" 
-                                         style={{ 
-                                             backgroundColor: '#f8f9fa', 
-                                             borderRadius: '8px' 
-                                         }}>
+                                    <div className="d-flex justify-content-between align-items-center mb-3 p-3"
+                                        style={{
+                                            backgroundColor: '#f8f9fa',
+                                            borderRadius: '8px'
+                                        }}>
                                         <div>
                                             <div className="fw-semibold">Adults</div>
                                             <div className="fw-bold" style={{ color: '#2f2f2f', fontSize: '15px' }}>
@@ -196,11 +248,11 @@ const PackageBookingWidget = ({
                                             </div>
                                         </div>
                                         <div className="d-flex align-items-center gap-3">
-                                            <button 
-                                                type="button" 
+                                            <button
+                                                type="button"
                                                 className="btn btn-sm btn-outline-secondary"
-                                                style={{ 
-                                                    minWidth: '44px', 
+                                                style={{
+                                                    minWidth: '44px',
                                                     minHeight: '44px',
                                                     borderRadius: '50%',
                                                     padding: '0',
@@ -216,11 +268,11 @@ const PackageBookingWidget = ({
                                             <span className="fw-bold" style={{ minWidth: '24px', textAlign: 'center', fontSize: '16px' }}>
                                                 {adults}
                                             </span>
-                                            <button 
-                                                type="button" 
+                                            <button
+                                                type="button"
                                                 className="btn btn-sm btn-outline-secondary"
-                                                style={{ 
-                                                    minWidth: '44px', 
+                                                style={{
+                                                    minWidth: '44px',
                                                     minHeight: '44px',
                                                     borderRadius: '50%',
                                                     padding: '0',
@@ -236,11 +288,11 @@ const PackageBookingWidget = ({
                                     </div>
 
                                     {/* Children Counter */}
-                                    <div className="d-flex justify-content-between align-items-center p-3" 
-                                         style={{ 
-                                             backgroundColor: '#f8f9fa', 
-                                             borderRadius: '8px' 
-                                         }}>
+                                    <div className="d-flex justify-content-between align-items-center p-3"
+                                        style={{
+                                            backgroundColor: '#f8f9fa',
+                                            borderRadius: '8px'
+                                        }}>
                                         <div>
                                             <div className="fw-semibold">Children</div>
                                             <div className="fw-bold" style={{ color: '#2f2f2f', fontSize: '15px' }}>
@@ -248,11 +300,11 @@ const PackageBookingWidget = ({
                                             </div>
                                         </div>
                                         <div className="d-flex align-items-center gap-3">
-                                            <button 
-                                                type="button" 
+                                            <button
+                                                type="button"
                                                 className="btn btn-sm btn-outline-secondary"
-                                                style={{ 
-                                                    minWidth: '44px', 
+                                                style={{
+                                                    minWidth: '44px',
                                                     minHeight: '44px',
                                                     borderRadius: '50%',
                                                     padding: '0',
@@ -268,11 +320,11 @@ const PackageBookingWidget = ({
                                             <span className="fw-bold" style={{ minWidth: '24px', textAlign: 'center', fontSize: '16px' }}>
                                                 {children}
                                             </span>
-                                            <button 
-                                                type="button" 
+                                            <button
+                                                type="button"
                                                 className="btn btn-sm btn-outline-secondary"
-                                                style={{ 
-                                                    minWidth: '44px', 
+                                                style={{
+                                                    minWidth: '44px',
                                                     minHeight: '44px',
                                                     borderRadius: '50%',
                                                     padding: '0',
@@ -290,12 +342,12 @@ const PackageBookingWidget = ({
 
                                 {/* Price Summary */}
                                 <div className="col-lg-12">
-                                    <div className="p-3" 
-                                         style={{ 
-                                             backgroundColor: '#EBF5FF', 
-                                             borderRadius: '8px',
-                                             border: '1px solid #B8DAFF'
-                                         }}>
+                                    <div className="p-3"
+                                        style={{
+                                            backgroundColor: '#EBF5FF',
+                                            borderRadius: '8px',
+                                            border: '1px solid #B8DAFF'
+                                        }}>
                                         {adults > 0 && (
                                             <div className="d-flex justify-content-between align-items-center mb-2">
                                                 <span style={{ color: '#495057' }}>Adults ({adults} × ${adultPrice.toLocaleString()})</span>
@@ -320,27 +372,29 @@ const PackageBookingWidget = ({
 
                                 {/* CTA Button */}
                                 <div className="col-lg-12">
-                                    <button 
-                                        type="submit" 
+                                    <button
+                                        type="submit"
+                                        disabled={isLoading || authLoading}
                                         className="theme-btn text-center w-100"
-                                        style={{ 
+                                        style={{
                                             padding: '15px',
                                             fontSize: '16px',
-                                            fontWeight: 'bold'
+                                            fontWeight: 'bold',
+                                            opacity: (isLoading || authLoading) ? 0.7 : 1
                                         }}
                                     >
-                                        Book Now - ${totalPrice.toLocaleString()} USD
-                                        <i className="bi bi-arrow-right ms-2"></i>
+                                        {isLoading ? 'Processing...' : `Book Now - $${totalPrice.toLocaleString()} USD`}
+                                        {!isLoading && <i className="bi bi-arrow-right ms-2"></i>}
                                     </button>
                                     <small className="text-muted d-block text-center mt-2">
                                         <i className="bi bi-shield-check me-1"></i>
-                                        Secure payment via Lemon Squeezy
+                                        Secure payment via Stripe
                                     </small>
                                 </div>
                             </div>
                         </form>
                     </div>
-                </div> 
+                </div>
             </div>
         </div>
     );
