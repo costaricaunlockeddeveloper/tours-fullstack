@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Package from '@/models/Package';
+import mongoose from 'mongoose';
 
 export async function GET(
     request: Request,
@@ -9,7 +10,14 @@ export async function GET(
     const { id } = await params;
     await dbConnect();
     try {
-        const pkg = await Package.findById(id);
+        // Try by ObjectId first, then by slug
+        let pkg = null;
+        if (mongoose.Types.ObjectId.isValid(id)) {
+            pkg = await Package.findById(id);
+        }
+        if (!pkg) {
+            pkg = await Package.findOne({ slug: id });
+        }
         if (!pkg) {
             return NextResponse.json({ error: 'Package not found' }, { status: 404 });
         }
@@ -27,10 +35,20 @@ export async function PUT(
     await dbConnect();
     try {
         const body = await request.json();
-        const pkg = await Package.findByIdAndUpdate(id, body, {
-            new: true,
-            runValidators: true,
-        });
+        
+        let pkg;
+        if (mongoose.Types.ObjectId.isValid(id)) {
+            pkg = await Package.findByIdAndUpdate(id, body, {
+                new: true,
+                runValidators: true,
+            });
+        } else {
+             pkg = await Package.findOneAndUpdate({ slug: id }, body, {
+                new: true,
+                runValidators: true,
+            });
+        }
+
         if (!pkg) {
             return NextResponse.json({ error: 'Package not found' }, { status: 404 });
         }
@@ -47,7 +65,13 @@ export async function DELETE(
     const { id } = await params;
     await dbConnect();
     try {
-        const pkg = await Package.findByIdAndDelete(id);
+        let pkg;
+        if (mongoose.Types.ObjectId.isValid(id)) {
+            pkg = await Package.findByIdAndDelete(id);
+        } else {
+            pkg = await Package.findOneAndDelete({ slug: id });
+        }
+
         if (!pkg) {
             return NextResponse.json({ error: 'Package not found' }, { status: 404 });
         }
