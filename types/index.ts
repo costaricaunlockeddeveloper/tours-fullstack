@@ -79,28 +79,26 @@ export interface Tour {
     }[];
 }
 
-export interface DailyItinerary {
-    day: number;
+export interface PackageActivity {
     title: string;
     description: string;
 }
 
 export interface Package {
     id: string;
-    title: string;
-    price: number;
-    images: string[];
-    tags: string[];
-    included: string[];
+    name: string;
+    slug?: string;
     description?: string;
+    price: number;
+    priceChild?: number;
+    isVisible?: boolean;
+    rating?: number;
+    reviews?: number;
+    images?: PlaceImages;
+    included: string[];
     placeIds?: string[];
     places?: Place[];
-    tourIds?: string[];
-    tours?: Tour[];
-    itinerary?: DailyItinerary[];
-    priceType?: "per_person" | "per_group";
-    includesTransport?: boolean;
-    name?: string;
+    activities?: PackageActivity[];
     excludes?: string[];
 }
 

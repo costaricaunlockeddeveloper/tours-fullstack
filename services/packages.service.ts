@@ -1,22 +1,12 @@
-import { Package, Tour } from "@/types";
-import { ToursService } from "./tours.service";
+import { Package } from "@/types";
 
 const API_URL = "/api/packages";
 
 export const PackagesService = {
     getPackages: async (): Promise<Package[]> => {
-        const [packagesRes, tours] = await Promise.all([
-            fetch(API_URL),
-            ToursService.getTours(),
-        ]);
-
-        if (!packagesRes.ok) throw new Error("Failed to fetch packages");
-        const packages: Package[] = await packagesRes.json();
-
-        return packages.map((pkg) => ({
-            ...pkg,
-            tours: tours.filter((t) => pkg.tourIds?.includes(t.id)),
-        }));
+        const res = await fetch(API_URL);
+        if (!res.ok) throw new Error("Failed to fetch packages");
+        return res.json();
     },
     addPackage: async (pkg: Omit<Package, "id">) => {
         const res = await fetch(API_URL, {

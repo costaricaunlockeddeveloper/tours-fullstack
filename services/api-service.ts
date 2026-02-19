@@ -92,6 +92,11 @@ export interface DailyItinerary {
     meals?: string[]; // Added
 }
 
+export interface PackageActivity {
+    title: string;
+    description: string;
+}
+
 export interface TourCatalogItem {
     id: string;
     title: string;
@@ -106,24 +111,19 @@ export interface TourCatalogItem {
 
 export interface Package {
     id: string;
-    title: string;
+    name: string;
+    slug?: string;
+    description?: string;
     price: number;
     priceChild?: number;
-    images: string[];
-    tags: string[];
-    included: string[];
-    description?: string;
+    isVisible?: boolean;
     rating?: number;
     reviews?: number;
-    location?: string;
-    tourIds?: string[];
+    images?: PlaceImages;
+    included: string[];
     placeIds?: string[];
-    tours?: Tour[];
     places?: Place[];
-    itinerary?: DailyItinerary[];
-    priceType?: "per_person" | "per_group";
-    includesTransport?: boolean;
-    name?: string; // Alias or specific name
+    activities?: PackageActivity[];
     excludes?: string[];
 }
 
@@ -257,54 +257,35 @@ export const ApiService = {
 
     // Packages
     getPackages: async (): Promise<Package[]> => {
-        const [packagesRes, toursRes, placesRes] = await Promise.all([
+        const [packagesRes, placesRes] = await Promise.all([
             fetch(PACKAGES_API),
-            fetch(TOURS_API),
             fetch(PLACES_API)
         ]);
 
         if (!packagesRes.ok) throw new Error("Failed to fetch packages");
         const packages: Package[] = await packagesRes.json();
-        const toursData: Tour[] = await toursRes.json();
         const placesData: Place[] = await placesRes.json();
-
-        // Reconstruct tours with places
-        const tours = toursData.map(t => ({
-            ...t,
-            id: (t as any)._id || t.id,
-            places: placesData.filter(p => t.placeIds?.includes((p as any)._id || p.id))
-        }));
 
         return packages.map((pkg) => ({
             ...pkg,
             id: (pkg as any)._id || pkg.id,
-            tours: tours.filter((t) => pkg.tourIds?.includes(t.id)),
             places: placesData.filter((p) => pkg.placeIds?.includes((p as any)._id || p.id))
         }));
     },
     getPackage: async (id: string): Promise<Package> => {
-        const [pkgRes, toursRes, placesRes] = await Promise.all([
+        const [pkgRes, placesRes] = await Promise.all([
             fetch(`${PACKAGES_API}/${id}`),
-            fetch(TOURS_API),
             fetch(PLACES_API)
         ]);
 
         if (!pkgRes.ok) throw new Error("Failed to fetch package");
         const pkg = await pkgRes.json();
-        const toursData = await toursRes.json();
         const placesData = await placesRes.json();
-
-        // Reconstruct tours with places
-        const tours = toursData.map((t: any) => ({
-            ...t,
-            id: t._id || t.id,
-            places: placesData.filter((p: any) => t.placeIds?.includes(p._id || p.id))
-        }));
 
         return {
             ...pkg,
             id: pkg._id || pkg.id,
-            tours: tours.filter((t: any) => pkg.tourIds?.includes(t.id))
+            places: placesData.filter((p: any) => pkg.placeIds?.includes(p._id || p.id))
         };
     },
     addPackage: async (pkg: Omit<Package, "id">) => {

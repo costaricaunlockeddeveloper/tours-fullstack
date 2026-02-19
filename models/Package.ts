@@ -1,30 +1,33 @@
 import mongoose from 'mongoose';
 
 const PackageSchema = new mongoose.Schema({
-    title: { type: String, required: true },
+    name: { type: String, required: true },
+    slug: { type: String, unique: true, sparse: true },
+    description: { type: String },
     price: { type: Number, required: true },
     priceChild: { type: Number },
-    images: [{ type: String }],
-    tags: [{ type: String }],
-    included: [{ type: String }],
-    description: { type: String },
+    isVisible: { type: Boolean, default: false },
     rating: { type: Number, default: 0 },
     reviews: { type: Number, default: 0 },
-    location: { type: String },
-    tourIds: [{ type: String }],
-    placeIds: [{ type: String }], // Direct association with Places (Destinations)
-    itinerary: [{
-        day: { type: Number },
+    // Structured images (same as Tours/Places)
+    images: {
+        heroImage: {
+            path: { type: String },
+            size: { type: Number },
+            typefile: { type: String },
+        },
+        secondaryAssets: [{
+            path: { type: String },
+            size: { type: Number },
+            typefile: { type: String },
+        }],
+    },
+    included: [{ type: String }],
+    placeIds: [{ type: String }],
+    activities: [{
         title: { type: String },
         description: { type: String },
-        accommodation: { type: String },
     }],
-    priceType: {
-        type: String,
-        enum: ['per_person', 'per_group'],
-    },
-    includesTransport: { type: Boolean },
-    name: { type: String },
     excludes: [{ type: String }],
 }, {
     timestamps: true,

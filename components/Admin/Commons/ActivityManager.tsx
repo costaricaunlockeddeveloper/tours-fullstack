@@ -1,45 +1,30 @@
 "use client";
 
 import React, { useState } from 'react';
-import { DailyItinerary } from '@/services/api-service';
+import { PackageActivity } from '@/services/api-service';
 
 interface ActivityManagerProps {
-    activities: DailyItinerary[];
-    onActivitiesChange: (activities: DailyItinerary[]) => void;
+    activities: PackageActivity[];
+    onActivitiesChange: (activities: PackageActivity[]) => void;
 }
 
 export default function ActivityManager({ activities, onActivitiesChange }: ActivityManagerProps) {
-    // Reuse DailyItinerary type but treat 'day' as index or just unused.
-    // User requested "Nombre de actividad" and "Descripcion".
-
-    const [newItem, setNewItem] = useState<DailyItinerary>({
-        day: 0,
+    const [newItem, setNewItem] = useState<PackageActivity>({
         title: "",
         description: "",
-        accommodation: "" // Unused
     });
 
     const [editIndex, setEditIndex] = useState<number | null>(null);
-    const [editItem, setEditItem] = useState<DailyItinerary | null>(null);
+    const [editItem, setEditItem] = useState<PackageActivity | null>(null);
 
     const handleAdd = () => {
         if (!newItem.title.trim()) return;
-
-        // Just append. Day can be index + 1
-        const itemToAdd = {
-            ...newItem,
-            day: activities.length + 1
-        };
-
-        onActivitiesChange([...activities, itemToAdd]);
-        setNewItem({ day: 0, title: "", description: "", accommodation: "" });
+        onActivitiesChange([...activities, newItem]);
+        setNewItem({ title: "", description: "" });
     };
 
     const handleDelete = (index: number) => {
-        const newActivities = activities.filter((_, i) => i !== index);
-        // Re-index
-        const reIndexed = newActivities.map((act, i) => ({ ...act, day: i + 1 }));
-        onActivitiesChange(reIndexed);
+        onActivitiesChange(activities.filter((_, i) => i !== index));
     };
 
     const startEdit = (index: number) => {
