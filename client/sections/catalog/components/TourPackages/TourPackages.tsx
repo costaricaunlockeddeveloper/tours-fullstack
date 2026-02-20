@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import TourPackageCard from './TourPackageCard';
 import { ApiService, PackageCatalogItem } from '@/services/api-service';
 import Loading from '@/client/sections/shared/common/Loading';
+import EmptyState from '@/client/sections/shared/common/EmptyState';
 
 const TourPackages = () => {
     const [packages, setPackages] = useState<PackageCatalogItem[]>([]);
@@ -54,7 +55,7 @@ const TourPackages = () => {
                             Costa Rica All-Inclusive Packages
                         </h2>
                     </div>
-                    <div className="car-shape float-bob-x">
+                    <div className="car-shape float-bob-x d-none d-lg-flex">
                         <Image src="/assets/img/destination/car.png" alt="img" width={134} height={124} />
                     </div>
                 </div>
@@ -65,6 +66,12 @@ const TourPackages = () => {
                         <div className="col-12 py-5">
                             <Loading />
                         </div>
+                    ) : packages.length === 0 ? (
+                        <EmptyState 
+                            title="No packages found" 
+                            message="There are currently no all-inclusive packages available. Please check back later."
+                            icon="bi-box-seam"
+                        />
                     ) : (
                         packages.map((item, i) => (
                             <div key={item.id} className="col-xl-3 col-lg-6 col-md-6 wow fadeInUp" data-wow-delay={`.${(i % 4) + 2}s`}>
@@ -80,17 +87,6 @@ const TourPackages = () => {
                             </div>
                         ))
                     )}
-                </div>
-
-                {/* Pagination */}
-                <div className="page-nav-wrap text-center mt-5">
-                    <ul>
-                        <li><a className="page-numbers" href="#"><i className="bi bi-arrow-left"></i></a></li>
-                        <li><a className="page-numbers" href="#">01</a></li>
-                        <li><a className="page-numbers" href="#">02</a></li>
-                        <li><a className="page-numbers" href="#">03</a></li>
-                        <li><a className="page-numbers" href="#"><i className="bi bi-arrow-right"></i></a></li>
-                    </ul>
                 </div>
             </div>
         </section>

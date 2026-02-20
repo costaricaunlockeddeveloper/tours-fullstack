@@ -4,6 +4,7 @@ import Image from 'next/image';
 import TourCard from './TourCard';
 import { ApiService, TourCatalogItem } from '@/services/api-service';
 import Loading from '@/client/sections/shared/common/Loading';
+import EmptyState from '@/client/sections/shared/common/EmptyState';
 
 const Tour = () => {
     const [tours, setTours] = useState<TourCatalogItem[]>([]);
@@ -55,7 +56,7 @@ const Tour = () => {
                             Popular Tours in Costa Rica
                         </h2>
                     </div>
-                    <div className="car-shape float-bob-x">
+                    <div className="car-shape float-bob-x d-none d-lg-flex">
                         <Image src="/assets/img/destination/car.png" alt="img" width={134} height={124} />
                     </div>
                 </div>
@@ -66,6 +67,12 @@ const Tour = () => {
                         <div className="col-12 py-5">
                             <Loading />
                         </div>
+                    ) : tours.length === 0 ? (
+                        <EmptyState 
+                            title="No tours available" 
+                            message="There are currently no tours matching your search. Please check again later."
+                            icon="bi-signpost-split"
+                        />
                     ) : (
                         tours.map((item, i) => (
                             <div key={item.id} className="col-xl-3 col-lg-6 col-md-6 wow fadeInUp" data-wow-delay={`.${(i % 4) + 2}s`}>
@@ -82,17 +89,6 @@ const Tour = () => {
                             </div>
                         ))
                     )}
-                </div>
-
-                {/* Pagination (Optional, keeping it simple or matching current flow) */}
-                <div className="page-nav-wrap text-center mt-5">
-                    <ul>
-                        <li><a className="page-numbers" href="#"><i className="bi bi-arrow-left"></i></a></li>
-                        <li><a className="page-numbers" href="#">01</a></li>
-                        <li><a className="page-numbers" href="#">02</a></li>
-                        <li><a className="page-numbers" href="#">03</a></li>
-                        <li><a className="page-numbers" href="#"><i className="bi bi-arrow-right"></i></a></li>
-                    </ul>
                 </div>
             </div>
         </section>
