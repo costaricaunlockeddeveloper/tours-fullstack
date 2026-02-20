@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { ApiService, Package, Tour } from "@/services/api-service";
+import { ApiService, Package } from "@/services/api-service";
 import PackageForm from "@/components/Admin/packages/PackageForm";
 import Link from "next/link";
 
@@ -12,7 +12,6 @@ export default function EditPackagePage() {
     const id = params?.id as string;
 
     const [pkg, setPkg] = useState<Package | null>(null);
-    const [availableTours, setAvailableTours] = useState<Tour[]>([]);
     const [loading, setLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -21,14 +20,9 @@ export default function EditPackagePage() {
             if (!id) return;
             try {
                 // Fetch Package
-                const pkgFn = ApiService.getPackage(id);
-                // Fetch Tours for relationship selection
-                const toursFn = ApiService.getTours();
-
-                const [pkgData, tours] = await Promise.all([pkgFn, toursFn]);
+                const pkgData = await ApiService.getPackage(id);
 
                 setPkg(pkgData);
-                setAvailableTours(tours);
             } catch (error) {
                 console.error("Error loading data:", error);
                 router.push("/admin/paquetes");
@@ -77,7 +71,6 @@ export default function EditPackagePage() {
 
             <PackageForm
                 initialData={pkg}
-                availableTours={availableTours}
                 onSubmit={handleSubmit}
                 isSubmitting={isSubmitting}
                 onCancel={() => router.push(`/admin/paquetes/${id}`)}

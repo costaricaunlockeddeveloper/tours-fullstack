@@ -13,6 +13,8 @@ export interface AssetMeta {
     path: string;
     size?: number;
     typefile?: string;
+    mediaType?: 'standard' | '360' | 'video';
+    thumbnailPath?: string;
 }
 
 export interface PlaceImages {

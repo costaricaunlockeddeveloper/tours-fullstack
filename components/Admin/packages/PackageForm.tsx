@@ -55,6 +55,14 @@ export default function PackageForm({
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        
+        // Validation: Minimum 2 secondary assets
+        const secondaryCount = formData.images?.secondaryAssets?.length || 0;
+        if (secondaryCount < 2) {
+            alert(`Se requieren al menos 2 imágenes secundarias (actualmente: ${secondaryCount}) para la galería.`);
+            return;
+        }
+
         onSubmit(formData as Omit<Package, "id">);
     };
 

@@ -15,6 +15,8 @@ const PlaceSchema = new mongoose.Schema({
             path: { type: String },
             size: { type: Number },
             typefile: { type: String },
+            mediaType: { type: String, enum: ['standard', '360', 'video'], default: 'standard' },
+            thumbnailPath: { type: String },
         }],
     },
     coordinates: {
@@ -36,4 +38,5 @@ const PlaceSchema = new mongoose.Schema({
     toObject: { virtuals: true }
 });
 
-export default mongoose.models.Place || mongoose.model('Place', PlaceSchema);
+delete mongoose.models.Place;
+export default mongoose.model('Place', PlaceSchema);

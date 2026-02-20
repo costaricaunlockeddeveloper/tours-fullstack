@@ -21,6 +21,8 @@ const PackageSchema = new mongoose.Schema({
             path: { type: String },
             size: { type: Number },
             typefile: { type: String },
+            mediaType: { type: String, enum: ['standard', '360', 'video'], default: 'standard' },
+            thumbnailPath: { type: String },
         }],
     },
     included: [{ type: String }],
@@ -43,4 +45,5 @@ const PackageSchema = new mongoose.Schema({
     toObject: { virtuals: true }
 });
 
-export default mongoose.models.Package || mongoose.model('Package', PackageSchema);
+delete mongoose.models.Package;
+export default mongoose.model('Package', PackageSchema);

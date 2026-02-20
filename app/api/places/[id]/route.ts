@@ -37,6 +37,7 @@ export async function PUT(
     await dbConnect();
     try {
         const body = await request.json();
+        console.log("API PUT received body images:", JSON.stringify(body.images?.secondaryAssets, null, 2));
         const place = await Place.findByIdAndUpdate(id, body, {
             new: true,
             runValidators: true,

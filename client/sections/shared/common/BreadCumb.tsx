@@ -4,14 +4,11 @@ import loadBackgroudImages from "./loadBackgroudImages";
 import Link from "next/link";
 
 const BreadCumb = ({Title,bgimg}: {Title: string, bgimg: string}) => {
-    
-    useEffect(() => {
-        loadBackgroudImages();
-      }, []);
+
 
     return (
 
-      <section className="breadcrumb-wrapper fix bg-cover" style={{ backgroundColor: 'var(--brand-blue)'}} data-background={bgimg}>
+      <section className="breadcrumb-wrapper fix bg-cover" style={{ backgroundColor: 'var(--brand-blue)', backgroundImage: `url(${bgimg})` }} data-background={bgimg}>
       <div className="container">
           <div className="row">
               <div className="page-heading">

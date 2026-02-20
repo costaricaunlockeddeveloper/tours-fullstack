@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import TourPackageHero from '../components/TourPackages/TourPackageDetails/TourPackageHero';
 import TourPackageDetails from '../components/TourPackages/TourPackageDetails/TourPackageDetails';
-import { ApiService, Package } from '@/services/api-service';
+import { ApiService, Package, AssetMeta } from '@/services/api-service';
 import Loading from '@/client/sections/shared/common/Loading';
 import { notFound } from 'next/navigation';
 
@@ -38,14 +38,16 @@ const TourPackagesDetailsView = ({ slug }: TourPackagesDetailsViewProps) => {
     }
 
     // Build gallery images array from structured images
-    const galleryImages: string[] = [];
-    if (pkg.images?.heroImage?.path) {
-        galleryImages.push(pkg.images.heroImage.path);
+    const galleryImages: (string | AssetMeta)[] = [];
+    if (pkg.images?.heroImage) {
+        // Hero image is always standard for now, but could specificy
+        galleryImages.push({
+            path: pkg.images.heroImage.path,
+            mediaType: 'standard'
+        });
     }
     if (pkg.images?.secondaryAssets) {
-        pkg.images.secondaryAssets.forEach(asset => {
-            if (asset.path) galleryImages.push(asset.path);
-        });
+        galleryImages.push(...pkg.images.secondaryAssets);
     }
 
     return (

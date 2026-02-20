@@ -55,6 +55,7 @@ export async function POST(request: Request) {
     await dbConnect();
     try {
         const body = await request.json();
+        console.log("API POST received body images:", JSON.stringify(body.images?.secondaryAssets, null, 2));
         const place = await Place.create(body);
         return NextResponse.json(place, { status: 201 });
     } catch (error) {

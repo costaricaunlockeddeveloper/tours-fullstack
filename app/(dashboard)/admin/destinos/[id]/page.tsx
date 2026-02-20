@@ -127,36 +127,24 @@ export default function DestinationDetailsPage() {
             </div>
 
             {/* Top Section: Gallery */}
-            <EditableSection
-                title="Galería Multimedia"
-                isEditing={!!editMode['gallery']}
-                onEdit={() => toggleEdit('gallery')}
-                onSave={() => handleSave('gallery')}
-                onCancel={() => toggleEdit('gallery')}
-                isSaving={isSaving}
-                className="mb-8"
-            >
-                {editMode['gallery'] ? (
-                    <MediaGalleryEditor
-                        images={formData.images || {}}
-                        onChange={(newImages) => setFormData(prev => ({ ...prev, images: newImages }))}
-                        folderName="destino"
-                        slug={formData.slug || place.slug || place.id}
-                    />
-                ) : (
-                    hasImages ? (
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                            {allImagePaths.map((imgPath, idx) => (
-                                <div key={idx} className="relative w-full h-48 rounded-lg overflow-hidden border border-stroke">
-                                    <Image src={imgPath} alt={`${place.name} ${idx + 1}`} fill className="object-cover" />
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                        <p className="text-sm text-gray-400 italic">Sin imágenes disponibles.</p>
-                    )
-                )}
-            </EditableSection>
+            <div className="mb-8 rounded-xl bg-white p-6 shadow-1 dark:bg-gray-dark dark:shadow-card">
+                <div className="flex items-center justify-between mb-6 border-b border-stroke pb-4 dark:border-dark-3">
+                    <h3 className="text-xl font-bold text-dark dark:text-white">Galería Multimedia</h3>
+                    <button
+                        onClick={() => handleSave('gallery')}
+                        disabled={isSaving}
+                        className="rounded-lg bg-primary px-6 py-2 font-medium text-white transition hover:bg-opacity-90 disabled:opacity-50"
+                    >
+                        {isSaving ? "Guardando..." : "Guardar Galería"}
+                    </button>
+                </div>
+                <MediaGalleryEditor
+                    images={formData.images || {}}
+                    onChange={(newImages) => setFormData(prev => ({ ...prev, images: newImages }))}
+                    folderName="destino"
+                    slug={formData.slug || place.slug || place.id}
+                />
+            </div>
 
             {/* Main Content Grid: Top Row (Info + Location) & Bottom Row (Description) */}
             <div className="flex flex-col gap-8">

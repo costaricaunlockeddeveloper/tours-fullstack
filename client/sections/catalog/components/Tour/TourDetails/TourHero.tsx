@@ -2,7 +2,7 @@
 import React, { useMemo } from "react";
 import GalleryImages from "@/client/sections/shared/common/GalleryImages";
 import ExpandableTitleDescription from "@/client/sections/shared/common/ExpandableTitleDescription";
-import { PlaceImages } from "@/services/api-service";
+import { PlaceImages, AssetMeta } from "@/services/api-service";
 
 interface TourHeroProps {
     title: string;
@@ -14,12 +14,13 @@ interface TourHeroProps {
 
 const TourHero = ({ title, description, rating, reviews, images }: TourHeroProps) => {
     // Combine heroImage + secondaryAssets into a single gallery array
+    // Combine heroImage + secondaryAssets into a single gallery array
     const galleryImages = useMemo(() => {
-        const result: string[] = [];
-        if (images?.heroImage?.path) result.push(images.heroImage.path);
+        const result: (string | AssetMeta)[] = [];
+        if (images?.heroImage) result.push(images.heroImage);
         if (images?.secondaryAssets?.length) {
             images.secondaryAssets.forEach(asset => {
-                if (asset.path) result.push(asset.path);
+                if (asset.path) result.push(asset);
             });
         }
         return result.length > 0 ? result : ['/assets/img/destination/01.jpg'];

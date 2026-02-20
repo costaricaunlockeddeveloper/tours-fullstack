@@ -4,7 +4,7 @@ import Link from 'next/link';
 import React, { useState } from 'react';
 import GalleryImages from '../../../../shared/common/GalleryImages';
 
-import { Place } from '@/services/api-service';
+import { Place, AssetMeta } from '@/services/api-service';
 
 interface DestinationDetailsProps {
     place?: Place;
@@ -14,13 +14,13 @@ const DestinationDetails = ({ place }: DestinationDetailsProps) => {
     const [activeTab, setActiveTab] = useState<'general' | 'tours' | 'packages'>('general');
 
     // Prepare images for gallery
-    const galleryImages = [];
-    if (place?.images?.heroImage?.path) {
-        galleryImages.push(place.images.heroImage.path);
+    const galleryImages: (string | AssetMeta)[] = [];
+    if (place?.images?.heroImage) {
+        galleryImages.push(place.images.heroImage);
     }
     if (place?.images?.secondaryAssets) {
         place.images.secondaryAssets.forEach(img => {
-            if (img.path) galleryImages.push(img.path);
+            if (img.path) galleryImages.push(img);
         });
     }
 

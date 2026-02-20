@@ -2,6 +2,7 @@
 import React from "react";
 import GalleryImages from "../../../../shared/common/GalleryImages";
 import ExpandableTitleDescription from "../../../../shared/common/ExpandableTitleDescription";
+import { AssetMeta } from "@/services/api-service"; // Import AssetMeta
 
 interface TourPackageHeroProps {
     title: string;
@@ -9,7 +10,8 @@ interface TourPackageHeroProps {
     location?: string;
     rating?: number;
     reviews?: number;
-    images: string[];
+    // Update: Accept mixed array of strings (legacy) or AssetMeta
+    images: (string | AssetMeta)[]; 
 }
 
 const TourPackageHero = ({ 
@@ -20,8 +22,6 @@ const TourPackageHero = ({
     reviews = 124, 
     images 
 }: TourPackageHeroProps) => {
-
-
 
     return (
         <section className="tour-hero-section pb-4 bg-white">
@@ -128,4 +128,3 @@ const TourPackageHero = ({
 };
 
 export default TourPackageHero;
-

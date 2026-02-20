@@ -20,6 +20,8 @@ const TourSchema = new mongoose.Schema({
             path: { type: String },
             size: { type: Number },
             typefile: { type: String },
+            mediaType: { type: String, enum: ['standard', '360', 'video'], default: 'standard' },
+            thumbnailPath: { type: String },
         }],
     },
     // Default values template — copied to each date
@@ -72,4 +74,5 @@ const TourSchema = new mongoose.Schema({
 // Index for faster queries by destination
 TourSchema.index({ placeIds: 1 });
 
-export default mongoose.models.Tour || mongoose.model('Tour', TourSchema);
+delete mongoose.models.Tour;
+export default mongoose.model('Tour', TourSchema);
