@@ -1,31 +1,74 @@
 "use client";
-import React, { Suspense } from "react";
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Stage, Environment, useGLTF, Center, Html } from "@react-three/drei";
+import React, { Suspense, useState, useCallback, useEffect } from "react";
+import { Canvas, useThree } from "@react-three/fiber";
+import { OrbitControls, useGLTF, Center, Html } from "@react-three/drei";
 import { Mesh } from "three";
 
 import { ApiService, MapPin } from "@/services/api-service";
 
 function Model() {
-    // Load the GLTF/GLB model. Replace '/Cottage_FREE.glb' with your file path.
-    // GLTF is better for textures as they are embedded or referenced correctly.
     const { scene } = useGLTF("/prueba.glb");
 
-    // Traverse to setup shadows
-    scene.traverse((child) => {
-        if ((child as Mesh).isMesh) {
-            child.castShadow = true;
-            child.receiveShadow = true;
-        }
-    });
+    // Setup materials without shadows for better GPU performance
+    useEffect(() => {
+        scene.traverse((child) => {
+            if ((child as Mesh).isMesh) {
+                // Shadows removed to reduce GPU pressure
+            }
+        });
+
+        return () => {
+            // Dispose geometries and materials on unmount
+            scene.traverse((child) => {
+                if ((child as Mesh).isMesh) {
+                    const mesh = child as Mesh;
+                    mesh.geometry?.dispose();
+                    if (Array.isArray(mesh.material)) {
+                        mesh.material.forEach((m) => m.dispose());
+                    } else {
+                        mesh.material?.dispose();
+                    }
+                }
+            });
+        };
+    }, [scene]);
 
     return (
         <primitive object={scene} />
     );
 }
 
+// Helper component to detect WebGL context loss from inside the Canvas
+function ContextLossDetector({ onContextLost }: { onContextLost: () => void }) {
+    const { gl } = useThree();
+
+    useEffect(() => {
+        const canvas = gl.domElement;
+        const handleLost = (e: Event) => {
+            e.preventDefault();
+            console.warn("WebGL context lost");
+            onContextLost();
+        };
+        canvas.addEventListener("webglcontextlost", handleLost);
+        return () => {
+            canvas.removeEventListener("webglcontextlost", handleLost);
+        };
+    }, [gl, onContextLost]);
+
+    return null;
+}
+
 export function InteractiveMap() {
     const [pins, setPins] = React.useState<MapPin[]>([]);
+    const [contextLost, setContextLost] = useState(false);
+
+    const handleContextLost = useCallback(() => {
+        setContextLost(true);
+    }, []);
+
+    const handleReload = useCallback(() => {
+        setContextLost(false);
+    }, []);
 
     React.useEffect(() => {
         const fetchPins = async () => {
@@ -39,13 +82,43 @@ export function InteractiveMap() {
         fetchPins();
     }, []);
 
-    return (
-        <div className="h-[600px] w-full bg-gray-100 dark:bg-gray-900 relative">
+    // If context was lost, show a recovery overlay
+    if (contextLost) {
+        return (
+            <div className="h-[600px] w-full bg-gray-100 relative flex items-center justify-center">
+                <div className="text-center p-8">
+                    <p className="text-lg text-gray-600 mb-4">
+                        The 3D map lost its GPU connection.
+                    </p>
+                    <button
+                        onClick={handleReload}
+                        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                        Reload Map
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
-            <Canvas shadows camera={{ position: [0, 80000, 80000], fov: 50, near: 1000, far: 1000000 }}>
+    return (
+        <div className="h-[600px] w-full bg-gray-100 relative">
+            <Canvas
+                dpr={[1, 1.5]}
+                camera={{ position: [0, 80000, 80000], fov: 50, near: 1000, far: 1000000 }}
+                gl={{
+                    powerPreference: "default",
+                    failIfMajorPerformanceCaveat: false,
+                    antialias: false,
+                }}
+            >
+                <ContextLossDetector onContextLost={handleContextLost} />
+
                 <Suspense fallback={null}>
-                    <ambientLight intensity={0.5} />
-                    <directionalLight position={[10000, 10000, 10000]} intensity={1} castShadow />
+                    {/* Lightweight lighting — no HDR environment map */}
+                    <ambientLight intensity={0.6} />
+                    <hemisphereLight args={["#b1e1ff", "#b97a20", 0.8]} />
+                    <directionalLight position={[10000, 10000, 10000]} intensity={1} />
 
                     <Center>
                         <Model />
@@ -54,15 +127,15 @@ export function InteractiveMap() {
                     {pins.map((pin) => (
                         <group key={pin.id} position={pin.position}>
                             {/* Pin Icon Construction */}
-                            <group position={[0, 500, 0]}> {/* Offset to align tip with point */}
+                            <group position={[0, 500, 0]}>
                                 {/* Pin Head */}
                                 <mesh position={[0, 1000, 0]}>
-                                    <sphereGeometry args={[600, 32, 32]} />
+                                    <sphereGeometry args={[600, 16, 16]} />
                                     <meshStandardMaterial color="#ff0000" emissive="#ff0000" emissiveIntensity={0.5} />
                                 </mesh>
                                 {/* Pin Point (Cone) */}
                                 <mesh position={[0, 500, 0]}>
-                                    <coneGeometry args={[200, 1200, 32]} />
+                                    <coneGeometry args={[200, 1200, 16]} />
                                     <meshStandardMaterial color="#cc0000" />
                                 </mesh>
                             </group>
@@ -78,7 +151,6 @@ export function InteractiveMap() {
                     ))}
                 </Suspense>
                 <OrbitControls makeDefault autoRotate autoRotateSpeed={0.5} enableZoom={true} enablePan={true} />
-                <Environment preset="city" />
             </Canvas>
             <div className="absolute bottom-4 left-4 rounded bg-white/80 p-2 text-sm text-black backdrop-blur">
                 Mouse: Girar/Acercar/Alejar
