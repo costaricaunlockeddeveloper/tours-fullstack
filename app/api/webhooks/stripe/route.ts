@@ -8,6 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2026-01
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
 export async function POST(req: Request) {
+    console.log("📥 Webhook request received at /api/webhooks/stripe");
     if (!process.env.STRIPE_SECRET_KEY) {
         return NextResponse.json({ error: 'Stripe Secret Key is missing' }, { status: 500 });
     }
@@ -34,15 +35,42 @@ export async function POST(req: Request) {
     if (event.type === 'checkout.session.completed') {
         const session = event.data.object as Stripe.Checkout.Session;
         const reservationId = session.metadata?.reservationId;
+        console.log(`🔔 Webhook received: checkout.session.completed. ReservationId: ${reservationId}`);
 
         if (reservationId) {
             await dbConnect();
-            await Reservation.findByIdAndUpdate(reservationId, {
+
+            // Extract payment details
+            const paymentIntentId = session.payment_intent as string;
+            const amountTotal = (session.amount_total || 0) / 100; // back to dollars
+            const currency = session.currency || 'usd';
+
+            // In a real scenario, you might want to fetch the payment intent to get more details
+            // But session has enough for many cases
+
+            console.log(`Updating reservation ${reservationId} to confirmed/paid...`);
+
+            const updatedReservation = await Reservation.findByIdAndUpdate(reservationId, {
                 status: 'confirmed',
-                paymentStatus: 'paid'
-            });
-            console.log(`Reservation ${reservationId} confirmed via webhook.`);
+                paymentStatus: 'paid',
+                paymentId: paymentIntentId,
+                paymentAmount: amountTotal,
+                paymentCurrency: currency,
+                paymentDate: new Date(),
+                stripeSessionId: session.id,
+                paymentMethod: session.payment_method_types?.[0] || 'card'
+            }, { new: true });
+
+            if (updatedReservation) {
+                console.log(`✅ Reservation ${reservationId} successfully updated to confirmed.`);
+            } else {
+                console.error(`❌ Reservation ${reservationId} NOT FOUND during update!`);
+            }
+        } else {
+            console.warn("⚠️ No reservationId found in session metadata.");
         }
+    } else {
+        console.log(`ℹ️ Webhook received unhandled event type: ${event.type}`);
     }
 
     return NextResponse.json({ received: true });

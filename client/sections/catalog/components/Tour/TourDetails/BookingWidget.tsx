@@ -1,10 +1,16 @@
 "use client"
 import React, { useState, useMemo } from 'react';
 import dayjs from 'dayjs';
-import { TourDateEntry, TourMeetingPoint } from '@/services/api-service';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
+import { loadStripe } from '@stripe/stripe-js';
+import { Tour, TourDateEntry, TourMeetingPoint } from '@/services/api-service';
 import BookingCalendar from './BookingCalendar';
 
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+
 interface BookingWidgetProps {
+    tour: Tour;
     priceAdult: number;
     priceChild: number;
     availableDates: TourDateEntry[];
@@ -12,7 +18,7 @@ interface BookingWidgetProps {
     meetingPoint?: TourMeetingPoint;
 }
 
-const BookingWidget = ({ priceAdult, priceChild, availableDates, defaultSchedules, meetingPoint }: BookingWidgetProps) => {
+const BookingWidget = ({ tour, priceAdult, priceChild, availableDates, defaultSchedules, meetingPoint }: BookingWidgetProps) => {
     const [adults, setAdults] = useState(1);
     const [children, setChildren] = useState(0);
     const [selectedDate, setSelectedDate] = useState('');
@@ -70,20 +76,63 @@ const BookingWidget = ({ priceAdult, priceChild, availableDates, defaultSchedule
         }
     };
 
+    const [isLoading, setIsLoading] = useState(false);
+    const { user, loading: authLoading } = useAuth();
+    const router = useRouter();
+
     const handleSelectDate = (dateStr: string) => {
         setSelectedDate(dateStr);
         setSelectedTime('');
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log({
-            date: selectedDate,
-            time: selectedTime,
-            adults,
-            children,
-            totalPrice
-        });
+
+        if (authLoading) return;
+
+        if (!user) {
+            router.push('/auth/signin?redirect=' + encodeURIComponent(window.location.pathname));
+            return;
+        }
+
+        setIsLoading(true);
+
+        try {
+            const response = await fetch('/api/checkout_sessions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    tourId: tour.id,
+                    tourName: tour.name,
+                    packageId: tour.slug, // Using slug as ID for compatibility with previous implementation logic
+                    userId: user.uid || user.id || user.email,
+                    userEmail: user.email,
+                    userName: user.name || user.displayName,
+                    date: selectedDate,
+                    time: selectedTime,
+                    adults,
+                    children,
+                    subtotal: totalPrice,
+                    total: totalPrice,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                window.location.href = data.url;
+            } else {
+                console.error('Checkout failed:', data.error);
+                alert('Checkout failed. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error during checkout:', error);
+            alert('An error occurred. Please try again.');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     // Build Google Maps link from meeting point data
@@ -109,7 +158,7 @@ const BookingWidget = ({ priceAdult, priceChild, availableDates, defaultSchedule
                     <div className="desti-booking-form">
                         <form onSubmit={handleSubmit} id="booking-form">
                             <div className="row g-4">
-                                
+
                                 {/* Step 1: Calendar Date Selection */}
                                 <div className="col-lg-12">
                                     <label className="form-label fw-bold mb-2">
@@ -135,11 +184,11 @@ const BookingWidget = ({ priceAdult, priceChild, availableDates, defaultSchedule
                                         </label>
                                         <div className="d-flex gap-2 flex-wrap">
                                             {currentSchedules.map((time) => (
-                                                <button 
+                                                <button
                                                     key={time}
-                                                    type="button" 
+                                                    type="button"
                                                     className={`btn flex-fill ${selectedTime === time ? 'btn-primary' : 'btn-outline-primary'}`}
-                                                    style={{ 
+                                                    style={{
                                                         borderRadius: '20px',
                                                         padding: '10px 20px',
                                                         fontSize: '14px',
@@ -164,10 +213,10 @@ const BookingWidget = ({ priceAdult, priceChild, availableDates, defaultSchedule
                                         <i className="bi bi-people me-2"></i>
                                         Passengers
                                     </label>
-                                    
+
                                     {/* Adults Counter */}
-                                    <div className="d-flex justify-content-between align-items-center mb-3 p-3" 
-                                         style={{ backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
+                                    <div className="d-flex justify-content-between align-items-center mb-3 p-3"
+                                        style={{ backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
                                         <div>
                                             <div className="fw-semibold">Adults</div>
                                             <div className="fw-bold" style={{ color: '#2f2f2f', fontSize: '15px' }}>
@@ -191,8 +240,8 @@ const BookingWidget = ({ priceAdult, priceChild, availableDates, defaultSchedule
                                     </div>
 
                                     {/* Children Counter */}
-                                    <div className="d-flex justify-content-between align-items-center p-3" 
-                                         style={{ backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
+                                    <div className="d-flex justify-content-between align-items-center p-3"
+                                        style={{ backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
                                         <div>
                                             <div className="fw-semibold">Children</div>
                                             <div className="fw-bold" style={{ color: '#2f2f2f', fontSize: '15px' }}>
@@ -277,9 +326,9 @@ const BookingWidget = ({ priceAdult, priceChild, availableDates, defaultSchedule
                                 <div className="col-lg-12">
                                     <button type="submit" className="theme-btn text-center w-100"
                                         style={{ padding: '15px', fontSize: '16px', fontWeight: 'bold' }}
-                                        disabled={!selectedDate || !selectedTime || futureDates.length === 0}>
-                                        Book Now - ${totalPrice} USD
-                                        <i className="bi bi-arrow-right ms-2"></i>
+                                        disabled={isLoading || authLoading || !selectedDate || !selectedTime || futureDates.length === 0}>
+                                        {isLoading ? 'Processing...' : `Book Now - $${totalPrice} USD`}
+                                        {!isLoading && <i className="bi bi-arrow-right ms-2"></i>}
                                     </button>
                                     <small className="text-muted d-block text-center mt-2">
                                         <i className="bi bi-shield-check me-1"></i>
@@ -289,7 +338,7 @@ const BookingWidget = ({ priceAdult, priceChild, availableDates, defaultSchedule
                             </div>
                         </form>
                     </div>
-                </div> 
+                </div>
             </div>
         </div>
     );

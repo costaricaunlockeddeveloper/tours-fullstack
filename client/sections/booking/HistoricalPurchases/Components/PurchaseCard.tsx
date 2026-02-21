@@ -11,6 +11,7 @@ export interface PurchaseCardProps {
     title: string;
     location: string;
     date: string;
+    selectedTime?: string;
     endDate?: string;
     adults: number;
     children?: number;
@@ -29,6 +30,7 @@ const PurchaseCard: React.FC<PurchaseCardProps> = ({
     title,
     location,
     date,
+    selectedTime,
     endDate,
     adults,
     children,
@@ -425,6 +427,7 @@ const PurchaseCard: React.FC<PurchaseCardProps> = ({
                             <i className="bi bi-calendar-event info-icon" style={{ marginTop: '0px' }}></i>
                             <span>
                                 {formatDate(date)}
+                                {selectedTime && ` @ ${selectedTime}`}
                                 {endDate && ` - ${formatDate(endDate)}`}
                             </span>
                         </div>
@@ -464,14 +467,14 @@ const PurchaseCard: React.FC<PurchaseCardProps> = ({
                                 <i className="bi bi-map"></i>
                                 View Details
                             </button>
-                            <button 
-                                className="action-btn btn-secondary" 
+                            <button
+                                className="action-btn btn-secondary"
                                 onClick={() => setShowOptionsMenu(!showOptionsMenu)}
                             >
                                 <i className="bi bi-three-dots"></i>
                                 Options
                             </button>
-                            
+
                             {showOptionsMenu && (
                                 <div className="options-menu">
                                     <button className="options-menu-item" onClick={() => {

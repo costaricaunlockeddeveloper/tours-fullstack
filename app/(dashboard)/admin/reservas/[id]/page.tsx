@@ -127,7 +127,7 @@ export default function ReservationDetails() {
                         <div>
                             <span className="block text-sm text-dark-6 mb-1">Estado de Pago</span>
                             <span className={`inline-flex rounded-full px-3 py-1 text-sm font-medium ${reservation.paymentStatus === 'paid' ? 'text-success bg-success/10' :
-                                    reservation.paymentStatus === 'partial' ? 'text-warning bg-warning/10' : 'text-danger bg-danger/10'
+                                reservation.paymentStatus === 'partial' ? 'text-warning bg-warning/10' : 'text-danger bg-danger/10'
                                 }`}>
                                 {(reservation.paymentStatus).toUpperCase()}
                             </span>
@@ -139,6 +139,33 @@ export default function ReservationDetails() {
                             </span>
                         </div>
                     </div>
+
+                    {/* Payment Details Section (New) */}
+                    {reservation.paymentId && (
+                        <div className="mt-8 border-t border-stroke pt-6 dark:border-dark-3">
+                            <h4 className="mb-4 text-lg font-semibold text-dark dark:text-white">Datos del Pago</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                <div>
+                                    <span className="block text-xs text-dark-6 uppercase mb-1">Transacción ID</span>
+                                    <span className="text-sm font-medium text-dark dark:text-white break-all">{reservation.paymentId}</span>
+                                </div>
+                                <div>
+                                    <span className="block text-xs text-dark-6 uppercase mb-1">Monto Pagado</span>
+                                    <span className="text-sm font-medium text-dark dark:text-white">${reservation.paymentAmount} {reservation.paymentCurrency?.toUpperCase()}</span>
+                                </div>
+                                <div>
+                                    <span className="block text-xs text-dark-6 uppercase mb-1">Método</span>
+                                    <span className="text-sm font-medium text-dark dark:text-white capitalize">{reservation.paymentMethod}</span>
+                                </div>
+                                <div>
+                                    <span className="block text-xs text-dark-6 uppercase mb-1">Fecha de Pago</span>
+                                    <span className="text-sm font-medium text-dark dark:text-white">
+                                        {reservation.paymentDate ? dayjs(reservation.paymentDate).format("DD/MM/YYYY HH:mm") : '-'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
 

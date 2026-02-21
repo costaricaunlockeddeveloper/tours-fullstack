@@ -3,47 +3,57 @@ import React, { useState, useEffect } from 'react';
 import PurchaseCard, { PurchaseCardProps } from '../Components/PurchaseCard';
 import PurchasesTabs, { TabType } from '../Components/PurchasesTabs';
 import EmptyState from '../Components/EmptyState';
+import ReservationDetailsModal from '../Components/ReservationDetailsModal';
 import { useAuth } from '@/contexts/AuthContext';
 
 const HistoricalPurchasesView: React.FC = () => {
     const [activeTab, setActiveTab] = useState<TabType>('upcoming');
     const [purchases, setPurchases] = useState<PurchaseCardProps[]>([]);
+    const [rawReservations, setRawReservations] = useState<any[]>([]);
+    const [selectedRes, setSelectedRes] = useState<any>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const { user, loading: authLoading } = useAuth();
 
-    useEffect(() => {
-        const fetchReservations = async () => {
-            if (!user) return;
+    const fetchReservations = async () => {
+        if (!user) return;
 
-            try {
-                const response = await fetch('/api/reservations/user');
-                if (response.ok) {
-                    const data = await response.json();
-                    const mappedPurchases: PurchaseCardProps[] = data.map((res: any) => ({
-                        id: res._id || res.id,
-                        type: res.packageId ? 'tour_package' : 'tour',
-                        image: '/assets/img/destination/01.jpg', // Placeholder, ideally typically fetched or stored
-                        title: res.packageName || res.tourName || 'Unknown Booking',
-                        location: 'Costa Rica', // Placeholder
-                        date: res.startDate || res.date,
-                        endDate: res.endDate,
-                        adults: res.adults || 0,
-                        children: res.children || 0,
-                        status: res.status,
-                        price: res.totalPrice,
-                        // Additional methods could be implemented
-                        onViewDetails: () => console.log('View details', res._id),
-                        onDownloadReceipt: () => console.log('Download receipt', res._id),
-                    }));
-                    setPurchases(mappedPurchases);
-                }
-            } catch (error) {
-                console.error("Failed to fetch reservations", error);
-            } finally {
-                setIsLoading(false);
+        try {
+            const response = await fetch('/api/reservations/user');
+            if (response.ok) {
+                const data = await response.json();
+                setRawReservations(data);
+                const mappedPurchases: PurchaseCardProps[] = data.map((res: any) => ({
+                    id: res._id || res.id,
+                    type: res.packageId ? 'tour_package' : 'tour',
+                    image: '/assets/img/destination/01.jpg', // Placeholder, ideally typically fetched or stored
+                    title: res.packageName || res.tourName || 'Unknown Booking',
+                    location: 'Costa Rica', // Placeholder
+                    date: res.startDate || res.date,
+                    selectedTime: res.selectedTime,
+                    endDate: res.endDate,
+                    adults: res.adults || 0,
+                    children: res.children || 0,
+                    status: res.status,
+                    price: res.totalPrice,
+                    // Additional methods could be implemented
+                    onViewDetails: () => {
+                        setSelectedRes(res);
+                        setIsModalOpen(true);
+                    },
+                    onDownloadReceipt: () => handleDownloadReceipt(res),
+                    onRequestRefund: () => handleRequestRefund(res),
+                }));
+                setPurchases(mappedPurchases);
             }
-        };
+        } catch (error) {
+            console.error("Failed to fetch reservations", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
+    useEffect(() => {
         if (!authLoading) {
             if (user) {
                 fetchReservations();
@@ -52,6 +62,21 @@ const HistoricalPurchasesView: React.FC = () => {
             }
         }
     }, [user, authLoading]);
+
+    const handleDownloadReceipt = (res: any) => {
+        if (res.paymentStatus === 'paid') {
+            alert(`Receipt for booking ${res._id || res.id} will be generated shortly. In the meantime, you can check your email for the Stripe confirmation.`);
+        } else {
+            alert("Digital receipt is not available yet as the payment is still in 'pending' status.");
+        }
+    };
+
+    const handleRequestRefund = (res: any) => {
+        const message = encodeURIComponent(`Hello, I would like to request a refund for my booking ${res.packageName || res.tourName} (ID: ${res._id || res.id}).`);
+        if (confirm("To request a refund, you must contact our support team. Would you like to open WhatsApp support now?")) {
+            window.open(`https://wa.me/50688888888?text=${message}`, '_blank');
+        }
+    };
 
     // Filter purchases by upcoming vs past
     const now = new Date();
@@ -228,6 +253,12 @@ const HistoricalPurchasesView: React.FC = () => {
                         <EmptyState type={activeTab} />
                     )}
                 </div>
+
+                <ReservationDetailsModal
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    reservation={selectedRes}
+                />
             </div>
         </>
     );

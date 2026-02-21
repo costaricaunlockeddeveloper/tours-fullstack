@@ -19,7 +19,7 @@ const ThreeSixtyViewer: React.FC<ThreeSixtyViewerProps> = ({ imageUrl, onClose }
 
         // Cleanup existing instance
         if (viewerInstance.current) {
-            try { viewerInstance.current.destroy(); } catch {}
+            try { viewerInstance.current.destroy(); } catch { }
             viewerInstance.current = null;
         }
 
@@ -53,7 +53,7 @@ const ThreeSixtyViewer: React.FC<ThreeSixtyViewerProps> = ({ imageUrl, onClose }
             try {
                 // Dynamic import to avoid SSR issues
                 const { Viewer } = await import('@photo-sphere-viewer/core');
-                await import('@photo-sphere-viewer/core/index.css');
+                // await import('@photo-sphere-viewer/core/index.css');
 
                 if (!viewerRef.current) return;
 
@@ -105,7 +105,7 @@ const ThreeSixtyViewer: React.FC<ThreeSixtyViewerProps> = ({ imageUrl, onClose }
                 timeoutRef.current = null;
             }
             if (viewerInstance.current) {
-                try { viewerInstance.current.destroy(); } catch {}
+                try { viewerInstance.current.destroy(); } catch { }
                 viewerInstance.current = null;
             }
         };
@@ -188,7 +188,7 @@ const ThreeSixtyViewer: React.FC<ThreeSixtyViewerProps> = ({ imageUrl, onClose }
                     to { transform: rotate(360deg); }
                 }
             `}</style>
-            
+
             <div ref={viewerRef} className="viewer-wrapper"></div>
 
             {/* Loading indicator */}
@@ -205,7 +205,7 @@ const ThreeSixtyViewer: React.FC<ThreeSixtyViewerProps> = ({ imageUrl, onClose }
                     <i className="bi bi-exclamation-triangle-fill"></i>
                     <p style={{ fontSize: '14px', marginBottom: '16px' }}>{error}</p>
                     {onClose && (
-                        <button 
+                        <button
                             onClick={onClose}
                             style={{
                                 background: 'rgba(255,255,255,0.15)',
@@ -223,7 +223,7 @@ const ThreeSixtyViewer: React.FC<ThreeSixtyViewerProps> = ({ imageUrl, onClose }
                     )}
                 </div>
             )}
-            
+
             {onClose && (
                 <button className="close-btn" onClick={onClose}>
                     <i className="bi bi-x-lg"></i>

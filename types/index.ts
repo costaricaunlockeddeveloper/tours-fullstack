@@ -117,11 +117,23 @@ export interface Reservation {
     tourName?: string;
     packageId?: string;
     packageName?: string;
+    startDate?: string;
+    endDate?: string;
+    selectedTime?: string;
     date: string; // ISO Date of the tour/trip
     pax: number;
+    adults: number;
+    children: number;
+    subtotal: number;
     totalPrice: number;
     status: "pending" | "confirmed" | "cancelled" | "completed";
     createdAt: string;
     paymentStatus: "unpaid" | "partial" | "paid";
+    paymentId?: string;
+    paymentMethod?: string;
+    paymentAmount?: number;
+    paymentCurrency?: string;
+    paymentDate?: string;
+    stripeSessionId?: string;
     notes?: string;
 }

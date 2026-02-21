@@ -10,6 +10,7 @@ const ReservationSchema = new mongoose.Schema({
     packageName: { type: String },
     startDate: { type: Date },
     endDate: { type: Date },
+    selectedTime: { type: String },
     date: { type: String }, // Keep for backward compatibility or remove if not needed, but safe to keep for now.
     pax: { type: Number }, // Total pax, could be calculated
     adults: { type: Number, required: true },
@@ -26,6 +27,12 @@ const ReservationSchema = new mongoose.Schema({
         enum: ['unpaid', 'partial', 'paid'],
         default: 'unpaid',
     },
+    paymentId: { type: String }, // Stripe Payment Intent ID
+    paymentMethod: { type: String }, // e.g., 'card'
+    paymentAmount: { type: Number },
+    paymentCurrency: { type: String },
+    paymentDate: { type: Date },
+    stripeSessionId: { type: String },
     notes: { type: String },
 }, {
     timestamps: true,

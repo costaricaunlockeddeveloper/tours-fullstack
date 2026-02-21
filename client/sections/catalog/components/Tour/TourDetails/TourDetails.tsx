@@ -33,8 +33,9 @@ const TourDetails = ({ tour }: TourDetailsProps) => {
                 <div className="activities-details-wrapper">
                     <div className="row g-4 justify-content-center flex-row-reverse">
                         <div className="col-12 col-lg-4">
-                            <BookingWidget 
-                                priceAdult={priceAdult} 
+                            <BookingWidget
+                                tour={tour}
+                                priceAdult={priceAdult}
                                 priceChild={priceChild}
                                 availableDates={tour.availableDates || []}
                                 defaultSchedules={tour.defaults?.schedules || []}
@@ -49,7 +50,7 @@ const TourDetails = ({ tour }: TourDetailsProps) => {
                                     <div className="row g-4">
                                         <div className="col-md-6">
                                             <div className="d-flex align-items-start gap-3">
-                                                <div className="icon-wrapper d-flex align-items-center justify-content-center bg-success-subtle rounded-circle p-2" style={{width: '40px', height: '40px'}}>
+                                                <div className="icon-wrapper d-flex align-items-center justify-content-center bg-success-subtle rounded-circle p-2" style={{ width: '40px', height: '40px' }}>
                                                     <i className="bi bi-check-lg text-success fs-5"></i>
                                                 </div>
                                                 <div>
@@ -60,7 +61,7 @@ const TourDetails = ({ tour }: TourDetailsProps) => {
                                         </div>
                                         <div className="col-md-6">
                                             <div className="d-flex align-items-start gap-3">
-                                                <div className="icon-wrapper d-flex align-items-center justify-content-center bg-primary-subtle rounded-circle p-2" style={{width: '40px', height: '40px'}}>
+                                                <div className="icon-wrapper d-flex align-items-center justify-content-center bg-primary-subtle rounded-circle p-2" style={{ width: '40px', height: '40px' }}>
                                                     <i className="bi bi-clock text-primary fs-5"></i>
                                                 </div>
                                                 <div>
@@ -71,15 +72,15 @@ const TourDetails = ({ tour }: TourDetailsProps) => {
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 {/* TABS NAVIGATION */}
                                 <div className="mt-5 mb-4">
-                                    <ul className="nav nav-tabs" style={{ 
+                                    <ul className="nav nav-tabs" style={{
                                         borderBottom: '2px solid #e9ecef',
                                         gap: '1rem'
                                     }}>
                                         <li className="nav-item">
-                                            <button 
+                                            <button
                                                 className={`nav-link ${activeTab === 'info' ? 'active' : ''}`}
                                                 onClick={() => setActiveTab('info')}
                                                 style={{
@@ -99,7 +100,7 @@ const TourDetails = ({ tour }: TourDetailsProps) => {
                                             </button>
                                         </li>
                                         <li className="nav-item">
-                                            <button 
+                                            <button
                                                 className={`nav-link ${activeTab === 'destinations' ? 'active' : ''}`}
                                                 onClick={() => setActiveTab('destinations')}
                                                 style={{
@@ -163,7 +164,7 @@ const TourDetails = ({ tour }: TourDetailsProps) => {
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
                                         {/* Tour Itinerary Section */}
                                         <div className="mt-5">
                                             <h3 className="mb-4">Itinerary</h3>
@@ -172,17 +173,17 @@ const TourDetails = ({ tour }: TourDetailsProps) => {
                                                     <div key={index} className={`d-flex gap-3 position-relative ${index !== (tour.itinerary?.length || 0) - 1 ? 'pb-5' : ''}`}>
                                                         {/* Line Connector for all but last item */}
                                                         {index !== (tour.itinerary?.length || 0) - 1 && (
-                                                            <div className="position-absolute" style={{ 
-                                                                left: '11px', 
-                                                                top: '40px', 
-                                                                bottom: '0', 
-                                                                width: '2px', 
-                                                                borderLeft: '2px dashed #dee2e6' 
+                                                            <div className="position-absolute" style={{
+                                                                left: '11px',
+                                                                top: '40px',
+                                                                bottom: '0',
+                                                                width: '2px',
+                                                                borderLeft: '2px dashed #dee2e6'
                                                             }}></div>
                                                         )}
 
                                                         <div className="shrink-0 mt-1">
-                                                             <i className="bi bi-geo-alt fs-4 text-dark" style={{ lineHeight: 1 }}></i>
+                                                            <i className="bi bi-geo-alt fs-4 text-dark" style={{ lineHeight: 1 }}></i>
                                                         </div>
                                                         <div className="grow">
                                                             <h5 className="mb-2 fw-bold">{stop.title}</h5>
@@ -205,23 +206,23 @@ const TourDetails = ({ tour }: TourDetailsProps) => {
                                                 <h3 className="mb-4">Meeting Point</h3>
                                                 {/* Map */}
                                                 {(tour.meetingPoint.coordinates || tour.meetingPoint.link) && (
-                                                     <div className="rounded-4 overflow-hidden mb-4" style={{ height: '450px', width: '100%' }}>
-                                                        <iframe 
+                                                    <div className="rounded-4 overflow-hidden mb-4" style={{ height: '450px', width: '100%' }}>
+                                                        <iframe
                                                             src={
-                                                                tour.meetingPoint.coordinates 
-                                                                ? `https://maps.google.com/maps?q=${tour.meetingPoint.coordinates.lat},${tour.meetingPoint.coordinates.lng}&z=15&output=embed`
-                                                                : tour.meetingPoint.link
-                                                            } 
-                                                            width="100%" 
-                                                            height="100%" 
-                                                            style={{ border: 0 }} 
-                                                            allowFullScreen={true} 
-                                                            loading="lazy" 
+                                                                tour.meetingPoint.coordinates
+                                                                    ? `https://maps.google.com/maps?q=${tour.meetingPoint.coordinates.lat},${tour.meetingPoint.coordinates.lng}&z=15&output=embed`
+                                                                    : tour.meetingPoint.link
+                                                            }
+                                                            width="100%"
+                                                            height="100%"
+                                                            style={{ border: 0 }}
+                                                            allowFullScreen={true}
+                                                            loading="lazy"
                                                             referrerPolicy="no-referrer-when-downgrade"
                                                         ></iframe>
                                                     </div>
                                                 )}
-                                               
+
                                                 <div className="d-flex gap-3">
                                                     <div className="shrink-0 mt-1">
                                                         <i className="bi bi-geo-alt fs-4 text-dark"></i>
@@ -246,7 +247,7 @@ const TourDetails = ({ tour }: TourDetailsProps) => {
                                         <div className="row g-4">
                                             {tourDestinations.map((destination) => (
                                                 <div key={destination.id} className="col-lg-4 col-md-6">
-                                                    <DestinationCard 
+                                                    <DestinationCard
                                                         {...destination}
                                                     />
                                                 </div>
