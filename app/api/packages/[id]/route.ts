@@ -53,7 +53,10 @@ export async function PUT(
             return NextResponse.json({ error: 'Package not found' }, { status: 404 });
         }
         return NextResponse.json(pkg);
-    } catch (error) {
+    } catch (error: any) {
+        if (error.code === 11000) {
+            return NextResponse.json({ error: 'Slug ya existe. Por favor cambie el nombre del paquete.' }, { status: 400 });
+        }
         return NextResponse.json({ error: 'Failed to update package' }, { status: 400 });
     }
 }

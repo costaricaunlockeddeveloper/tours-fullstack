@@ -17,7 +17,7 @@ function canBeVisible(pkg: Partial<Package>): { valid: boolean; missing: string[
     if (!pkg.slug) missing.push("Slug");
     if (!pkg.description) missing.push("Descripción");
     if (!pkg.price) missing.push("Precio");
-    if (!pkg.images?.heroImage) missing.push("Hero Image");
+    if (!pkg.images?.heroImage?.path) missing.push("Hero Image");
     if (!pkg.placeIds?.length) missing.push("Destinos (mínimo 1)");
     if (!pkg.included?.length) missing.push("Inclusiones (mínimo 1)");
     return { valid: missing.length === 0, missing };
@@ -45,7 +45,7 @@ export default function PackageDetailsPage() {
             try {
                 const [pkgData, allPlaces] = await Promise.all([
                     ApiService.getPackage(id),
-                    ApiService.getPlaces()
+                    ApiService.getPlaces({ status: 'PUBLISHED' })
                 ]);
 
                 if (!pkgData.images) pkgData.images = {};
@@ -96,28 +96,33 @@ export default function PackageDetailsPage() {
             }
 
             setEditMode(prev => ({ ...prev, [section]: false }));
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error updating package:", error);
-            alert("Error al actualizar.");
+            alert(error.message || "Error al actualizar.");
         } finally {
             setIsSaving(false);
         }
     };
 
-    const handleToggleVisibility = async () => {
+    const handleStatusChange = async (newStatus: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED') => {
         if (!pkg) return;
-        const check = canBeVisible(pkg);
-        if (!pkg.isVisible && !check.valid) {
-            setVisibilityTooltip(true);
-            setTimeout(() => setVisibilityTooltip(false), 4000);
-            return;
+        if (newStatus === 'PUBLISHED') {
+            const check = canBeVisible(pkg as any);
+            if (!check.valid) {
+                setVisibilityTooltip(true);
+                setTimeout(() => setVisibilityTooltip(false), 4000);
+                return;
+            }
         }
         try {
-            const newVal = !pkg.isVisible;
-            await ApiService.updatePackage(id, { isVisible: newVal });
-            setPkg(prev => prev ? { ...prev, isVisible: newVal } : prev);
-        } catch (error) {
-            console.error("Error toggling visibility:", error);
+            await ApiService.updatePackage(id, { status: newStatus });
+            setPkg(prev => prev ? { ...prev, status: newStatus } : prev);
+            if (newStatus === 'ARCHIVED') {
+                router.push('/admin/paquetes');
+            }
+        } catch (error: any) {
+            console.error("Error toggling status:", error);
+            alert(error?.response?.data?.error || error.message || "Error al actualizar estado");
         }
     };
 
@@ -181,71 +186,71 @@ export default function PackageDetailsPage() {
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
-                    {/* Visibility Toggle */}
-                    <div className="relative">
-                        <button
-                            onClick={handleToggleVisibility}
-                            className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all ${
-                                pkg.isVisible
-                                    ? "bg-green-50 text-green-700 hover:bg-green-100 dark:bg-green-500/10 dark:text-green-400"
-                                    : "bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-white/5 dark:text-gray-400"
-                            }`}
-                        >
-                            <span className={`w-2.5 h-2.5 rounded-full ${pkg.isVisible ? "bg-green-500" : "bg-gray-400"}`}></span>
-                            {pkg.isVisible ? "Visible" : "No visible"}
-                        </button>
-                        {visibilityTooltip && (
-                            <div className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-dark-2 border border-stroke dark:border-dark-3 rounded-lg shadow-lg p-3 z-50">
-                                <p className="text-xs font-semibold text-red-600 mb-1">Campos faltantes:</p>
-                                <ul className="text-xs text-gray-600 dark:text-gray-400 space-y-0.5">
-                                    {visCheck.missing.map(m => <li key={m}>• {m}</li>)}
-                                </ul>
+                    {/* Actions depending on Status */}
+                    {(!pkg.status || pkg.status === 'DRAFT') && (
+                        <>
+                            <div className="relative">
+                                <button
+                                    onClick={() => handleStatusChange('PUBLISHED')}
+                                    className="rounded-lg bg-green-600 px-6 py-2 font-medium text-white hover:bg-green-700 transition dark:bg-green-500 dark:hover:bg-green-600 shadow-sm"
+                                >
+                                    Publicar
+                                </button>
+                                {visibilityTooltip && (
+                                    <div className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-dark-2 border border-stroke dark:border-dark-3 rounded-lg shadow-lg p-3 z-50">
+                                        <p className="text-xs font-semibold text-red-600 mb-1">Campos faltantes:</p>
+                                        <ul className="text-xs text-gray-600 dark:text-gray-400 space-y-0.5">
+                                            {visCheck.missing.map(m => <li key={m}>• {m}</li>)}
+                                        </ul>
+                                    </div>
+                                )}
                             </div>
-                        )}
-                    </div>
-                    <button
-                        onClick={handleDelete}
-                        className="rounded-lg bg-red-50 px-6 py-2 font-medium text-red-600 hover:bg-red-100 dark:bg-red-500/10 dark:text-red-400"
-                    >
-                        Eliminar Paquete
-                    </button>
+                            <button
+                                onClick={handleDelete}
+                                className="rounded-lg bg-red-50 px-6 py-2 font-medium text-red-600 hover:bg-red-100 dark:bg-red-500/10 dark:text-red-400 transition"
+                            >
+                                Eliminar Paquete
+                            </button>
+                        </>
+                    )}
+                    
+                    {pkg.status === 'PUBLISHED' && (
+                        <button
+                            onClick={() => handleStatusChange('ARCHIVED')}
+                            className="rounded-lg bg-amber-500 px-6 py-2 font-medium text-white hover:bg-amber-600 transition shadow-sm"
+                        >
+                            Archivar
+                        </button>
+                    )}
+
+                    {pkg.status === 'ARCHIVED' && (
+                        <span className="rounded-lg bg-gray-100 dark:bg-dark-2 border border-stroke dark:border-dark-3 px-6 py-2 font-medium text-gray-500 dark:text-gray-400 cursor-not-allowed shadow-sm">
+                            Archivado
+                        </span>
+                    )}
                 </div>
             </div>
 
             {/* Media Section */}
-            <EditableSection
-                title="Galería Multimedia"
-                isEditing={!!editMode['gallery']}
-                onEdit={() => toggleEdit('gallery')}
-                onSave={() => handleSave('gallery')}
-                onCancel={() => toggleEdit('gallery')}
-                isSaving={isSaving}
-                className="mb-8"
-            >
-                {editMode['gallery'] ? (
-                    <MediaGalleryEditor
-                        images={formData.images || {}}
-                        onChange={(newImages) => setFormData(prev => ({ ...prev, images: newImages }))}
-                        folderName="paquetes"
-                        slug={pkg.slug || pkg.id}
-                    />
-                ) : (
-                    hasImages ? (
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                            {allImagePaths.map((imgPath, idx) => (
-                                <div key={idx} className="relative w-full h-48 rounded-lg overflow-hidden border border-stroke group">
-                                    <Image src={imgPath} alt={`${pkg.name} ${idx + 1}`} fill className="object-cover transition-transform duration-300 group-hover:scale-110" />
-                                    {idx === 0 && (
-                                        <span className="absolute top-2 left-2 bg-primary text-white text-[10px] px-2 py-0.5 rounded-full font-bold uppercase">Hero</span>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                        <p className="text-sm text-gray-400 italic py-8 text-center">Sin imágenes disponibles. Haz clic en Editar para agregar.</p>
-                    )
-                )}
-            </EditableSection>
+            <div className="mb-8 rounded-xl bg-white p-6 shadow-1 dark:bg-gray-dark dark:shadow-card">
+                <div className="flex items-center justify-between mb-6 border-b border-stroke pb-4 dark:border-dark-3">
+                    <h3 className="text-xl font-bold text-dark dark:text-white">Galería Multimedia</h3>
+                </div>
+                <MediaGalleryEditor
+                    images={formData.images || {}}
+                    onChange={async (newImages) => {
+                        setFormData(prev => ({ ...prev, images: newImages }));
+                        try {
+                            await ApiService.updatePackage(id, { images: newImages });
+                            setPkg(prev => prev ? { ...prev, images: newImages } : prev);
+                        } catch (error) {
+                            console.error("Error auto-saving gallery:", error);
+                        }
+                    }}
+                    folderName="paquetes"
+                    slug={pkg.slug || pkg.id}
+                />
+            </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2 space-y-8">

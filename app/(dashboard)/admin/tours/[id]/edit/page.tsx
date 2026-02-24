@@ -23,7 +23,7 @@ export default function EditTourPage() {
                 // Fetch Tour
                 const tourFn = ApiService.getTour(id);
                 // Fetch Places
-                const placesFn = ApiService.getPlaces();
+                const placesFn = ApiService.getPlaces({ status: 'PUBLISHED' });
 
                 const [tourData, places] = await Promise.all([tourFn, placesFn]);
 
@@ -46,9 +46,9 @@ export default function EditTourPage() {
             await ApiService.updateTour(id, data);
             router.push(`/admin/tours/${id}`);
             router.refresh();
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error updating tour:", error);
-            alert("Error al actualizar el tour.");
+            alert(error.message || "Error al actualizar el tour.");
         } finally {
             setIsSubmitting(false);
         }

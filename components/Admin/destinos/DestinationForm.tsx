@@ -22,7 +22,7 @@ export default function DestinationForm({ initialData, onSubmit, isSubmitting, o
         description: "",
         region: "",
         ecosystem: "",
-        googleMapsLink: "",
+
         images: {
             heroImage: undefined,
             secondaryAssets: [],
@@ -72,20 +72,18 @@ export default function DestinationForm({ initialData, onSubmit, isSubmitting, o
 
 
 
-    // Always auto-generate slug from name
     const handleNameChange = (val: string) => {
         setFormData(prev => ({
             ...prev,
             name: val,
-            slug: generateSlug(val),
+            slug: initialData?.slug ? prev.slug : generateSlug(val),
         }));
     };
 
     const handleLocationConfirm = (lat: number, lng: number) => {
         setFormData(prev => ({
             ...prev,
-            coordinates: { lat, lng },
-            googleMapsLink: `https://www.google.com/maps/?q=${lat},${lng}`
+            coordinates: { lat, lng }
         }));
         setIsLocationPickerOpen(false);
     };
@@ -119,11 +117,9 @@ export default function DestinationForm({ initialData, onSubmit, isSubmitting, o
                             <input
                                 type="text"
                                 value={formData.slug}
-                                onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                                className="w-full rounded-lg border border-stroke bg-gray-50 px-4 py-3 text-dark outline-none dark:border-dark-3 dark:bg-dark-2 dark:text-white font-mono text-sm"
-                                required={!simpleMode}
-                                placeholder="ej: manuel-antonio"
-                                readOnly={!!initialData?.id && !!initialData?.slug} // Only lock if ID AND slug exist
+                                readOnly
+                                className="w-full rounded-lg border border-stroke bg-gray-100 dark:bg-white/5 px-5 py-3 text-dark/60 outline-none dark:border-dark-3 dark:text-white/60 cursor-not-allowed font-mono text-sm"
+                                placeholder="Auto-generado del nombre"
                             />
                             {!simpleMode && <p className="text-xs text-gray-500 mt-1">Usado para la carpeta: /public/destino/{formData.slug || "slug"}</p>}
                         </div>
@@ -218,10 +214,6 @@ export default function DestinationForm({ initialData, onSubmit, isSubmitting, o
                                             className="w-full rounded-lg border border-stroke bg-transparent px-3 py-3 text-dark outline-none dark:border-dark-3 dark:text-white"
 
                                         />
-                                    </div>
-
-                                    <div className="flex-1 w-full">
-                                        <input type="text" value={formData.googleMapsLink} onChange={e => setFormData({ ...formData, googleMapsLink: e.target.value })} className="input-class w-full border border-stroke rounded-lg p-3 dark:bg-transparent dark:border-dark-3" placeholder="Link Google Maps (Auto)" />
                                     </div>
                                 </div>
                             </div>

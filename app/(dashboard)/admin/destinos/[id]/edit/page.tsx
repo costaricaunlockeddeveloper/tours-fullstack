@@ -38,9 +38,9 @@ export default function EditDestinationPage() {
             await ApiService.updatePlace(id, data);
             router.push(`/admin/destinos/${id}`); // Back to details
             router.refresh();
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error updating place:", error);
-            alert("Error al actualizar el destino.");
+            alert(error.message || "Error al actualizar el destino.");
         } finally {
             setIsSubmitting(false);
         }

@@ -72,9 +72,9 @@ export default function ToursAdmin() {
                                 </div>
                             )}
                             <div className="absolute top-2 left-2">
-                                <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold shadow-sm backdrop-blur-sm ${tour.isVisible ? "bg-green-500/90 text-white" : "bg-gray-500/90 text-white"}`}>
-                                    <span className={`w-1.5 h-1.5 rounded-full ${tour.isVisible ? "bg-white" : "bg-gray-300"}`}></span>
-                                    {tour.isVisible ? "Visible" : "Oculto"}
+                                <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold shadow-sm backdrop-blur-sm ${tour.status === 'PUBLISHED' ? "bg-green-500/90 text-white" : tour.status === 'ARCHIVED' ? "bg-amber-500/90 text-white" : "bg-gray-500/90 text-white"}`}>
+                                    <span className={`w-1.5 h-1.5 rounded-full bg-white`}></span>
+                                    {tour.status === 'PUBLISHED' ? "Publicado" : tour.status === 'ARCHIVED' ? "Archivado" : "Borrador"}
                                 </span>
                             </div>
                             <div className="absolute top-2 right-2 flex flex-col gap-1 items-end">

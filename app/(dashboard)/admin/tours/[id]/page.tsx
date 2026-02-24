@@ -30,7 +30,7 @@ function canBeVisible(tour: Partial<Tour>): { valid: boolean; missing: string[] 
     if (!tour.slug) missing.push("Slug");
     if (!tour.description) missing.push("Descripción");
     if (!tour.duration) missing.push("Duración");
-    if (!tour.images?.heroImage) missing.push("Hero Image");
+    if (!tour.images?.heroImage?.path) missing.push("Hero Image");
     if (!tour.defaults?.price) missing.push("Precio base");
     if (!tour.defaults?.maxQuota) missing.push("Cupo base");
     if (!tour.defaults?.schedules?.length) missing.push("Horarios base");
@@ -61,7 +61,7 @@ export default function TourDetailsPage() {
             try {
                 const [tourData, allPlaces] = await Promise.all([
                     ApiService.getTour(id),
-                    ApiService.getPlaces()
+                    ApiService.getPlaces({ status: 'PUBLISHED' })
                 ]);
 
                 if (!tourData.defaults) tourData.defaults = { ...DEFAULT_DEFAULTS };
@@ -114,28 +114,33 @@ export default function TourDetailsPage() {
             }
 
             setEditMode(prev => ({ ...prev, [section]: false }));
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error updating tour:", error);
-            alert("Error al actualizar.");
+            alert(error.message || "Error al actualizar.");
         } finally {
             setIsSaving(false);
         }
     };
 
-    const handleToggleVisibility = async () => {
+    const handleStatusChange = async (newStatus: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED') => {
         if (!tour) return;
-        const check = canBeVisible(tour);
-        if (!tour.isVisible && !check.valid) {
-            setVisibilityTooltip(true);
-            setTimeout(() => setVisibilityTooltip(false), 4000);
-            return;
+        if (newStatus === 'PUBLISHED') {
+            const check = canBeVisible(tour as any);
+            if (!check.valid) {
+                setVisibilityTooltip(true);
+                setTimeout(() => setVisibilityTooltip(false), 4000);
+                return;
+            }
         }
         try {
-            const newVal = !tour.isVisible;
-            await ApiService.updateTour(id, { isVisible: newVal });
-            setTour(prev => prev ? { ...prev, isVisible: newVal } : prev);
-        } catch (error) {
-            console.error("Error toggling visibility:", error);
+            await ApiService.updateTour(id, { status: newStatus });
+            setTour(prev => prev ? { ...prev, status: newStatus } : prev);
+            if (newStatus === 'ARCHIVED') {
+                router.push('/admin/tours');
+            }
+        } catch (error: any) {
+            console.error("Error toggling status:", error);
+            alert(error?.response?.data?.error || error.message || "Error al actualizar estado");
         }
     };
 
@@ -201,34 +206,48 @@ export default function TourDetailsPage() {
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
-                    {/* Visibility Toggle */}
-                    <div className="relative">
-                        <button
-                            onClick={handleToggleVisibility}
-                            className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all ${
-                                tour.isVisible
-                                    ? "bg-green-50 text-green-700 hover:bg-green-100 dark:bg-green-500/10 dark:text-green-400"
-                                    : "bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-white/5 dark:text-gray-400"
-                            }`}
-                        >
-                            <span className={`w-2.5 h-2.5 rounded-full ${tour.isVisible ? "bg-green-500" : "bg-gray-400"}`}></span>
-                            {tour.isVisible ? "Visible" : "No visible"}
-                        </button>
-                        {visibilityTooltip && (
-                            <div className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-dark-2 border border-stroke dark:border-dark-3 rounded-lg shadow-lg p-3 z-50">
-                                <p className="text-xs font-semibold text-red-600 mb-1">Campos faltantes:</p>
-                                <ul className="text-xs text-gray-600 dark:text-gray-400 space-y-0.5">
-                                    {visCheck.missing.map(m => <li key={m}>• {m}</li>)}
-                                </ul>
+                    {/* Actions depending on Status */}
+                    {(!tour.status || tour.status === 'DRAFT') && (
+                        <>
+                            <div className="relative">
+                                <button
+                                    onClick={() => handleStatusChange('PUBLISHED')}
+                                    className="rounded-lg bg-green-600 px-6 py-2 font-medium text-white hover:bg-green-700 transition dark:bg-green-500 dark:hover:bg-green-600 shadow-sm"
+                                >
+                                    Publicar
+                                </button>
+                                {visibilityTooltip && (
+                                    <div className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-dark-2 border border-stroke dark:border-dark-3 rounded-lg shadow-lg p-3 z-50">
+                                        <p className="text-xs font-semibold text-red-600 mb-1">Campos faltantes:</p>
+                                        <ul className="text-xs text-gray-600 dark:text-gray-400 space-y-0.5">
+                                            {visCheck.missing.map(m => <li key={m}>• {m}</li>)}
+                                        </ul>
+                                    </div>
+                                )}
                             </div>
-                        )}
-                    </div>
-                    <button
-                        onClick={handleDelete}
-                        className="rounded-lg bg-red-50 px-6 py-2 font-medium text-red-600 hover:bg-red-100 dark:bg-red-500/10 dark:text-red-400"
-                    >
-                        Eliminar Tour
-                    </button>
+                            <button
+                                onClick={handleDelete}
+                                className="rounded-lg bg-red-50 px-6 py-2 font-medium text-red-600 hover:bg-red-100 dark:bg-red-500/10 dark:text-red-400 transition"
+                            >
+                                Eliminar Tour
+                            </button>
+                        </>
+                    )}
+                    
+                    {tour.status === 'PUBLISHED' && (
+                        <button
+                            onClick={() => handleStatusChange('ARCHIVED')}
+                            className="rounded-lg bg-amber-500 px-6 py-2 font-medium text-white hover:bg-amber-600 transition shadow-sm"
+                        >
+                            Archivar
+                        </button>
+                    )}
+
+                    {tour.status === 'ARCHIVED' && (
+                        <span className="rounded-lg bg-gray-100 dark:bg-dark-2 border border-stroke dark:border-dark-3 px-6 py-2 font-medium text-gray-500 dark:text-gray-400 cursor-not-allowed shadow-sm">
+                            Archivado
+                        </span>
+                    )}
                 </div>
             </div>
 
@@ -242,47 +261,32 @@ export default function TourDetailsPage() {
                         meetingPoint: {
                             ...prev.meetingPoint,
                             coordinates: { lat, lng },
-                            link: `https://www.google.com/maps/?q=${lat},${lng}`,
                         },
                     }))}
                     initialCoordinates={formData.meetingPoint?.coordinates}
                 />
             )}
 
-            {/* Media Section — grid like destinos */}
-            <EditableSection
-                title="Galería Multimedia"
-                isEditing={!!editMode['gallery']}
-                onEdit={() => toggleEdit('gallery')}
-                onSave={() => handleSave('gallery')}
-                onCancel={() => toggleEdit('gallery')}
-                isSaving={isSaving}
-                className="mb-8"
-            >
-                {editMode['gallery'] ? (
-                    <MediaGalleryEditor
-                        images={formData.images || {}}
-                        onChange={(newImages) => setFormData(prev => ({ ...prev, images: newImages }))}
-                        folderName="tours"
-                        slug={tour.slug || tour.id}
-                    />
-                ) : (
-                    hasImages ? (
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                            {allImagePaths.map((imgPath, idx) => (
-                                <div key={idx} className="relative w-full h-48 rounded-lg overflow-hidden border border-stroke group">
-                                    <Image src={imgPath} alt={`${tour.name} ${idx + 1}`} fill className="object-cover transition-transform duration-300 group-hover:scale-110" />
-                                    {idx === 0 && (
-                                        <span className="absolute top-2 left-2 bg-primary text-white text-[10px] px-2 py-0.5 rounded-full font-bold uppercase">Hero</span>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                        <p className="text-sm text-gray-400 italic py-8 text-center">Sin imágenes disponibles. Haz clic en Editar para agregar.</p>
-                    )
-                )}
-            </EditableSection>
+            {/* Media Section */}
+            <div className="mb-8 rounded-xl bg-white p-6 shadow-1 dark:bg-gray-dark dark:shadow-card">
+                <div className="flex items-center justify-between mb-6 border-b border-stroke pb-4 dark:border-dark-3">
+                    <h3 className="text-xl font-bold text-dark dark:text-white">Galería Multimedia</h3>
+                </div>
+                <MediaGalleryEditor
+                    images={formData.images || {}}
+                    onChange={async (newImages) => {
+                        setFormData(prev => ({ ...prev, images: newImages }));
+                        try {
+                            await ApiService.updateTour(id, { images: newImages });
+                            setTour(prev => prev ? { ...prev, images: newImages } : prev);
+                        } catch (error) {
+                            console.error("Error auto-saving gallery:", error);
+                        }
+                    }}
+                    folderName="tours"
+                    slug={tour.slug || tour.id}
+                />
+            </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2 space-y-8">
@@ -524,8 +528,8 @@ export default function TourDetailsPage() {
                                     <input type="text" value={formData.meetingPoint?.name || ""} onChange={(e) => setFormData(prev => ({ ...prev, meetingPoint: { ...prev.meetingPoint, name: e.target.value } }))} placeholder="Ej: Lobby del Hotel" className="w-full rounded border border-stroke px-3 py-2 text-dark outline-none focus:border-primary dark:border-dark-3 dark:text-white dark:bg-transparent" />
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-semibold uppercase text-gray-500 mb-1">Google Maps Link</label>
-                                    <input type="text" value={formData.meetingPoint?.link || ""} onChange={(e) => setFormData(prev => ({ ...prev, meetingPoint: { ...prev.meetingPoint, link: e.target.value } }))} placeholder="https://maps.google.com/..." className="w-full rounded border border-stroke px-3 py-2 text-dark outline-none focus:border-primary dark:border-dark-3 dark:text-white dark:bg-transparent" />
+                                    <label className="block text-xs font-semibold uppercase text-gray-500 mb-1">Dirección Física</label>
+                                    <input type="text" value={formData.meetingPoint?.address || ""} onChange={(e) => setFormData(prev => ({ ...prev, meetingPoint: { ...prev.meetingPoint, address: e.target.value } }))} placeholder="Ej: Calle Principal 123..." className="w-full rounded border border-stroke px-3 py-2 text-dark outline-none focus:border-primary dark:border-dark-3 dark:text-white dark:bg-transparent" />
                                 </div>
                                 <div>
                                     <label className="block text-xs font-semibold uppercase text-gray-500 mb-1">Instrucciones</label>
@@ -555,11 +559,14 @@ export default function TourDetailsPage() {
                                 {mp.name ? (
                                     <>
                                         <h4 className="font-medium text-dark dark:text-white">{mp.name}</h4>
-                                        {mp.link && (
-                                            <a href={mp.link} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1">
+                                        {tour.generatedMapsLink && (
+                                            <a href={tour.generatedMapsLink} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1">
                                                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                                                 Ver en mapa
                                             </a>
+                                        )}
+                                        {mp.address && (
+                                            <p className="text-sm text-gray-600 dark:text-gray-400 border-t border-stroke dark:border-dark-3 pt-2">{mp.address}</p>
                                         )}
                                         {mp.description && (
                                             <p className="text-sm text-gray-600 dark:text-gray-400 border-t border-stroke dark:border-dark-3 pt-2">{mp.description}</p>

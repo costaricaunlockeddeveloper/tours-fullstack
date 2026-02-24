@@ -41,9 +41,9 @@ export default function EditPackagePage() {
             await ApiService.updatePackage(id, data);
             router.push(`/admin/paquetes/${id}`);
             router.refresh();
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error updating package:", error);
-            alert("Error al actualizar el paquete.");
+            alert(error.message || "Error al actualizar el paquete.");
         } finally {
             setIsSubmitting(false);
         }

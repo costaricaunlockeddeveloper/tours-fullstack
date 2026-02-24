@@ -15,9 +15,9 @@ export default function CreatePackagePage() {
             setIsSubmitting(true);
             await ApiService.addPackage(data);
             router.push("/admin/paquetes");
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error creating package:", error);
-            alert("Error al crear el paquete. Intenta nuevamente.");
+            alert(error.message || "Error al crear el paquete. Intenta nuevamente.");
         } finally {
             setIsSubmitting(false);
         }

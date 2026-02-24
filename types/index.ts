@@ -28,7 +28,7 @@ export interface Place {
     images?: PlaceImages;
     coordinates?: { lat: number; lng: number };
     ecosystem?: string;
-    googleMapsLink?: string;
+    generatedMapsLink?: string;
     howToGetThere?: string;
 }
 
@@ -40,7 +40,7 @@ export interface Tour {
     slug?: string;
     description: string;
     duration?: number;
-    isVisible?: boolean;
+    status?: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
     rating?: number;
     reviews?: number;
     placeIds: string[];
@@ -59,7 +59,7 @@ export interface Tour {
         name?: string;
         description?: string;
         coordinates?: { lat: number; lng: number };
-        link?: string;
+        address?: string;
     };
     availableDates?: {
         date: string;
@@ -91,7 +91,7 @@ export interface Package {
     description?: string;
     price: number;
     priceChild?: number;
-    isVisible?: boolean;
+    status?: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
     rating?: number;
     reviews?: number;
     images?: PlaceImages;

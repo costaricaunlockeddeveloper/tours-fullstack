@@ -14,7 +14,7 @@ const Destination1 = () => {
     React.useEffect(() => {
         const fetchDestinations = async () => {
             try {
-                const data = await ApiService.getPlaces();
+                const data = await ApiService.getPlacesCatalog();
                 setDestinations(data);
             } catch (error) {
                 console.error("Failed to fetch destinations", error);

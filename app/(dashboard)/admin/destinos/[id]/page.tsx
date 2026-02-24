@@ -16,6 +16,16 @@ const LeafletMap = dynamic(() => import("@/components/LeafletMap"), {
     loading: () => <div className="h-full w-full flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-lg">Cargando mapa...</div>
 });
 
+function canBeVisible(place: Partial<Place>): { valid: boolean; missing: string[] } {
+    const missing: string[] = [];
+    if (!place.name) missing.push("Nombre");
+    if (!place.slug) missing.push("Slug / ID");
+    if (!place.description) missing.push("Descripción");
+    if (!place.coordinates?.lat || !place.coordinates?.lng) missing.push("Coordenadas");
+    if (!place.images?.heroImage?.path) missing.push("Hero Image");
+    return { valid: missing.length === 0, missing };
+}
+
 export default function DestinationDetailsPage() {
     const router = useRouter();
     const params = useParams();
@@ -28,11 +38,10 @@ export default function DestinationDetailsPage() {
     const [editMode, setEditMode] = useState<{ [key: string]: boolean }>({});
     const [formData, setFormData] = useState<Partial<Place>>({});
     const [isSaving, setIsSaving] = useState(false);
-
+    const [visibilityTooltip, setVisibilityTooltip] = useState(false);
 
     // Specific state for location picker
     const [isLocationPickerOpen, setIsLocationPickerOpen] = useState(false);
-
 
     useEffect(() => {
         const fetchPlace = async () => {
@@ -62,7 +71,7 @@ export default function DestinationDetailsPage() {
     const toggleEdit = (section: string) => {
         setEditMode(prev => ({ ...prev, [section]: !prev[section] }));
         if (!editMode[section] && place) {
-            setFormData(place); // Reset form data to current place data when starting edit
+            setFormData(place);
         }
     };
 
@@ -73,9 +82,9 @@ export default function DestinationDetailsPage() {
             await ApiService.updatePlace(id, dataToSave);
             setPlace(prev => ({ ...prev, ...dataToSave } as Place));
             setEditMode(prev => ({ ...prev, [section]: false }));
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error updating place:", error);
-            alert("Error al actualizar.");
+            alert(error.message || "Error al actualizar.");
         } finally {
             setIsSaving(false);
         }
@@ -84,10 +93,31 @@ export default function DestinationDetailsPage() {
     const handleLocationPick = (lat: number, lng: number) => {
         setFormData(prev => ({
             ...prev,
-            coordinates: { lat, lng },
-            googleMapsLink: `https://www.google.com/maps/?q=${lat},${lng}`
+            coordinates: { lat, lng }
         }));
         setIsLocationPickerOpen(false);
+    };
+
+    const handleStatusChange = async (newStatus: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED') => {
+        if (!place) return;
+        if (newStatus === 'PUBLISHED') {
+            const check = canBeVisible(place);
+            if (!check.valid) {
+                setVisibilityTooltip(true);
+                setTimeout(() => setVisibilityTooltip(false), 4000);
+                return;
+            }
+        }
+        try {
+            await ApiService.updatePlace(id, { status: newStatus });
+            setPlace(prev => prev ? { ...prev, status: newStatus } : prev);
+            if (newStatus === 'ARCHIVED') {
+                router.push('/admin/destinos');
+            }
+        } catch (error: any) {
+            console.error("Error toggling status:", error);
+            alert(error?.response?.data?.error || error.message || "Error al actualizar estado");
+        }
     };
 
     if (loading) return <div className="p-10 text-center">Cargando detalles...</div>;
@@ -97,6 +127,7 @@ export default function DestinationDetailsPage() {
     const secondaryPaths = (place.images?.secondaryAssets || []).map(a => a.path).filter(Boolean) as string[];
     const allImagePaths = [heroPath, ...secondaryPaths].filter(Boolean) as string[];
     const hasImages = allImagePaths.length > 0;
+    const visCheck = canBeVisible(place);
 
     return (
         <div className="mx-auto max-w-7xl">
@@ -116,13 +147,49 @@ export default function DestinationDetailsPage() {
                         <p className="text-sm text-dark-6">Detalles del destino</p>
                     </div>
                 </div>
-                <div>
-                    <button
-                        onClick={handleDelete}
-                        className="rounded-lg bg-red-50 px-6 py-2 font-medium text-red-600 hover:bg-red-100 dark:bg-red-500/10 dark:text-red-400"
-                    >
-                        Eliminar Destino
-                    </button>
+                <div className="flex items-center gap-3">
+                    {/* Actions depending on Status */}
+                    {(!place.status || place.status === 'DRAFT') && (
+                        <>
+                            <div className="relative">
+                                <button
+                                    onClick={() => handleStatusChange('PUBLISHED')}
+                                    className="rounded-lg bg-green-600 px-6 py-2 font-medium text-white hover:bg-green-700 transition dark:bg-green-500 dark:hover:bg-green-600 shadow-sm"
+                                >
+                                    Publicar
+                                </button>
+                                {visibilityTooltip && (
+                                    <div className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-dark-2 border border-stroke dark:border-dark-3 rounded-lg shadow-lg p-3 z-50">
+                                        <p className="text-xs font-semibold text-red-600 mb-1">Campos faltantes:</p>
+                                        <ul className="text-xs text-gray-600 dark:text-gray-400 space-y-0.5">
+                                            {visCheck.missing.map(m => <li key={m}>• {m}</li>)}
+                                        </ul>
+                                    </div>
+                                )}
+                            </div>
+                            <button
+                                onClick={handleDelete}
+                                className="rounded-lg bg-red-50 px-6 py-2 font-medium text-red-600 hover:bg-red-100 dark:bg-red-500/10 dark:text-red-400 transition"
+                            >
+                                Eliminar Destino
+                            </button>
+                        </>
+                    )}
+                    
+                    {place.status === 'PUBLISHED' && (
+                        <button
+                            onClick={() => handleStatusChange('ARCHIVED')}
+                            className="rounded-lg bg-amber-500 px-6 py-2 font-medium text-white hover:bg-amber-600 transition shadow-sm"
+                        >
+                            Archivar
+                        </button>
+                    )}
+
+                    {place.status === 'ARCHIVED' && (
+                        <span className="rounded-lg bg-gray-100 dark:bg-dark-2 border border-stroke dark:border-dark-3 px-6 py-2 font-medium text-gray-500 dark:text-gray-400 cursor-not-allowed shadow-sm">
+                            Archivado
+                        </span>
+                    )}
                 </div>
             </div>
 
@@ -130,17 +197,18 @@ export default function DestinationDetailsPage() {
             <div className="mb-8 rounded-xl bg-white p-6 shadow-1 dark:bg-gray-dark dark:shadow-card">
                 <div className="flex items-center justify-between mb-6 border-b border-stroke pb-4 dark:border-dark-3">
                     <h3 className="text-xl font-bold text-dark dark:text-white">Galería Multimedia</h3>
-                    <button
-                        onClick={() => handleSave('gallery')}
-                        disabled={isSaving}
-                        className="rounded-lg bg-primary px-6 py-2 font-medium text-white transition hover:bg-opacity-90 disabled:opacity-50"
-                    >
-                        {isSaving ? "Guardando..." : "Guardar Galería"}
-                    </button>
                 </div>
                 <MediaGalleryEditor
                     images={formData.images || {}}
-                    onChange={(newImages) => setFormData(prev => ({ ...prev, images: newImages }))}
+                    onChange={async (newImages) => {
+                        setFormData(prev => ({ ...prev, images: newImages }));
+                        try {
+                            await ApiService.updatePlace(id, { images: newImages });
+                            setPlace(prev => prev ? { ...prev, images: newImages } : prev);
+                        } catch (error) {
+                            console.error("Error auto-saving gallery:", error);
+                        }
+                    }}
                     folderName="destino"
                     slug={formData.slug || place.slug || place.id}
                 />
@@ -170,7 +238,11 @@ export default function DestinationDetailsPage() {
                                         value={formData.name || ""}
                                         onChange={(e) => {
                                             const name = e.target.value;
-                                            setFormData({ ...formData, name, slug: generateSlug(name) });
+                                            const updates: Partial<Place> = { name };
+                                            if (place.status !== 'PUBLISHED') {
+                                                updates.slug = generateSlug(name);
+                                            }
+                                            setFormData({ ...formData, ...updates });
                                         }}
                                         className="w-full rounded border border-stroke bg-transparent px-3 py-2 text-dark outline-none dark:border-dark-3 dark:text-white focus:border-primary font-bold text-lg"
                                     />
@@ -273,16 +345,6 @@ export default function DestinationDetailsPage() {
                                         ) : "No seleccionadas"}
                                     </div>
                                 </div>
-                                <div>
-                                    <label className="block text-xs font-semibold uppercase text-gray-500 mb-1">Google Maps Link</label>
-                                    <input
-                                        type="text"
-                                        value={formData.googleMapsLink || ""}
-                                        onChange={(e) => setFormData({ ...formData, googleMapsLink: e.target.value })}
-                                        className="w-full rounded border border-stroke bg-transparent px-3 py-2 text-dark outline-none dark:border-dark-3 dark:text-white focus:border-primary text-sm"
-                                        placeholder="https://goo.gl/maps/..."
-                                    />
-                                </div>
                             </div>
                         ) : (
                             <div className="flex flex-col gap-4 h-full">
@@ -298,9 +360,9 @@ export default function DestinationDetailsPage() {
                                             </p>
                                         </div>
                                     </div>
-                                    {place.googleMapsLink && (
+                                    {place.generatedMapsLink && (
                                         <a
-                                            href={place.googleMapsLink}
+                                            href={place.generatedMapsLink}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="inline-flex items-center gap-2 text-primary hover:underline text-sm font-medium mt-1"

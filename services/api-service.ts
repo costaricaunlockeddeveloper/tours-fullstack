@@ -31,7 +31,8 @@ export interface Place {
     images?: PlaceImages;
     coordinates?: { lat: number; lng: number };
     ecosystem?: string;
-    googleMapsLink?: string;
+    status?: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
+    generatedMapsLink?: string;
     tours?: number;
     packages?: number;
 }
@@ -58,6 +59,7 @@ export interface TourMeetingPoint {
     name?: string;
     description?: string;
     coordinates?: { lat: number; lng: number };
+    address?: string;
     link?: string;
 }
 
@@ -67,7 +69,7 @@ export interface Tour {
     slug?: string;
     description: string;
     duration?: number; // Horas
-    isVisible?: boolean;
+    status?: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED'; // Changed from isVisible
     rating?: number;
     reviews?: number;
     placeIds: string[];
@@ -75,6 +77,7 @@ export interface Tour {
     images?: PlaceImages;
     defaults?: TourDefaults;
     meetingPoint?: TourMeetingPoint;
+    generatedMapsLink?: string;
     availableDates?: TourDateEntry[];
     includes?: string[];
     excludes?: string[];
@@ -119,7 +122,7 @@ export interface Package {
     region?: string;
     price: number;
     priceChild?: number;
-    isVisible?: boolean;
+    status?: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED'; // Changed from isVisible
     rating?: number;
     reviews?: number;
     images?: PlaceImages;
@@ -155,9 +158,15 @@ const MAP_PINS_API = "/api/map-pins";
 
 export const ApiService = {
     // Places
-    getPlaces: async (): Promise<Place[]> => {
-        const res = await fetch(PLACES_API);
+    getPlaces: async (options?: { status?: string }): Promise<Place[]> => {
+        const url = options?.status ? `${PLACES_API}?status=${options.status}` : PLACES_API;
+        const res = await fetch(url);
         if (!res.ok) throw new Error("Failed to fetch places");
+        return res.json();
+    },
+    getPlacesCatalog: async (): Promise<Place[]> => {
+        const res = await fetch(`${PLACES_API}?select=catalog`);
+        if (!res.ok) throw new Error("Failed to fetch catalog places");
         return res.json();
     },
     getPlace: async (id: string): Promise<Place> => {
@@ -171,7 +180,10 @@ export const ApiService = {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(place),
         });
-        if (!res.ok) throw new Error("Failed to add place");
+        if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            throw new Error(data.error || "Failed to add place");
+        }
         return res.json();
     },
     updatePlace: async (id: string, updates: Partial<Place>) => {
@@ -180,7 +192,10 @@ export const ApiService = {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(updates),
         });
-        if (!res.ok) throw new Error("Failed to update place");
+        if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            throw new Error(data.error || "Failed to update place");
+        }
         return res.json();
     },
     deletePlace: async (id: string) => {
@@ -230,7 +245,10 @@ export const ApiService = {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(tour),
         });
-        if (!res.ok) throw new Error("Failed to add tour");
+        if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            throw new Error(data.error || "Failed to add tour");
+        }
         return res.json();
     },
     updateTour: async (id: string, updates: Partial<Tour>) => {
@@ -239,7 +257,10 @@ export const ApiService = {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(updates),
         });
-        if (!res.ok) throw new Error("Failed to update tour");
+        if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            throw new Error(data.error || "Failed to update tour");
+        }
         return res.json();
     },
     deleteTour: async (id: string) => {
@@ -313,7 +334,10 @@ export const ApiService = {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(pkg),
         });
-        if (!res.ok) throw new Error("Failed to add package");
+        if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            throw new Error(data.error || "Failed to add package");
+        }
         return res.json();
     },
     updatePackage: async (id: string, updates: Partial<Package>) => {
@@ -322,7 +346,10 @@ export const ApiService = {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(updates),
         });
-        if (!res.ok) throw new Error("Failed to update package");
+        if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            throw new Error(data.error || "Failed to update package");
+        }
         return res.json();
     },
     deletePackage: async (id: string) => {

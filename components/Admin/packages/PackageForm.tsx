@@ -36,20 +36,24 @@ export default function PackageForm({
         excludes: initialData?.excludes || [],
         placeIds: initialData?.placeIds || [],
         activities: initialData?.activities || [],
-        isVisible: initialData?.isVisible || false,
+        status: initialData?.status || 'DRAFT',
     });
 
     const [availablePlaces, setAvailablePlaces] = useState<Place[]>([]);
     const [placeSearch, setPlaceSearch] = useState("");
 
     useEffect(() => {
-        ApiService.getPlaces().then(setAvailablePlaces).catch(console.error);
+        ApiService.getPlaces({ status: 'PUBLISHED' })
+            .then(setAvailablePlaces)
+            .catch(console.error);
     }, []);
 
     // Auto-generate slug from name
     useEffect(() => {
-        if (formData.name && !initialData) {
-            setFormData(prev => ({ ...prev, slug: generateSlug(formData.name || "") }));
+        if (formData.name) {
+            if (!initialData || initialData.status !== 'PUBLISHED') {
+                setFormData(prev => ({ ...prev, slug: generateSlug(formData.name || "") }));
+            }
         }
     }, [formData.name, initialData]);
 
@@ -100,8 +104,8 @@ export default function PackageForm({
                         <input
                             type="text"
                             value={formData.slug || ""}
-                            onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
-                            className="w-full rounded-lg border border-stroke bg-gray-50 px-4 py-3 text-dark outline-none dark:border-dark-3 dark:text-white dark:bg-white/5 focus:border-primary"
+                            readOnly
+                            className="w-full rounded-lg border border-stroke bg-gray-100 px-4 py-3 text-dark/60 outline-none dark:border-dark-3 dark:text-white/60 dark:bg-white/5 cursor-not-allowed"
                         />
                         <p className="mt-1 text-xs text-dark-6">Se genera automáticamente del nombre.</p>
                     </div>

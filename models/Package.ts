@@ -7,7 +7,11 @@ const PackageSchema = new mongoose.Schema({
     region: { type: String },
     price: { type: Number, required: true },
     priceChild: { type: Number },
-    isVisible: { type: Boolean, default: false },
+    status: { 
+        type: String, 
+        enum: ['DRAFT', 'PUBLISHED', 'ARCHIVED'], 
+        default: 'DRAFT' 
+    },
     rating: { type: Number, default: 0 },
     reviews: { type: Number, default: 0 },
     // Structured images (same as Tours/Places)
@@ -26,7 +30,7 @@ const PackageSchema = new mongoose.Schema({
         }],
     },
     included: [{ type: String }],
-    placeIds: [{ type: String }],
+    placeIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Place' }],
     activities: [{
         title: { type: String },
         description: { type: String },
@@ -43,6 +47,20 @@ const PackageSchema = new mongoose.Schema({
         }
     },
     toObject: { virtuals: true }
+});
+
+PackageSchema.pre('save', async function() {
+    if (this.status === 'PUBLISHED' && !this.isNew) {
+        if (this.isModified('slug')) {
+            throw new Error("Integrity Error: Cannot modify slug of a published entity due to SEO constraints.");
+        }
+        if (this.isModified('rating') || this.isModified('reviews')) {
+            throw new Error("Integrity Error: Ratings and reviews are system-calculated and cannot be manually modified.");
+        }
+        if (this.isModified('placeIds')) {
+            throw new Error("Integrity Error: Cannot alter core product details (places) of a published package.");
+        }
+    }
 });
 
 delete mongoose.models.Package;

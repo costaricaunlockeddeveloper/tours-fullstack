@@ -13,7 +13,7 @@ export default function CreateTourPage() {
 
     useEffect(() => {
         const fetchPlaces = async () => {
-            const places = await ApiService.getPlaces();
+            const places = await ApiService.getPlaces({ status: 'PUBLISHED' });
             setAvailablePlaces(places);
         };
         fetchPlaces();
@@ -25,9 +25,9 @@ export default function CreateTourPage() {
             await ApiService.addTour(data as Omit<Tour, "id">);
             router.push("/admin/tours");
             router.refresh();
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error creating tour:", error);
-            alert("Error al crear el tour. Intenta nuevamente.");
+            alert(error.message || "Error al crear el tour. Intenta nuevamente.");
         } finally {
             setIsSubmitting(false);
         }

@@ -79,9 +79,9 @@ export default function PackagesAdmin() {
                                 </div>
                             )}
                             <div className="absolute top-2 left-2">
-                                <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold shadow-sm backdrop-blur-sm ${pkg.isVisible ? "bg-green-500/90 text-white" : "bg-gray-500/90 text-white"}`}>
-                                    <span className={`w-1.5 h-1.5 rounded-full ${pkg.isVisible ? "bg-white" : "bg-gray-300"}`}></span>
-                                    {pkg.isVisible ? "Visible" : "Oculto"}
+                                <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold shadow-sm backdrop-blur-sm ${pkg.status === 'PUBLISHED' ? "bg-green-500/90 text-white" : pkg.status === 'ARCHIVED' ? "bg-amber-500/90 text-white" : "bg-gray-500/90 text-white"}`}>
+                                    <span className={`w-1.5 h-1.5 rounded-full bg-white`}></span>
+                                    {pkg.status === 'PUBLISHED' ? "Publicado" : pkg.status === 'ARCHIVED' ? "Archivado" : "Borrador"}
                                 </span>
                             </div>
                             <div className="absolute top-2 right-2 flex flex-col gap-1 items-end">

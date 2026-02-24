@@ -46,7 +46,10 @@ export async function PUT(
             return NextResponse.json({ error: 'Tour not found' }, { status: 404 });
         }
         return NextResponse.json(tour);
-    } catch (error) {
+    } catch (error: any) {
+        if (error.code === 11000) {
+            return NextResponse.json({ error: 'Slug ya existe. Por favor cambie el nombre del tour.' }, { status: 400 });
+        }
         return NextResponse.json({ error: 'Failed to update tour' }, { status: 400 });
     }
 }

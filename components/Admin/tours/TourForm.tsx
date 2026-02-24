@@ -60,10 +60,12 @@ export default function TourForm({ initialData, availablePlaces, onSubmit, isSub
 
     // Auto-generate slug from name
     useEffect(() => {
-        if (formData.name && !initialData?.slug) {
-            setFormData(prev => ({ ...prev, slug: generateSlug(prev.name || "") }));
+        if (formData.name) {
+            if (!initialData || initialData.status !== 'PUBLISHED') {
+                setFormData(prev => ({ ...prev, slug: generateSlug(formData.name || "") }));
+            }
         }
-    }, [formData.name, initialData?.slug]);
+    }, [formData.name, initialData]);
 
     const togglePlaceSelection = (placeId: string) => {
         setFormData((prev) => {

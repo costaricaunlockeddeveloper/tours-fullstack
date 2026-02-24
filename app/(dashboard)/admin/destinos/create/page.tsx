@@ -16,9 +16,9 @@ export default function CreateDestinationPage() {
             await ApiService.addPlace(data as Omit<Place, "id">);
             router.push("/admin/destinos");
             router.refresh();
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error creating place:", error);
-            alert("Error al crear el destino. Intenta nuevamente.");
+            alert(error.message || "Error al crear el destino. Intenta nuevamente.");
         } finally {
             setIsSubmitting(false);
         }
