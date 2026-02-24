@@ -107,8 +107,12 @@ export default function DestinationForm({ initialData, onSubmit, isSubmitting, o
                                 value={formData.name}
                                 onChange={(e) => handleNameChange(e.target.value)}
                                 className="w-full rounded-lg border border-stroke bg-transparent px-4 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
+                                maxLength={100}
                                 required
                             />
+                            <p className="mt-1 text-[10px] text-right text-gray-400">
+                                {formData.name?.length || 0}/100
+                            </p>
                         </div>
                         <div>
                             <label className="mb-2 block font-medium text-dark dark:text-white text-sm">
@@ -226,8 +230,12 @@ export default function DestinationForm({ initialData, onSubmit, isSubmitting, o
                                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                     className="w-full rounded-lg border border-stroke bg-transparent px-4 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
                                     rows={5}
+                                    maxLength={1500}
                                     required
                                 />
+                                <p className="mt-1 text-[10px] text-right text-gray-400">
+                                    {formData.description?.length || 0}/1500
+                                </p>
                             </div>
 
                         </div>

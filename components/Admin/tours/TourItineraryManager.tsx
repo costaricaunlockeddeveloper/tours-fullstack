@@ -60,7 +60,11 @@ export default function TourItineraryManager({ items, onItemsChange }: TourItine
                             onChange={(e) => setNewItem({ ...newItem, title: e.target.value })}
                             placeholder="Ej: Salida del Hotel"
                             className="w-full rounded-lg border border-stroke bg-white dark:bg-dark-2 px-4 py-2 text-dark outline-none focus:border-primary dark:border-dark-3 dark:text-white"
+                            maxLength={100}
                         />
+                        <p className="mt-1 text-[10px] text-right text-gray-400">
+                            {newItem.title.length}/100
+                        </p>
                     </div>
                     <div>
                         <label className="block text-sm text-gray-500 mb-1">Duración</label>
@@ -70,6 +74,7 @@ export default function TourItineraryManager({ items, onItemsChange }: TourItine
                             onChange={(e) => setNewItem({ ...newItem, duration: e.target.value })}
                             placeholder="Ej: 30 mins"
                             className="w-full rounded-lg border border-stroke bg-white dark:bg-dark-2 px-4 py-2 text-dark outline-none focus:border-primary dark:border-dark-3 dark:text-white"
+                            maxLength={50}
                         />
                     </div>
                     <div className="md:col-span-2">
@@ -80,13 +85,22 @@ export default function TourItineraryManager({ items, onItemsChange }: TourItine
                             placeholder="Detalles de la actividad..."
                             rows={2}
                             className="w-full rounded-lg border border-stroke bg-white dark:bg-dark-2 px-4 py-2 text-dark outline-none focus:border-primary dark:border-dark-3 dark:text-white resize-none"
+                            maxLength={500}
                         />
+                        <p className="mt-1 text-[10px] text-right text-gray-400">
+                            {newItem.description.length}/500
+                        </p>
                     </div>
                 </div>
-                <div className="flex justify-end">
+                <div className="flex justify-between items-center px-1">
+                    <p className={`text-xs font-medium ${items.length >= 20 ? "text-amber-600" : "text-gray-500"}`}>
+                        {items.length}/20 puntos de interés
+                        {items.length >= 20 && <span className="ml-2 font-bold uppercase tracking-wider italic text-[10px]">(Máximo alcanzado)</span>}
+                    </p>
                     <AnimatedButton
                         onClick={handleAdd}
-                        className={`!rounded-full ${!newItem.title.trim() ? "opacity-50 cursor-not-allowed" : ""}`}
+                        className={`rounded-full! ${(items.length >= 20 || !newItem.title.trim()) ? "opacity-50 cursor-not-allowed" : ""}`}
+                        disabled={items.length >= 20 || !newItem.title.trim()}
                     >
                         Agregar al Itinerario
                     </AnimatedButton>
@@ -110,6 +124,7 @@ export default function TourItineraryManager({ items, onItemsChange }: TourItine
                                             value={editValue.title}
                                             onChange={(e) => setEditValue({ ...editValue, title: e.target.value })}
                                             className="w-full rounded border border-primary px-3 py-1 text-sm bg-white dark:bg-dark-2 dark:text-white"
+                                            maxLength={100}
                                         />
                                     </div>
                                     <div>
@@ -119,6 +134,7 @@ export default function TourItineraryManager({ items, onItemsChange }: TourItine
                                             value={editValue.duration}
                                             onChange={(e) => setEditValue({ ...editValue, duration: e.target.value })}
                                             className="w-full rounded border border-primary px-3 py-1 text-sm bg-white dark:bg-dark-2 dark:text-white"
+                                            maxLength={50}
                                         />
                                     </div>
                                     <div className="md:col-span-2">
@@ -128,6 +144,7 @@ export default function TourItineraryManager({ items, onItemsChange }: TourItine
                                             onChange={(e) => setEditValue({ ...editValue, description: e.target.value })}
                                             rows={2}
                                             className="w-full rounded border border-primary px-3 py-1 text-sm bg-white dark:bg-dark-2 dark:text-white"
+                                            maxLength={500}
                                         />
                                     </div>
                                 </div>

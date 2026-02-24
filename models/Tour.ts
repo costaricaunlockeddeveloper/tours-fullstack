@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 
 const TourSchema = new mongoose.Schema({
-    name: { type: String, required: true },
+    name: { type: String, required: true, trim: true, maxlength: 100 },
     slug: { type: String, unique: true, sparse: true },
-    description: { type: String, required: true },
+    description: { type: String, required: true, trim: true, maxlength: 1500 },
     duration: { type: Number }, // Horas
     status: { 
         type: String, 
@@ -20,13 +20,16 @@ const TourSchema = new mongoose.Schema({
             size: { type: Number },
             typefile: { type: String },
         },
-        secondaryAssets: [{
-            path: { type: String },
-            size: { type: Number },
-            typefile: { type: String },
-            mediaType: { type: String, enum: ['standard', '360', 'video'], default: 'standard' },
-            thumbnailPath: { type: String },
-        }],
+        secondaryAssets: {
+            type: [{
+                path: { type: String },
+                size: { type: Number },
+                typefile: { type: String },
+                mediaType: { type: String, enum: ['standard', '360', 'video'], default: 'standard' },
+                thumbnailPath: { type: String },
+            }],
+            validate: [(v: any[]) => v.length <= 10, '{PATH} exceeds the limit of 10 items']
+        },
     },
     // Default values template — copied to each date
     defaults: {
@@ -37,13 +40,13 @@ const TourSchema = new mongoose.Schema({
     },
     // Unified meeting point
     meetingPoint: {
-        name: { type: String },
-        description: { type: String },
+        name: { type: String, trim: true, maxlength: 100 },
+        description: { type: String, trim: true, maxlength: 500 },
         coordinates: {
             lat: { type: Number },
             lng: { type: Number },
         },
-        address: { type: String },
+        address: { type: String, trim: true, maxlength: 200 },
     },
     // Each date has its own copy of price/quota/schedules + enrolled count
     availableDates: [{
@@ -54,14 +57,23 @@ const TourSchema = new mongoose.Schema({
         schedules: [{ type: String }],
         enrolled: { type: Number, default: 0 },
     }],
-    guideName: { type: String },
-    includes: [{ type: String }],
-    excludes: [{ type: String }],
-    itinerary: [{
-        title: { type: String },
-        description: { type: String },
-        duration: { type: String }
-    }],
+    guideName: { type: String, trim: true, maxlength: 60 },
+    includes: {
+        type: [{ type: String, trim: true, maxlength: 100 }],
+        validate: [(v: any[]) => v.length <= 15, '{PATH} exceeds the limit of 15 items']
+    },
+    excludes: {
+        type: [{ type: String, trim: true, maxlength: 100 }],
+        validate: [(v: any[]) => v.length <= 15, '{PATH} exceeds the limit of 15 items']
+    },
+    itinerary: {
+        type: [{
+            title: { type: String, trim: true, maxlength: 100 },
+            description: { type: String, trim: true, maxlength: 500 },
+            duration: { type: String, trim: true, maxlength: 50 }
+        }],
+        validate: [(v: any[]) => v.length <= 20, '{PATH} exceeds the limit of 20 items']
+    },
 }, {
     timestamps: true,
     toJSON: {

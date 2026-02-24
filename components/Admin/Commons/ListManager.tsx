@@ -68,19 +68,29 @@ export default function ListManager({ items, onItemsChange, placeholder = "Agreg
                     type="text"
                     value={newItem}
                     onChange={(e) => setNewItem(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAdd())}
-                    placeholder={placeholder}
-                    className="flex-1 rounded-xl border border-stroke bg-white dark:bg-dark-2 px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary shadow-sm"
+                    onKeyDown={(e) => e.key === 'Enter' && items.length < 15 && (e.preventDefault(), handleAdd())}
+                    placeholder={items.length >= 15 ? "Límite de 15 items alcanzado" : placeholder}
+                    className="flex-1 rounded-xl border border-stroke bg-white dark:bg-dark-2 px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary shadow-sm disabled:bg-gray-100 dark:disabled:bg-white/5"
+                    maxLength={100}
+                    disabled={items.length >= 15}
                 />
                 <button
                     onClick={handleAdd}
-                    disabled={!newItem.trim()}
+                    disabled={!newItem.trim() || items.length >= 15}
                     className={`flex-none flex items-center justify-center w-12 h-12 rounded-xl bg-primary text-white shadow-lg shadow-primary/30 transition-all hover:bg-opacity-90 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none`}
-                    title="Añadir"
+                    title={items.length >= 15 ? "Límite alcanzado" : "Añadir"}
                 >
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" /></svg>
                 </button>
             </div>
+            {items.length > 0 && (
+                <div className="flex justify-between items-center px-1">
+                    <p className={`text-[10px] font-medium ${items.length >= 15 ? "text-amber-600" : "text-gray-400"}`}>
+                        {items.length}/15 items
+                    </p>
+                    {items.length >= 15 && <p className="text-[10px] text-amber-600 font-bold uppercase tracking-wider italic">Máximo alcanzado</p>}
+                </div>
+            )}
 
             {/* List Area */}
             <ul className={`${layout === "grid" ? "flex flex-wrap gap-3" : "space-y-3"} max-h-[300px] overflow-y-auto custom-scrollbar p-1`}>
@@ -102,6 +112,7 @@ export default function ListManager({ items, onItemsChange, placeholder = "Agreg
                                     onChange={(e) => setEditValue(e.target.value)}
                                     className="flex-1 rounded-lg border border-primary bg-white dark:bg-dark-2 px-3 py-2 text-dark dark:text-white outline-none shadow-sm"
                                     autoFocus
+                                    maxLength={100}
                                 />
                                 <button onClick={() => saveEdit(index)} className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors">
                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" /></svg>
@@ -113,7 +124,7 @@ export default function ListManager({ items, onItemsChange, placeholder = "Agreg
                         ) : (
                             <>
                                 <div className="flex items-center gap-3 flex-1 min-w-0">
-                                    <span className={`flex-shrink-0 w-2 h-2 rounded-full ${type === 'check' ? 'bg-green-500' : type === 'cross' ? 'bg-red-500' : 'bg-primary'}`}></span>
+                                    <span className={`shrink-0 w-2 h-2 rounded-full ${type === 'check' ? 'bg-green-500' : type === 'cross' ? 'bg-red-500' : 'bg-primary'}`}></span>
                                     <span className="text-dark dark:text-white truncate font-medium">{item}</span>
                                 </div>
                                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">

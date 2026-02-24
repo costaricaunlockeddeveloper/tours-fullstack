@@ -62,38 +62,65 @@ export default function ItineraryManager({ itinerary, onItineraryChange }: Itine
                     {itinerary.length === 0 ? "Agregar Día 1" : `Agregar Día ${itinerary.length + 1}`}
                 </h4>
                 <div className="grid gap-4">
-                    <input
-                        type="text"
-                        placeholder="Título de la actividad (Ej. Llegada y Traslado)"
-                        value={newItem.title}
-                        onChange={(e) => setNewItem({ ...newItem, title: e.target.value })}
-                        className="w-full rounded-lg border border-stroke bg-white dark:bg-dark-2 px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
-                    />
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <textarea
-                            placeholder="Descripción detallada..."
-                            value={newItem.description}
-                            onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
-                            rows={2}
-                            className="w-full rounded-lg border border-stroke bg-white dark:bg-dark-2 px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
+                    <div className="relative">
+                        <input
+                            type="text"
+                            placeholder="Título de la actividad (Ej. Llegada y Traslado)"
+                            value={newItem.title}
+                            onChange={(e) => setNewItem({ ...newItem, title: e.target.value })}
+                            className="w-full rounded-lg border border-stroke bg-white dark:bg-dark-2 px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary disabled:opacity-50"
+                            maxLength={100}
+                            disabled={itinerary.length >= 20}
                         />
-                        <textarea
-                            placeholder="Alojamiento (Opcional)"
-                            value={newItem.accommodation}
-                            onChange={(e) => setNewItem({ ...newItem, accommodation: e.target.value })}
-                            rows={2}
-                            className="w-full rounded-lg border border-stroke bg-white dark:bg-dark-2 px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary"
-                        />
+                        <p className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] text-gray-400">
+                            {newItem.title.length}/100
+                        </p>
                     </div>
-                    <button
-                        type="button"
-                        onClick={handleAdd}
-                        disabled={!newItem.title.trim()}
-                        className="self-end justify-self-end w-full sm:w-auto flex items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-medium text-white hover:bg-opacity-90 disabled:bg-opacity-50 transition-all shadow-md hover:shadow-lg"
-                    >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
-                        Agregar Día
-                    </button>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="relative">
+                            <textarea
+                                placeholder="Descripción detallada..."
+                                value={newItem.description}
+                                onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
+                                rows={2}
+                                className="w-full rounded-lg border border-stroke bg-white dark:bg-dark-2 px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary disabled:opacity-50"
+                                maxLength={1000}
+                                disabled={itinerary.length >= 20}
+                            />
+                            <p className="absolute right-4 bottom-3 text-[10px] text-gray-400">
+                                {newItem.description.length}/1000
+                            </p>
+                        </div>
+                        <div className="relative">
+                            <textarea
+                                placeholder="Alojamiento (Opcional)"
+                                value={newItem.accommodation || ""}
+                                onChange={(e) => setNewItem({ ...newItem, accommodation: e.target.value })}
+                                rows={2}
+                                className="w-full rounded-lg border border-stroke bg-white dark:bg-dark-2 px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary disabled:opacity-50"
+                                maxLength={100}
+                                disabled={itinerary.length >= 20}
+                            />
+                            <p className="absolute right-4 bottom-3 text-[10px] text-gray-400">
+                                {(newItem.accommodation || "").length}/100
+                            </p>
+                        </div>
+                    </div>
+                    <div className="flex justify-between items-center">
+                        <p className={`text-xs font-medium ${itinerary.length >= 20 ? "text-amber-600" : "text-dark-6"}`}>
+                            {itinerary.length}/20 días registrados
+                            {itinerary.length >= 20 && <span className="ml-2 font-bold uppercase tracking-wider italic text-[10px]">(Máximo alcanzado)</span>}
+                        </p>
+                        <button
+                            type="button"
+                            onClick={handleAdd}
+                            disabled={!newItem.title.trim() || itinerary.length >= 20}
+                            className="flex items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-medium text-white hover:bg-opacity-90 disabled:bg-opacity-50 transition-all shadow-md hover:shadow-lg"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+                            Agregar Día
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -116,28 +143,40 @@ export default function ItineraryManager({ itinerary, onItineraryChange }: Itine
                                         Editando Día {day.day}
                                     </span>
                                 </div>
-                                <input
-                                    type="text"
-                                    value={editItem.title}
-                                    onChange={(e) => setEditItem({ ...editItem, title: e.target.value })}
-                                    className="w-full rounded border border-primary bg-white dark:bg-dark-2 px-4 py-2 text-dark dark:text-white outline-none"
-                                    placeholder="Título"
-                                />
+                                <div className="relative">
+                                    <input
+                                        type="text"
+                                        value={editItem.title}
+                                        onChange={(e) => setEditItem({ ...editItem, title: e.target.value })}
+                                        className="w-full rounded border border-primary bg-white dark:bg-dark-2 px-4 py-2 text-dark dark:text-white outline-none pr-12"
+                                        placeholder="Título"
+                                        maxLength={100}
+                                    />
+                                    <p className="absolute right-2 top-2 text-[10px] text-gray-400">{editItem.title.length}/100</p>
+                                </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <textarea
-                                        value={editItem.description}
-                                        onChange={(e) => setEditItem({ ...editItem, description: e.target.value })}
-                                        rows={3}
-                                        className="w-full rounded border border-primary bg-white dark:bg-dark-2 px-4 py-2 text-dark dark:text-white outline-none"
-                                        placeholder="Descripción"
-                                    />
-                                    <textarea
-                                        value={editItem.accommodation}
-                                        onChange={(e) => setEditItem({ ...editItem, accommodation: e.target.value })}
-                                        rows={3}
-                                        className="w-full rounded border border-primary bg-white dark:bg-dark-2 px-4 py-2 text-dark dark:text-white outline-none"
-                                        placeholder="Alojamiento"
-                                    />
+                                    <div className="relative">
+                                        <textarea
+                                            value={editItem.description}
+                                            onChange={(e) => setEditItem({ ...editItem, description: e.target.value })}
+                                            rows={3}
+                                            className="w-full rounded border border-primary bg-white dark:bg-dark-2 px-4 py-2 text-dark dark:text-white outline-none pr-12"
+                                            placeholder="Descripción"
+                                            maxLength={1000}
+                                        />
+                                        <p className="absolute right-2 bottom-2 text-[10px] text-gray-400">{editItem.description.length}/1000</p>
+                                    </div>
+                                    <div className="relative">
+                                        <textarea
+                                            value={editItem.accommodation || ""}
+                                            onChange={(e) => setEditItem({ ...editItem, accommodation: e.target.value })}
+                                            rows={3}
+                                            className="w-full rounded border border-primary bg-white dark:bg-dark-2 px-4 py-2 text-dark dark:text-white outline-none pr-12"
+                                            placeholder="Alojamiento"
+                                            maxLength={100}
+                                        />
+                                        <p className="absolute right-2 bottom-2 text-[10px] text-gray-400">{(editItem.accommodation || "").length}/100</p>
+                                    </div>
                                 </div>
                                 <div className="flex justify-end gap-3 mt-2">
                                     <button
@@ -158,7 +197,7 @@ export default function ItineraryManager({ itinerary, onItineraryChange }: Itine
                             // View Mode
                             <div className="flex flex-col sm:flex-row gap-4">
                                 {/* Day Number Badge */}
-                                <div className="flex-shrink-0">
+                                <div className="shrink-0">
                                     <div className="flex flex-col items-center justify-center w-16 h-16 bg-primary text-white rounded-lg shadow-sm">
                                         <span className="text-xs font-medium opacity-80">DÍA</span>
                                         <span className="text-2xl font-bold">{day.day}</span>

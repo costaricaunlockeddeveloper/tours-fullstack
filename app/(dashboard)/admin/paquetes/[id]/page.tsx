@@ -269,6 +269,7 @@ export default function PackageDetailsPage() {
                                 value={formData.description || ""}
                                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                 className="w-full rounded-lg border border-stroke bg-transparent px-4 py-3 text-dark outline-none dark:border-dark-3 dark:text-white focus:border-primary min-h-[150px]"
+                                maxLength={1500}
                             />
                         ) : (
                             <p className="text-body-color dark:text-dark-6 whitespace-pre-line leading-relaxed">

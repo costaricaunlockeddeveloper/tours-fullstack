@@ -97,7 +97,11 @@ export default function PackageForm({
                             onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                             placeholder="Ej: Aventura en Volcán Arenal"
                             className="w-full rounded-lg border border-stroke bg-transparent px-4 py-3 text-dark outline-none dark:border-dark-3 dark:text-white focus:border-primary"
+                            maxLength={100}
                         />
+                        <p className="mt-1 text-[10px] text-right text-gray-400">
+                            {formData.name?.length || 0}/100
+                        </p>
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-dark dark:text-white mb-2">Slug</label>
@@ -161,7 +165,11 @@ export default function PackageForm({
                             placeholder="Describe el paquete turístico..."
                             rows={4}
                             className="w-full rounded-lg border border-stroke bg-transparent px-4 py-3 text-dark outline-none dark:border-dark-3 dark:text-white focus:border-primary"
+                            maxLength={1500}
                         />
+                        <p className="mt-1 text-[10px] text-right text-gray-400">
+                            {formData.description?.length || 0}/1500
+                        </p>
                     </div>
                 </div>
             </div>

@@ -56,28 +56,48 @@ export default function ActivityManager({ activities, onActivitiesChange }: Acti
                 </div>
 
                 <div className="grid gap-4">
-                    <input
-                        type="text"
-                        placeholder="Nombre de la Actividad (Ej. Rafting Rio Pacuare)"
-                        value={newItem.title}
-                        onChange={(e) => setNewItem({ ...newItem, title: e.target.value })}
-                        className="w-full rounded-xl border border-stroke bg-gray-50 dark:bg-white/5 px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary focus:bg-white dark:focus:bg-dark-2"
-                    />
-                    <textarea
-                        placeholder="Descripción breve..."
-                        value={newItem.description}
-                        onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
-                        rows={3}
-                        className="w-full rounded-xl border border-stroke bg-gray-50 dark:bg-white/5 px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary focus:bg-white dark:focus:bg-dark-2"
-                    />
-                    <button
-                        type="button"
-                        onClick={handleAdd}
-                        disabled={!newItem.title.trim()}
-                        className="self-end px-8 py-3 rounded-xl bg-primary text-white hover:bg-opacity-90 disabled:opacity-50 transition-all font-medium shadow-lg shadow-primary/20 hover:-translate-y-0.5"
-                    >
-                        Agregar Actividad
-                    </button>
+                    <div className="relative">
+                        <input
+                            type="text"
+                            placeholder="Nombre de la Actividad (Ej. Rafting Rio Pacuare)"
+                            value={newItem.title}
+                            onChange={(e) => setNewItem({ ...newItem, title: e.target.value })}
+                            className="w-full rounded-xl border border-stroke bg-gray-50 dark:bg-white/5 px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary focus:bg-white dark:focus:bg-dark-2 disabled:opacity-50"
+                            maxLength={100}
+                            disabled={activities.length >= 20}
+                        />
+                        <p className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] text-gray-400">
+                            {newItem.title.length}/100
+                        </p>
+                    </div>
+                    <div className="relative">
+                        <textarea
+                            placeholder="Descripción breve..."
+                            value={newItem.description}
+                            onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
+                            rows={3}
+                            className="w-full rounded-xl border border-stroke bg-gray-50 dark:bg-white/5 px-5 py-3 text-dark outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:text-white dark:focus:border-primary focus:bg-white dark:focus:bg-dark-2 disabled:opacity-50"
+                            maxLength={500}
+                            disabled={activities.length >= 20}
+                        />
+                        <p className="absolute right-4 bottom-3 text-[10px] text-gray-400">
+                            {newItem.description.length}/500
+                        </p>
+                    </div>
+                    <div className="flex justify-between items-center">
+                        <p className={`text-xs font-medium ${activities.length >= 20 ? "text-amber-600" : "text-dark-6"}`}>
+                            {activities.length}/20 actividades registradas
+                            {activities.length >= 20 && <span className="ml-2 font-bold uppercase tracking-wider italic text-[10px]">(Máximo alcanzado)</span>}
+                        </p>
+                        <button
+                            type="button"
+                            onClick={handleAdd}
+                            disabled={!newItem.title.trim() || activities.length >= 20}
+                            className="px-8 py-3 rounded-xl bg-primary text-white hover:bg-opacity-90 disabled:opacity-50 transition-all font-medium shadow-lg shadow-primary/20 hover:-translate-y-0.5"
+                        >
+                            Agregar Actividad
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -98,18 +118,26 @@ export default function ActivityManager({ activities, onActivitiesChange }: Acti
                             <div className="bg-white dark:bg-dark-2 rounded-2xl p-5 border border-stroke dark:border-dark-3 shadow-sm hover:shadow-card transition-all">
                                 {editIndex === index && editItem ? (
                                     <div className="grid gap-4">
-                                        <input
-                                            value={editItem.title}
-                                            onChange={(e) => setEditItem({ ...editItem, title: e.target.value })}
-                                            className="w-full font-bold text-lg border-b border-primary/30 pb-2 outline-none bg-transparent"
-                                            autoFocus
-                                        />
-                                        <textarea
-                                            value={editItem.description}
-                                            onChange={(e) => setEditItem({ ...editItem, description: e.target.value })}
-                                            rows={2}
-                                            className="w-full text-dark-6 bg-transparent outline-none resize-none"
-                                        />
+                                        <div className="relative">
+                                            <input
+                                                value={editItem.title}
+                                                onChange={(e) => setEditItem({ ...editItem, title: e.target.value })}
+                                                className="w-full font-bold text-lg border-b border-primary/30 pb-2 outline-none bg-transparent pr-12"
+                                                autoFocus
+                                                maxLength={100}
+                                            />
+                                            <p className="absolute right-0 top-1 text-[10px] text-gray-400">{editItem.title.length}/100</p>
+                                        </div>
+                                        <div className="relative">
+                                            <textarea
+                                                value={editItem.description}
+                                                onChange={(e) => setEditItem({ ...editItem, description: e.target.value })}
+                                                rows={2}
+                                                className="w-full text-dark-6 bg-transparent outline-none resize-none pr-12"
+                                                maxLength={500}
+                                            />
+                                            <p className="absolute right-0 bottom-1 text-[10px] text-gray-400">{editItem.description.length}/500</p>
+                                        </div>
                                         <div className="flex justify-end gap-3 pt-2">
                                             <button onClick={() => setEditIndex(null)} className="px-4 py-2 text-sm font-medium text-dark-5 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg">Cancelar</button>
                                             <button onClick={saveEdit} className="px-6 py-2 text-sm font-bold text-white bg-primary rounded-lg shadow-md hover:bg-opacity-90">Guardar</button>

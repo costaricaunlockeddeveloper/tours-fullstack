@@ -1,29 +1,32 @@
 import mongoose from 'mongoose';
 
 const PlaceSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    description: { type: String, required: true },
+    name: { type: String, required: true, trim: true, maxlength: 100 },
+    description: { type: String, required: true, trim: true, maxlength: 1500 },
     slug: { type: String, unique: true, sparse: true },
-    region: { type: String },
+    region: { type: String, trim: true, maxlength: 50 },
     images: {
         heroImage: {
             path: { type: String },
             size: { type: Number },
             typefile: { type: String },
         },
-        secondaryAssets: [{
-            path: { type: String },
-            size: { type: Number },
-            typefile: { type: String },
-            mediaType: { type: String, enum: ['standard', '360', 'video'], default: 'standard' },
-            thumbnailPath: { type: String },
-        }],
+        secondaryAssets: {
+            type: [{
+                path: { type: String },
+                size: { type: Number },
+                typefile: { type: String },
+                mediaType: { type: String, enum: ['standard', '360', 'video'], default: 'standard' },
+                thumbnailPath: { type: String },
+            }],
+            validate: [(v: any[]) => v.length <= 10, '{PATH} exceeds the limit of 10 items']
+        },
     },
     coordinates: {
         lat: { type: Number },
         lng: { type: Number },
     },
-    ecosystem: { type: String },
+    ecosystem: { type: String, trim: true, maxlength: 50 },
     status: { 
         type: String, 
         enum: ['DRAFT', 'PUBLISHED', 'ARCHIVED'], 

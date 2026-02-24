@@ -305,6 +305,7 @@ export default function TourDetailsPage() {
                                 value={formData.description || ""}
                                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                 className="w-full rounded-lg border border-stroke bg-transparent px-4 py-3 text-dark outline-none dark:border-dark-3 dark:text-white focus:border-primary min-h-[150px]"
+                                maxLength={1500}
                             />
                         ) : (
                             <p className="text-body-color dark:text-dark-6 whitespace-pre-line leading-relaxed">
@@ -525,11 +526,11 @@ export default function TourDetailsPage() {
                             <div className="space-y-4">
                                 <div>
                                     <label className="block text-xs font-semibold uppercase text-gray-500 mb-1">Nombre del Lugar</label>
-                                    <input type="text" value={formData.meetingPoint?.name || ""} onChange={(e) => setFormData(prev => ({ ...prev, meetingPoint: { ...prev.meetingPoint, name: e.target.value } }))} placeholder="Ej: Lobby del Hotel" className="w-full rounded border border-stroke px-3 py-2 text-dark outline-none focus:border-primary dark:border-dark-3 dark:text-white dark:bg-transparent" />
+                                    <input type="text" value={formData.meetingPoint?.name || ""} onChange={(e) => setFormData(prev => ({ ...prev, meetingPoint: { ...prev.meetingPoint, name: e.target.value } }))} placeholder="Ej: Lobby del Hotel" className="w-full rounded border border-stroke px-3 py-2 text-dark outline-none focus:border-primary dark:border-dark-3 dark:text-white dark:bg-transparent" maxLength={100} />
                                 </div>
                                 <div>
                                     <label className="block text-xs font-semibold uppercase text-gray-500 mb-1">Dirección Física</label>
-                                    <input type="text" value={formData.meetingPoint?.address || ""} onChange={(e) => setFormData(prev => ({ ...prev, meetingPoint: { ...prev.meetingPoint, address: e.target.value } }))} placeholder="Ej: Calle Principal 123..." className="w-full rounded border border-stroke px-3 py-2 text-dark outline-none focus:border-primary dark:border-dark-3 dark:text-white dark:bg-transparent" />
+                                    <input type="text" value={formData.meetingPoint?.address || ""} onChange={(e) => setFormData(prev => ({ ...prev, meetingPoint: { ...prev.meetingPoint, address: e.target.value } }))} placeholder="Ej: Calle Principal 123..." className="w-full rounded border border-stroke px-3 py-2 text-dark outline-none focus:border-primary dark:border-dark-3 dark:text-white dark:bg-transparent" maxLength={200} />
                                 </div>
                                 <div>
                                     <label className="block text-xs font-semibold uppercase text-gray-500 mb-1">Instrucciones</label>
@@ -538,6 +539,7 @@ export default function TourDetailsPage() {
                                         onChange={(e) => setFormData(prev => ({ ...prev, meetingPoint: { ...prev.meetingPoint, description: e.target.value } }))}
                                         placeholder="Instrucciones breves..."
                                         rows={2}
+                                        maxLength={500}
                                         className="w-full rounded border border-stroke px-3 py-2 text-sm text-dark outline-none focus:border-primary dark:border-dark-3 dark:text-white dark:bg-transparent"
                                     />
                                 </div>

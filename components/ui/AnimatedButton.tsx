@@ -7,6 +7,7 @@ interface AnimatedButtonProps {
     onClick?: () => void;
     className?: string;
     variant?: 'primary' | 'secondary' | 'outline';
+    disabled?: boolean;
 }
 
 const AnimatedButton: React.FC<AnimatedButtonProps> = ({
@@ -14,7 +15,8 @@ const AnimatedButton: React.FC<AnimatedButtonProps> = ({
     href,
     onClick,
     className = '',
-    variant = 'primary'
+    variant = 'primary',
+    disabled = false
 }) => {
     const baseClasses = "relative overflow-hidden rounded-full px-6 py-2.5 text-sm font-medium transition-all duration-300 group inline-flex items-center justify-center shadow-md hover:shadow-lg";
 
@@ -59,7 +61,11 @@ const AnimatedButton: React.FC<AnimatedButtonProps> = ({
     }
 
     return (
-        <button onClick={onClick} className={combinedClasses}>
+        <button 
+            onClick={onClick} 
+            className={`${combinedClasses} ${disabled ? 'opacity-50 cursor-not-allowed shadow-none' : ''}`} 
+            disabled={disabled}
+        >
             <span className={fillClasses}></span>
             <span className={textClasses}>{children}</span>
         </button>

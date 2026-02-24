@@ -406,6 +406,7 @@ export default function DestinationDetailsPage() {
                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                             className="w-full h-64 rounded border border-stroke bg-transparent px-4 py-3 text-dark outline-none dark:border-dark-3 dark:text-white focus:border-primary leading-relaxed"
                             placeholder="Escribe una descripción detallada..."
+                            maxLength={1500}
                         />
                     ) : (
                         <div className="prose dark:prose-invert max-w-none text-base leading-relaxed text-body-color dark:text-dark-6">
