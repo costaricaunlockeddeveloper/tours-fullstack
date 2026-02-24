@@ -65,7 +65,7 @@ export default function PackagesAdmin() {
                         key={pkg.id}
                         className="rounded-[10px] bg-white shadow-1 dark:bg-gray-dark dark:shadow-card group hover:shadow-2 transition-all duration-300 overflow-hidden flex flex-col h-full"
                     >
-                        <div className="relative h-48 w-full overflow-hidden">
+                        <div className="relative h-48 w-full overflow-hidden shrink-0">
                             {pkg.images?.heroImage?.path ? (
                                 <Image
                                     src={pkg.images.heroImage.path}
@@ -79,61 +79,73 @@ export default function PackagesAdmin() {
                                 </div>
                             )}
                             <div className="absolute top-2 left-2">
-                                <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold shadow-sm backdrop-blur-sm ${pkg.status === 'PUBLISHED' ? "bg-green-500/90 text-white" : pkg.status === 'ARCHIVED' ? "bg-amber-500/90 text-white" : "bg-gray-500/90 text-white"}`}>
+                                <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold shadow-sm backdrop-blur-sm ${pkg.status === 'PUBLISHED' ? "bg-green-500/90 text-white" : pkg.status === 'ARCHIVED' ? "bg-rose-500/90 text-white" : "bg-gray-500/90 text-white"}`}>
                                     <span className={`w-1.5 h-1.5 rounded-full bg-white`}></span>
                                     {pkg.status === 'PUBLISHED' ? "Publicado" : pkg.status === 'ARCHIVED' ? "Archivado" : "Borrador"}
                                 </span>
                             </div>
-                            <div className="absolute top-2 right-2 flex flex-col gap-1 items-end">
-                                {pkg.price ? (
-                                    <span className="inline-flex rounded-full bg-primary/90 px-3 py-1 text-xs font-bold text-white shadow-sm backdrop-blur-sm">
-                                        Adul: ${pkg.price}
-                                    </span>
-                                ) : null}
-                                {pkg.priceChild ? (
-                                    <span className="inline-flex rounded-full bg-secondary/90 px-3 py-1 text-xs font-bold text-white shadow-sm backdrop-blur-sm">
-                                        Niños: ${pkg.priceChild}
-                                    </span>
-                                ) : null}
-                            </div>
                         </div>
 
-                        <div className="p-6 flex flex-col flex-1">
-                            <h3 className="text-xl font-bold text-dark dark:text-white mb-2 line-clamp-1">
-                                {pkg.name}
-                            </h3>
+                        <div className="p-6 flex flex-col grow">
+                            <div className="mb-4">
+                                <h3 className="text-xl font-bold text-dark dark:text-white mb-2 line-clamp-2">
+                                    {pkg.name}
+                                </h3>
 
-                            <p className="mb-4 text-sm text-body-color dark:text-dark-6 line-clamp-2 min-h-[2.5rem]">
-                                {pkg.description || "Sin descripción"}
-                            </p>
+                                {/* Base Price Data */}
+                                <div className="mb-3 flex flex-wrap gap-x-4 gap-y-2 items-center">
+                                    {pkg.price ? (
+                                        <span className="inline-flex items-center gap-1.5 text-xs text-dark dark:text-gray-200 font-medium tracking-wide">
+                                            <i className="bi bi-tag-fill"></i> Base: ${pkg.price}
+                                        </span>
+                                    ) : null}
+                                    {pkg.priceChild ? (
+                                        <span className="inline-flex items-center gap-1.5 text-xs text-dark dark:text-gray-200 font-medium tracking-wide">
+                                            <i className="bi bi-person-fill"></i> Niñ: ${pkg.priceChild}
+                                        </span>
+                                    ) : null}
+                                </div>
 
-                            <div className="mb-4 mt-auto">
-                                <p className="text-xs font-semibold uppercase text-dark-5 mb-2">Destinos Incluidos:</p>
+                                <p className="text-sm text-body-color dark:text-dark-6 line-clamp-3">
+                                    {pkg.description || "Sin descripción"}
+                                </p>
+                            </div>
+
+                            <div className="grow"></div>
+
+                            <div className="mt-auto">
+                                <div className="mb-4">
+                                    <h4 className="flex items-center gap-1.5 text-[10px] font-semibold uppercase text-gray-400 dark:text-gray-500 mb-2 tracking-wider">
+                                        <i className="bi bi-geo-alt-fill"></i> Destinos Incluidos
+                                    </h4>
                                 <div className="flex flex-wrap gap-2">
                                     {pkg.places && pkg.places.length > 0 ? (
-                                        pkg.places.slice(0, 3).map(place => (
-                                            <span key={place.id} className="inline-block rounded-md bg-gray-100 dark:bg-dark-2 px-2 py-1 text-xs text-dark dark:text-white">
-                                                {place.name}
-                                            </span>
-                                        ))
+                                        <>
+                                            {pkg.places.slice(0, 2).map(place => (
+                                                <span key={place.id} className="inline-block rounded-md bg-gray-100 dark:bg-dark-2 px-2 py-1 text-xs text-dark dark:text-white max-w-[150px] truncate" title={place.name}>
+                                                    {place.name}
+                                                </span>
+                                            ))}
+                                            {pkg.places.length > 2 && (
+                                                <span className="inline-block rounded-md bg-gray-100 dark:bg-dark-2 px-2 py-1 text-xs text-dark dark:text-white">
+                                                    +{pkg.places.length - 2} destinos
+                                                </span>
+                                            )}
+                                        </>
                                     ) : (
                                         <span className="text-xs text-dark-6 italic">Sin destinos asignados</span>
                                     )}
-                                    {pkg.places && pkg.places.length > 3 && (
-                                        <span className="inline-block rounded-md bg-gray-100 dark:bg-dark-2 px-2 py-1 text-xs text-dark dark:text-white">
-                                            +{pkg.places.length - 3}
-                                        </span>
-                                    )}
                                 </div>
-                            </div>
+                                </div>
 
-                            <div className="flex gap-2 border-t border-stroke pt-4 dark:border-dark-3 mt-4">
-                                <AnimatedButton
-                                    href={`/admin/paquetes/${pkg.id}`}
-                                    className="w-full"
-                                >
-                                    Ver detalles
-                                </AnimatedButton>
+                                <div className="flex gap-2 border-t border-stroke pt-4 dark:border-dark-3">
+                                    <AnimatedButton
+                                        href={`/admin/paquetes/${pkg.id}`}
+                                        className="w-full flex items-center justify-center gap-2"
+                                    >
+                                        <i className="bi bi-eye"></i> Ver detalles
+                                    </AnimatedButton>
+                                </div>
                             </div>
                         </div>
                     </div>

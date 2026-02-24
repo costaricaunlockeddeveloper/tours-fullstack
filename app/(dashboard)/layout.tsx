@@ -1,6 +1,7 @@
 "use client";
 
 import "@/css/style.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
 import "flatpickr/dist/flatpickr.min.css";
 import "jsvectormap/dist/jsvectormap.css";
 import React, { useState, useEffect } from "react";

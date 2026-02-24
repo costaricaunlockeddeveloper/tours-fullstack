@@ -1,6 +1,7 @@
 import { Manrope, Work_Sans, Kalam } from "next/font/google";
 
 import "./globals.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Providers } from "./providers";
 import NextTopLoader from "nextjs-toploader";

@@ -22,6 +22,7 @@ export interface Place {
     name: string;
     description: string;
     slug?: string;
+    status?: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
     officialName?: string;
     shortDescription?: string;
     region?: string;

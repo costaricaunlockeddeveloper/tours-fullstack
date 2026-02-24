@@ -67,45 +67,73 @@ export default function DestinationsAdmin() {
                         key={place.id}
                         className="group relative overflow-hidden rounded-[10px] bg-white shadow-1 dark:bg-gray-dark dark:shadow-card hover:shadow-2 transition-all duration-300 flex flex-col h-full"
                     >
-                        <div className="relative h-48 w-full overflow-hidden">
+                        <div className="relative h-48 w-full overflow-hidden shrink-0">
                             <Image
                                 src={place.images?.heroImage?.path || "/images/place-01.jpg"}
                                 alt={place.name}
                                 fill
                                 className="object-cover transition-transform duration-300 group-hover:scale-110"
                             />
+                            {/* Status Badge */}
+                            <div className="absolute top-2 left-2">
+                                <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold shadow-sm backdrop-blur-sm ${place.status === 'PUBLISHED' ? "bg-green-500/90 text-white" : place.status === 'ARCHIVED' ? "bg-rose-500/90 text-white" : "bg-gray-500/90 text-white"}`}>
+                                    <span className={`w-1.5 h-1.5 rounded-full bg-white`}></span>
+                                    {place.status === 'PUBLISHED' ? "Publicado" : place.status === 'ARCHIVED' ? "Archivado" : "Borrador"}
+                                </span>
+                            </div>
                         </div>
 
-                        <div className="p-6 flex-1 flex flex-col">
-                            <h3 className="mb-1 text-xl font-bold text-dark dark:text-white">
-                                {place.name}
-                            </h3>
-                            {place.officialName && (
-                                <p className="mb-2 text-xs italic text-gray-500 line-clamp-1">
-                                    {place.officialName}
-                                </p>
-                            )}
-                            <p className="mb-4 text-sm text-body-color dark:text-dark-6 line-clamp-2 min-h-10">
-                                {place.shortDescription || place.description}
-                            </p>
-                            <div className="mb-4 flex flex-wrap gap-2 mt-auto">
-                                <span className="inline-block rounded bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
-                                    {place.ecosystem?.toUpperCase() || place.region?.toUpperCase() || "DESTINO"}
-                                </span>
-                                {place.region && (
-                                    <span className="inline-block rounded bg-indigo-500/10 px-2.5 py-0.5 text-xs font-medium text-indigo-500">
-                                        {place.region}
-                                    </span>
+                        <div className="p-6 flex flex-col grow">
+                            <div className="mb-4">
+                                <h3 className="mb-1 text-xl font-bold text-dark dark:text-white line-clamp-2">
+                                    {place.name}
+                                </h3>
+                                {place.officialName && (
+                                    <p className="mb-2 text-xs italic text-gray-500 line-clamp-1 flex items-center gap-1">
+                                        <i className="bi bi-info-circle"></i> {place.officialName}
+                                    </p>
                                 )}
+                                
+                                {/* Coordinates Indicator */}
+                                <div className="mb-3">
+                                    {place.coordinates?.lat && place.coordinates?.lng ? (
+                                        <span className="inline-flex items-center gap-1.5 text-xs text-green-600 dark:text-green-400 font-medium">
+                                            <i className="bi bi-geo-alt"></i> Coordenadas OK
+                                        </span>
+                                    ) : (
+                                        <span className="inline-flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400 font-medium">
+                                            <i className="bi bi-exclamation-triangle"></i> Faltan coordenadas
+                                        </span>
+                                    )}
+                                </div>
+
+                                <p className="text-sm text-body-color dark:text-dark-6 line-clamp-3">
+                                    {place.shortDescription || place.description}
+                                </p>
                             </div>
 
-                            <div className="border-t border-stroke pt-4 dark:border-dark-3 mt-auto">
-                                <AnimatedButton
-                                    href={`/admin/destinos/${place.id}`}
-                                    className="w-full"
-                                >
-                                    Ver detalles
-                                </AnimatedButton>
+                            <div className="grow"></div>
+
+                            <div className="mt-auto">
+                                <div className="mb-4 flex flex-wrap gap-2">
+                                    <span className="inline-flex items-center gap-1 rounded bg-gray-100 dark:bg-dark-2 px-2 py-1 text-xs text-dark dark:text-white font-medium">
+                                        <i className="bi bi-tree"></i> {place.ecosystem?.toUpperCase() || place.region?.toUpperCase() || "DESTINO"}
+                                    </span>
+                                    {place.region && (
+                                        <span className="inline-flex items-center gap-1 rounded bg-gray-100 dark:bg-dark-2 px-2 py-1 text-xs text-dark dark:text-white font-medium">
+                                            <i className="bi bi-map"></i> {place.region}
+                                        </span>
+                                    )}
+                                </div>
+
+                                <div className="border-t border-stroke pt-4 dark:border-dark-3">
+                                    <AnimatedButton
+                                        href={`/admin/destinos/${place.id}`}
+                                        className="w-full flex items-center justify-center gap-2"
+                                    >
+                                        <i className="bi bi-eye"></i> Ver detalles
+                                    </AnimatedButton>
+                                </div>
                             </div>
                         </div>
                     </div>
