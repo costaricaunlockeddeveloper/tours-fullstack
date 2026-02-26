@@ -20,15 +20,16 @@ export async function POST(req: Request) {
 
     try {
         if (endpointSecret) {
+            console.log("🔐 Attempting to verify Stripe signature...");
             event = stripe.webhooks.constructEvent(body, sig, endpointSecret);
+            console.log("✅ Signature verified successfully.");
         } else {
-            // If no webhook secret is configured (dev mode), trust the event body
-            // WARNING: This is insecure for production. Use constructEvent in prod.
             const jsonBody = JSON.parse(body);
             event = jsonBody;
             console.warn("⚠️ Webhook secret not configured. Skipping signature verification (DEV ONLY).");
         }
     } catch (err: any) {
+        console.error(`❌ Webhook Signature Error: ${err.message}`);
         return NextResponse.json({ error: `Webhook Error: ${err.message}` }, { status: 400 });
     }
 
@@ -62,12 +63,14 @@ export async function POST(req: Request) {
             }, { new: true });
 
             if (updatedReservation) {
-                console.log(`✅ Reservation ${reservationId} successfully updated to confirmed.`);
+                console.log(`✅ Reservation ${reservationId} successfully updated to confirmed/paid.`);
             } else {
-                console.error(`❌ Reservation ${reservationId} NOT FOUND during update!`);
+                console.error(`❌ Reservation ${reservationId} NOT FOUND in database during update!`);
+                // Check if maybe the ID is different or there's a connection issue
             }
         } else {
-            console.warn("⚠️ No reservationId found in session metadata.");
+            console.warn("⚠️ No reservationId found in session metadata. Session ID:", session.id);
+            console.log("Full Session Metadata:", JSON.stringify(session.metadata, null, 2));
         }
     } else {
         console.log(`ℹ️ Webhook received unhandled event type: ${event.type}`);

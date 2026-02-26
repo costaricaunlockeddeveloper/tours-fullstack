@@ -31,7 +31,7 @@ export function UserInfo() {
         <figure className="flex items-center gap-3">
           <Image
             src={userImg}
-            className="h-12 w-12 rounded-full object-cover" 
+            className="h-12 w-12 rounded-full object-cover"
             alt={`Avatar of ${userName}`}
             role="presentation"
             width={48}
@@ -59,7 +59,7 @@ export function UserInfo() {
         <h2 className="sr-only">User information</h2>
 
         <figure className="flex items-center gap-2.5 px-5 py-3.5">
-           <Image
+          <Image
             src={userImg}
             className="h-12 w-12 rounded-full object-cover"
             alt={`Avatar for ${userName}`}
@@ -89,18 +89,6 @@ export function UserInfo() {
 
             <span className="mr-auto text-base font-medium">View profile</span>
           </Link>
-
-          <Link
-            href={"/pages/settings"}
-            onClick={() => setIsOpen(false)}
-            className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-gray-2 hover:text-dark dark:hover:bg-dark-3 dark:hover:text-white"
-          >
-            <SettingsIcon />
-
-            <span className="mr-auto text-base font-medium">
-              Account Settings
-            </span>
-          </Link>
         </div>
 
         <hr className="border-[#E8E8E8] dark:border-dark-3" />
@@ -109,8 +97,8 @@ export function UserInfo() {
           <button
             className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-gray-2 hover:text-dark dark:hover:bg-dark-3 dark:hover:text-white"
             onClick={() => {
-                setIsOpen(false);
-                logout();
+              setIsOpen(false);
+              logout();
             }}
           >
             <LogOutIcon />

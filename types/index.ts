@@ -2,6 +2,7 @@ export interface User {
     uid: string;
     email: string;
     displayName: string;
+    phone?: string;
     role: "admin" | "client";
     createdAt?: string;
 }
@@ -124,6 +125,8 @@ export interface Reservation {
     pax: number;
     adults: number;
     children: number;
+    unitPriceAdult?: number;
+    unitPriceChild?: number;
     subtotal: number;
     totalPrice: number;
     status: "pending" | "confirmed" | "cancelled" | "completed";

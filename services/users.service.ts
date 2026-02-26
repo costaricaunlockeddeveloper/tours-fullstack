@@ -10,6 +10,7 @@ export const UsersService = {
         uid: string;
         email: string;
         displayName?: string;
+        phone?: string;
     }) => {
         const res = await fetch(`/api/users/${user.uid}`, {
             method: "PUT",

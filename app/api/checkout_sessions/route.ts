@@ -38,6 +38,8 @@ export async function POST(req: Request) {
             selectedTime: time, // Save the time
             adults,
             children,
+            unitPriceAdult: adults > 0 ? (subtotal / (adults + (children > 0 ? (children * (subtotal / total)) : 0))) : 0, // Simplified or better pass from client
+            unitPriceChild: children > 0 ? (subtotal / ((adults * (total / subtotal)) + children)) : 0, // This logic is tricky without knowing the exact split, better to pass them from frontend or calculate based on business rules.
             subtotal,
             totalPrice: total,
             pax: (adults || 0) + (children || 0),

@@ -15,6 +15,8 @@ const ReservationSchema = new mongoose.Schema({
     pax: { type: Number }, // Total pax, could be calculated
     adults: { type: Number, required: true },
     children: { type: Number, required: true },
+    unitPriceAdult: { type: Number }, // Snapshot of price at booking
+    unitPriceChild: { type: Number }, // Snapshot of price at booking
     subtotal: { type: Number, required: true },
     totalPrice: { type: Number, required: true },
     status: {

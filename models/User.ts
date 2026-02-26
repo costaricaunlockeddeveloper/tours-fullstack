@@ -6,6 +6,7 @@ const UserSchema = new mongoose.Schema({
     password: { type: String, select: false }, // Password is optional for now to allow existing users (if any) to be handled gracefully, or forced reset
     displayName: { type: String },
     photoURL: { type: String },
+    phone: { type: String },
     role: {
         type: String,
         enum: ['admin', 'client'],
